@@ -1,135 +1,105 @@
 <div class="dashboard-body">
-  <!--  [dir]="textDir"-->
-  <div class="heading-row">
-    <div class="heading">
-      <p>{{ 'dashboard.title' | translate }}</p>
+    <app-heading-row [title]="'dashboard.title' | translate" [extraTitle]="loginId"></app-heading-row>
+    <div class="wrapper">
+        <div class="heading-row-tow">
+                <span [matTooltipDisabled]="!disableModifyAppointmentButton"
+                      matTooltip="{{ 'helpText.book/modify_appointment' | translate }}">
+                    <button (click)="onModifyMultipleAppointment()"
+                            [disabled]="disableModifyAppointmentButton"
+                            class="btn_axn-sec page_btn mar_right-30">
+                        {{ 'dashboard.action_modify_appointment' | translate }}
+                    </button>
+                </span>
+            <span>
+                    <button (click)="onNewApplication()" class="btn_axn-pri page_btn">
+                        {{ 'dashboard.action_cre_application' | translate }}
+                    </button>
+                </span>
+        </div>
     </div>
-    <span class="spacer"></span>
-    <div class="buttons">
-      <span
-        matTooltip="{{ 'helpText.book/modify_appointment' | translate }}"
-        [matTooltipDisabled]="!disableModifyAppointmentButton"
-      >
-        <!-- class="modify-app-btn" -->
-        <!-- mat-button -->
-        <button
-          [disabled]="disableModifyAppointmentButton"
-          class="btn_axn-sec page_btn mar_right-30"
-          (click)="onModifyMultipleAppointment()"
-        >
-          <img src="assets\Book_Modify Appointment.png" class="modify-app-img" />
-          {{ 'dashboard.action_modify_appointment' | translate }}
-        </button></span
-      >
-      <span>
-        <!-- class="create-app-btn" -->
-        <button class="btn_axn-pri page_btn" (click)="onNewApplication()">
-          <img src="assets\Create new application.png" class="create-app-img" />
-          {{ 'dashboard.action_cre_application' | translate }}
-        </button></span
-      >
+    <div *ngIf="!isFetched" class="spinner">
+        <mat-spinner [diameter]="50"></mat-spinner>
     </div>
-  </div>
-  <div class="spinner" *ngIf="!isFetched"><mat-spinner [diameter]="50"></mat-spinner></div>
-  <div *ngIf="!isNewApplication && isFetched">
-    <div class="card-container">
-      <div class="card-component" *ngFor="let user of users">
-        <mat-card>
-          <div class="card-header">
-            <span class="checkbox"
-              ><mat-checkbox   (change)="onSelectUser(user, $event)"
-                >
-              </mat-checkbox></span
-            >
-            <span class="checkbox"
-              >{{ 'dashboard.card.text_app_id' | translate }}&nbsp;&nbsp;<strong> {{ user.applicationID }}</strong>
-              <mat-icon class="icon" matTooltip="{{ 'helpText.applicationId' | translate }}" [inline]="true"
-                >help_outline</mat-icon
-              >
-            </span>
-            <span class="spacer"></span>
-            <button (click)="onDelete(user)" mat-icon-button *ngIf="!(user.status === 'Expired')">
-              <img
-                matTooltip="{{ 'helpText.deleteIcon' | translate }}"
-                [matTooltipDisabled]="false"
-                src="assets\delete.png"
-                class="delete-img"
-              />
-            </button>
-          </div>
-          <mat-card-content [ngStyle]="{ marginTop: getMargin(user.name) }">
-            <div class="card-content">
-              <table>
-                <tr>
-                  <td>{{ 'dashboard.card.text_name' | translate }}</td>
-                  <td
-                    [ngClass]="user.name.length > 30 ? 'application-value user__name--wordwrap' : 'application-value'"
-                  >
-                    {{ user.name }}
-                  </td>
-                </tr>
-                <tr>
-                  <td>{{ 'dashboard.card.text_appoinment_date' | translate }}</td>
-                  <td class="application-value">{{ user.appointmentTime }} {{ user.appointmentDate }}</td>
-                </tr>
-                <tr>
-                  <td>{{ 'dashboard.card.text_status' | translate }}</td>
-                  <td id="status" [ngStyle]="{ color: getColor(user.status) }">
-                    {{
-                      (user.status === 'Booked'
-                        ? 'dashboard.status.booked'
-                        : user.status === 'Expired'
-                        ? 'dashboard.status.expired'
-                        : 'dashboard.status.pendingAppointment') | translate
-                    }}
-
-                    <mat-icon
-                      class="icon"
-                      matTooltip="{{
-                        (user.status === 'Booked'
-                          ? 'helpText.status.booked'
-                          : user.status === 'Expired'
-                          ? 'helpText.status.expired'
-                          : 'helpText.status.pendingAppointment') | translate
-                      }}"
-                      [inline]="true"
-                      >help_outline</mat-icon
-                    >
-                  </td>
-                </tr>
-              </table>
+    <div *ngIf="!isNewApplication && isFetched">
+        <div class="wrapper2">
+            <div class="card-container">
+                <div *ngFor="let user of users" class="card-component">
+                    <mat-card class="booking-card" *ngIf="!user.appointmentDate || (user.appointmentDate.toString().indexOf('9999') < 0) || (user.appointmentDate.toString().indexOf('9999') >= 0 && user.request && user.request.createdDateTime && !getIsExpiredApplicationFromCreationDate(user.request.createdDateTime))">
+                        <div class="card-header">
+                        <span class="checkbox">
+                            <mat-checkbox (change)="onSelectUser(user, $event)"></mat-checkbox>
+                        </span>
+                            <span class="checkbox">
+                                {{ 'dashboard.card.text_app_id' | translate }}&nbsp;&nbsp;
+                                <strong matTooltip="{{ 'helpText.applicationId' | translate }}"># {{ user.applicationID }}</strong>
+                            </span>
+                            <span class="spacer"></span>
+                            <button (click)="onDelete(user)" *ngIf="!(user.status === 'Expired')" mat-icon-button>
+                                <img [matTooltipDisabled]="false"
+                                     matTooltip="{{'helpText.deleteIcon' | translate }}"
+                                     src="assets/img/trash-alt.png"
+                                     class="delete-img"/>
+                            </button>
+                        </div>
+                        <mat-card-content [ngStyle]="{ marginTop: getMargin(user.name) }">
+                            <div class="card-content">
+                                <table>
+                                    <tr>
+                                        <td>{{ 'dashboard.card.text_name' | translate }}</td>
+                                        <td [ngClass]="user.name.length > 30 ? 'application-value user__name--wordwrap' : 'application-value'">
+                                            {{ user.name }}
+                                        </td>
+                                    </tr>
+                                    <tr *ngIf="user.center">
+                                        <td>Centre</td>
+                                        <td class="application-value">
+                                            {{ user.center }}
+                                        </td>
+                                    </tr>
+                                    <tr *ngIf="user.appointmentDate && user.appointmentDate.toString().indexOf('9999') < 0">
+                                        <td>{{ 'dashboard.card.text_appoinment_date' | translate }}</td>
+                                        <td class="application-value">
+                                            {{ user.appointmentTime }} {{ user.appointmentDate }}
+                                        </td>
+                                    </tr>
+                                    <tr *ngIf="!user.appointmentDate || user.appointmentDate.toString().indexOf('9999') >= 0 && user.request && user.request.createdDateTime">
+                                        <td>{{ 'dashboard.card.text_expiry_date' | translate }}</td>
+                                        <td class="application-value">
+                                            {{getExpiryDateStringValueFromCreationDate(user.request.createdDateTime)}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ 'dashboard.card.text_status' | translate }}</td>
+                                        <td [ngStyle]="{ color: getColor(user.status) }" id="status">
+                                            {{(user.status === 'Booked' ? 'dashboard.status.booked' : user.status === 'Expired' ? 'dashboard.status.expired' : 'dashboard.status.pendingAppointment') | translate}}
+                                            <mat-icon [inline]="true" class="icon"
+                                                      matTooltip="{{(user.status === 'Booked' ? 'helpText.status.booked' : user.status === 'Expired' ? 'helpText.status.expired' : 'helpText.status.pendingAppointment') | translate}}">
+                                                help_outline
+                                            </mat-icon>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </mat-card-content>
+                        <mat-card-footer>
+                            <mat-card-actions>
+                                <button (click)="onModifyInformation(user)"
+                                        [disabled]="disableModifyDataButton"
+                                        class="footer-btn"
+                                        mat-button>
+                                    {{'dashboard.card.action_modify_information' | translate}}
+                                </button>
+                                <button (click)="onAcknowledgementView(user)"
+                                        [disabled]="user.status === 'Pending_Appointment'"
+                                        class="footer-btn"
+                                        mat-button>
+                                    {{'dashboard.card.action_view_acknowledgement' | translate}}
+                                </button>
+                            </mat-card-actions>
+                        </mat-card-footer>
+                    </mat-card>
+                </div>
             </div>
-          </mat-card-content>
-          <mat-card-footer>
-            <mat-card-actions>
-              <button
-                mat-button
-                class="footer-btn"
-                [disabled]="disableModifyDataButton"
-                (click)="onModifyInformation(user)"
-              >
-                <img src="assets\Modify information_grey.png" class="modifyinfo-btn-img" />{{
-                  'dashboard.card.action_modify_information' | translate
-                }}
-              </button>
-              <!-- (click)="onSelectUser(user)" -->
-              <button
-                mat-button
-                class="footer-btn"
-                (click)="onAcknowledgementView(user)"
-                [disabled]="user.status === 'Pending_Appointment'"
-              >
-                <img src="assets\view.png" class="modifyapp-btn-img" />{{
-                  'dashboard.card.action_view_acknowledgement' | translate
-                }}
-              </button>
-              <!-- <button mat-icon-button class="footer-download-btn">
-                <img src="assets\download.png" class="download-btn-img" />
-              </button> -->
-            </mat-card-actions>
-          </mat-card-footer>
-        </mat-card>
-      </div>
+        </div>
     </div>
-  </div>
 </div>

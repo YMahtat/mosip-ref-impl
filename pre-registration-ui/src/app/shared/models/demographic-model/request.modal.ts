@@ -1,6 +1,6 @@
-import { DemoIdentityModel } from './demo.identity.modal';
+import {DemoIdentityModel} from './demo.identity.modal';
 
 export interface RequestModel {
-  langCode: string;
-  demographicDetails: DemoIdentityModel;
+    langCode: string;
+    demographicDetails: DemoIdentityModel;
 }

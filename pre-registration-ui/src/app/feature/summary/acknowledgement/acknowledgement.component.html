@@ -1,139 +1,624 @@
-<div class="spinner-wrapper" *ngIf="showSpinner"></div>
-<div class="spinner-loading-data" *ngIf="showSpinner">
-  <mat-spinner></mat-spinner>
-</div>
-
-<div id="print-section" *ngIf="!showSpinner">
-  <div class="print-section-inner-div" *ngFor="let user of usersInfo">
-    <mat-card class="ack-container">
-      <mat-card-header class="ack__header-container">
-        <div class="ack__header">
-          <p>{{ 'acknowledgement.title' | translate }}</p>
+<div class="acknowledgement-body">
+    <app-heading-row [title]="'acknowledgement.title' | translate"></app-heading-row>
+    <div class="spinner-wrapper" *ngIf="showSpinner"></div>
+    <div class="spinner-loading-data" *ngIf="showSpinner">
+        <mat-spinner></mat-spinner>
+    </div>
+    <div class="wrapper" *ngIf="!showSpinner">
+        <div class="acknowledgement-container">
+            <div id="print-section">
+                <ng-container *ngFor="let user of usersInfo">
+                    <mat-card class="acknowledgement-mat-card">
+                        <mat-card-header class="acknowledgement-header-container">
+                            <table class="top-page-header-table">
+                                <tr class="top-page-header-table-line">
+                                    <td class="top-page-header-table-line-img" colspan="2">
+                                        <table style="margin: 0; padding: 0; width: 100%">
+                                            <tr>
+                                                <td width="25%">
+                                                    <img width="40%" src="data:image/png;base64,{{user.qrCodeBlob}}" />
+                                                </td>
+                                                <td>
+                                                    <img width="15%" src="assets/img/armoiries-maroc.png"/>
+                                                </td>
+                                                <td width="25%"></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr class="top-page-header-table-line">
+                                    <td class="top-page-header-table-line-title" style="width: 50%;">
+                                        <h4><b>{{ 'acknowledgement.agenceTitle' | translate }}</b></h4>
+                                    </td>
+                                    <td class="top-page-header-table-line-title" style="width: 50%;direction: rtl;">
+                                        <h4 style="direction: rtl;"><b>{{secondaryLanguageLabels.agenceTitle}}</b></h4>
+                                    </td>
+                                </tr>
+                            </table>
+                            <div class="acknowledgement__body-content-title-centered">
+                                <h4><b>{{ 'acknowledgement.receiptPreRegTitle' | translate }}</b></h4>
+                                <h4 style="direction: rtl;"><b>{{secondaryLanguageLabels.receiptPreRegTitle}}</b></h4>
+                            </div>
+                        </mat-card-header>
+                        <mat-card-content class="acknowledgement-body-container">
+                            <div class="acknowledgement-body-content">
+                                <table class="acknowledgement-content-table">
+                                    <tr class="acknowledgement-content-line">
+                                        <td style="direction: ltr;width: 35%;">Identifiant de Pré-inscription</td>
+                                        <td colspan="2" class="result-data"
+                                            style="text-align: center">{{user.preRegId}}</td>
+                                        <td style="direction: rtl;width: 35%;">رقم التسجيل القبلي</td>
+                                    </tr>
+                                    <tr class="acknowledgement-content-line">
+                                        <td style="direction: ltr;">Date du Rendez-vous</td>
+                                        <td colspan="2" class="result-data"
+                                            style="text-align: center">{{getAppointmentTime(user)}}</td>
+                                        <td style="direction: rtl;">تاريخ الموعد</td>
+                                    </tr>
+                                    <tr class="acknowledgement-content-line">
+                                        <td style="direction: ltr;">Adresse du centre d'enrôlement</td>
+                                        <td colspan="2" class="result-data"
+                                            style="text-align: center">{{user.registrationCenter.addressLine1}}</td>
+                                        <td style="direction: rtl;">عنوان مركز التسجيل</td>
+                                    </tr>
+                                    <tr class="acknowledgement-content-line">
+                                        <td colspan="2" style="direction: ltr;width: 50%">
+                                            Région
+                                            &nbsp;&nbsp;&nbsp;
+                                            <span class="result-data">{{user.region}}</span>
+                                        </td>
+                                        <td colspan="2" style="direction: rtl;width: 50%">
+                                            {{'جهة'}}
+                                            &nbsp;&nbsp;&nbsp;
+                                            <span class="result-data">{{user.regionSecondaryLang}}</span>
+                                        </td>
+                                    </tr>
+                                    <tr class="acknowledgement-content-line">
+                                        <td colspan="2" style="direction: ltr;width: 50%">
+                                            Préfecture ou Province
+                                            &nbsp;&nbsp;&nbsp;
+                                            <span class="result-data">{{user.province}}</span>
+                                        </td>
+                                        <td colspan="2" style="direction: rtl;width: 50%">
+                                            {{'عمالة أو إقليم'}}
+                                            &nbsp;&nbsp;&nbsp;
+                                            <span class="result-data">{{user.provinceSecondaryLang}}</span>
+                                        </td>
+                                    </tr>
+                                    <tr class="acknowledgement-content-line">
+                                        <td colspan="2" style="direction: ltr;width: 50%">
+                                            Pachalik Cercle Disctrict
+                                            <br/>
+                                            &#8627;
+                                            &nbsp;&nbsp;
+                                            <span class="result-data">{{user.city}}</span>
+                                        </td>
+                                        <td colspan="2" style="direction: rtl;width: 50%">
+                                            {{'باشوية أو دائرة حضرية'}}
+                                            <br/>
+                                            &#8626;
+                                            &nbsp;&nbsp;
+                                            <span class="result-data">{{user.citySecondaryLang}}</span>
+                                        </td>
+                                    </tr>
+                                    <tr class="acknowledgement-content-line">
+                                        <td colspan="2" style="direction: ltr;width: 50%">
+                                            Annexe Administrative/Caidat
+                                            <br/>
+                                            &#8627;
+                                            &nbsp;&nbsp;
+                                            <span class="result-data">{{user.zone}}</span>
+                                        </td>
+                                        <td colspan="2" style="direction: rtl;width: 50%">
+                                            {{'ملحقة إدارية أو قيادة'}}
+                                            <br/>
+                                            &#8626;
+                                            &nbsp;&nbsp;
+                                            <span class="result-data">{{user.zoneSecondaryLang}}</span>
+                                        </td>
+                                    </tr>
+                                    <tr class="acknowledgement-content-line">
+                                        <td colspan="2" style="direction: ltr;width: 50%">
+                                            Commune
+                                            <br/>
+                                            &#8627;
+                                            &nbsp;&nbsp;
+                                            <span class="result-data">{{user.commun}}</span>
+                                        </td>
+                                        <td colspan="2" style="direction: rtl;width: 50%">
+                                            {{'جماعة'}}
+                                            <br/>
+                                            &#8626;
+                                            &nbsp;&nbsp;
+                                            <span class="result-data">{{user.communSecondaryLang}}</span>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <table class="acknowledgement__body-content-title">
+                                    <tr>
+                                        <td>
+                                            <h5><b>Informations Personnelles du demandeur</b></h5>
+                                        </td>
+                                        <td style="direction: rtl;text-align: right">
+                                            <h5><b>
+                                                {{'المعلومات الشخصية لصاحب/ة الطلب'}}
+                                            </b></h5>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <table class="acknowledgement-content-table">
+                                    <tr class="acknowledgement-content-line">
+                                        <td colspan="2" style="direction: ltr;width: 50%">
+                                            Nom
+                                            &nbsp;&nbsp;&nbsp;
+                                            <span class="result-data">{{user.lastName}}</span>
+                                        </td>
+                                        <td colspan="2" style="direction: rtl;width: 50%">
+                                            {{'الإسم العائلي'}}
+                                            &nbsp;&nbsp;&nbsp;
+                                            <span class="result-data">{{user.lastNameSecondaryLang}}</span>
+                                        </td>
+                                    </tr>
+                                    <tr class="acknowledgement-content-line">
+                                        <td colspan="2" style="direction: ltr;width: 50%">
+                                            Prénom
+                                            &nbsp;&nbsp;&nbsp;
+                                            <span class="result-data">{{user.firstName}}</span>
+                                        </td>
+                                        <td colspan="2" style="direction: rtl;width: 50%">
+                                            {{'الإسم الشخصي'}}
+                                            &nbsp;&nbsp;&nbsp;
+                                            <span class="result-data">{{user.firstNameSecondaryLang}}</span>
+                                        </td>
+                                    </tr>
+                                    <tr class="acknowledgement-content-line" style="font-size: 97.5%;width: 100%">
+                                        <td colspan="4" width="100%">
+                                            <table style="margin: 0; padding: 0; width: 100%">
+                                                <tr style="margin: 0; padding: 0; width: 100%">
+                                                    <td style="direction: ltr; text-align: left; width: 27%">
+                                                        <span>Résident Etranger</span>
+                                                        <input type="checkbox"
+                                                               [checked]="user.residenceStatus !== 'NFR'" disabled>
+                                                        <span>مقيم أجنبي</span>
+                                                    </td>
+                                                    <td style="text-align: center; width: 35%">
+                                                        <span>Citoyen Marocain</span>
+                                                        <input type="checkbox"
+                                                               [checked]="user.residenceStatus === 'NFR'" disabled>
+                                                        <span>مواطن مغربي</span>
+                                                    </td>
+                                                    <td style="text-align: center; width: 19%">
+                                                        <span>Femme</span>
+                                                        <input type="checkbox" [checked]="user.gender === 'FLE'"
+                                                               disabled>
+                                                        <span>أنثى</span>
+                                                    </td>
+                                                    <td style="direction: ltr; text-align: right; width: 19%">
+                                                        <span>Homme</span>
+                                                        <input type="checkbox" [checked]="user.gender === 'MLE'"
+                                                               disabled>
+                                                        <span>ذكر</span>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    <tr class="acknowledgement-content-line">
+                                        <td colspan="2" style="direction: ltr;width: 50%">
+                                            Lieu de naissance
+                                            &nbsp;&nbsp;&nbsp;
+                                            <span class="result-data">{{user.placeOfBirth}}</span>
+                                        </td>
+                                        <td colspan="2" style="direction: rtl;width: 50%">
+                                            {{'مكان الولادة'}}
+                                            &nbsp;&nbsp;&nbsp;
+                                            <span class="result-data">{{user.placeOfBirthSecondaryLang}}</span>
+                                        </td>
+                                    </tr>
+                                    <tr class="acknowledgement-content-line">
+                                        <td style="direction: ltr;width: 35%;">Date de naissance</td>
+                                        <td colspan="2" class="result-data"
+                                            style="text-align: center">{{getDateOfBirth(user)}}</td>
+                                        <td style="direction: rtl;width: 35%;">تاريخ الميلاد</td>
+                                    </tr>
+                                    <tr class="acknowledgement-content-line">
+                                        <td colspan="2" style="direction: ltr;width: 50%">
+                                            Nationalité
+                                            &nbsp;&nbsp;&nbsp;
+                                            <span class="result-data">{{user.nationality}}</span>
+                                        </td>
+                                        <td colspan="2" style="direction: rtl;width: 50%">
+                                            {{'جنسية'}}
+                                            &nbsp;&nbsp;&nbsp;
+                                            <span class="result-data">{{user.nationalitySecondaryLang}}</span>
+                                        </td>
+                                    </tr>
+                                    <tr class="acknowledgement-content-line">
+                                        <td style="direction: ltr;width: 35%">Numéro Acte de Naissance</td>
+                                        <td class="result-data" colspan="2"
+                                            style="text-align: center">{{user.birthCertificateNumber}}</td>
+                                        <td style="direction: rtl;width: 35%">رقم رسم الولادة</td>
+                                    </tr>
+                                    <tr class="acknowledgement-content-line">
+                                        <td style="direction: ltr;width: 35%">N° Identification unique</td>
+                                        <td class="result-data" colspan="2"
+                                            style="text-align: center">{{user.civilRegistryNumber}}</td>
+                                        <td style="direction: rtl;width: 35%">رقم التعريفي الفريد</td>
+                                    </tr>
+                                    <tr class="acknowledgement-content-line">
+                                        <td style="direction: ltr;width: 35%">N° de la carte CNIE</td>
+                                        <td class="result-data" colspan="2"
+                                            style="text-align: center">{{user.referenceCNIENumber}}</td>
+                                        <td style="direction: rtl;width: 35%">رقم البطاقة الوطنية</td>
+                                    </tr>
+                                    <tr class="acknowledgement-content-line">
+                                        <td style="direction: ltr;width: 40%">Date d'expiration de la carte CNIE</td>
+                                        <td class="result-data" colspan="2" style="text-align: center"></td>
+                                        <td style="direction: rtl;width: 40%">تاريخ إنتهاء صلاحية البطاقة الوطنية</td>
+                                    </tr>
+                                    <tr class="acknowledgement-content-line">
+                                        <td colspan="2" style="direction: ltr;width: 50%">
+                                            Adresse de résidence
+                                            <br/>
+                                            &#8627;
+                                            &nbsp;&nbsp;
+                                            <span class="result-data" style="font-size: 90%;">
+                                            {{user.adresseLine}}
+                                        </span>
+                                        </td>
+                                        <td colspan="2" style="direction: rtl;width: 50%">
+                                            {{'عنوان السكن'}}
+                                            <br/>
+                                            &#8626;
+                                            &nbsp;&nbsp;
+                                            <span class="result-data" style="font-size: 90%;">
+                                            {{user.adresseLineSecondaryLang}}
+                                        </span>
+                                        </td>
+                                    </tr>
+                                    <tr class="acknowledgement-content-line">
+                                        <td colspan="2" style="width: 50%;">
+                                            <p style="width: 100%; display: flex;flex-direction: row;font-size: 90%;margin-top: 0.2rem;margin-bottom: 0.2rem;">
+                                            <span style="justify-content: left;flex-grow: 1;">
+                                                E-mail
+                                            </span>
+                                                <span class="result-data"
+                                                      style="justify-content: center;flex-grow: 4;text-align: center">
+                                                &nbsp;
+                                                    {{user.emailId}}
+                                                    &nbsp;
+                                            </span>
+                                                <span style="direction: rtl;justify-content: right;flex-grow: 1;">
+                                                {{'البريد الإلكتروني'}}
+                                            </span>
+                                            </p>
+                                        </td>
+                                        <td colspan="2" style="twidth: 50%;direction: rtl">
+                                            <p style="width: 100%; display: flex;flex-direction: row;font-size: 90%;margin-top: 0.2rem;margin-bottom: 0.2rem;">
+                                            <span style="direction: rtl;justify-content: left;flex-grow: 1;">
+                                                {{'الهاتف'}}
+                                            </span>
+                                                <span class="result-data"
+                                                      style="justify-content: center;flex-grow: 4;text-align: center">
+                                                &nbsp;
+                                                    {{user.phoneNumber}}
+                                                    &nbsp;
+                                            </span>
+                                                <span style="justify-content: right;flex-grow: 1;">
+                                                Téléphone
+                                            </span>
+                                            </p>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <table class="acknowledgement__body-content-title">
+                                    <tr>
+                                        <td>
+                                            <h5><b>Réservé au Résident Etranger</b></h5>
+                                        </td>
+                                        <td style="direction: rtl;">
+                                            <h5><b>خاص للمقيم الأجنبي</b></h5>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <table class="acknowledgement-content-table">
+                                    <tr class="acknowledgement-content-line">
+                                        <td style="direction: ltr;text-align: center; width: 20%; font-size: 85%">
+                                            N° Passeport <br/>
+                                            Ou <br/>
+                                            N° Carte de Séjour
+                                        </td>
+                                        <td colspan="2" style="text-align: center; width: 60%"></td>
+                                        <td style="direction: rtl;text-align: center; width: 20%; font-size: 85%">
+                                            أرقم جواز سفر <br/>
+                                            أو <br/>
+                                            رقم بطاقة الإقامة
+                                        </td>
+                                    </tr>
+                                </table>
+                                <table class="acknowledgement__body-content-title">
+                                    <tr>
+                                        <td>
+                                            <h5><b>Informations sur le tuteur - En cas de mineurs -</b></h5>
+                                        </td>
+                                        <td style="direction: rtl;">
+                                            <h5><b>معلومات حول الوصي - للقاصرين بالنسبة -</b></h5>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <table class="acknowledgement-content-table">
+                                    <tr class="acknowledgement-content-line">
+                                        <td colspan="2" style="direction: ltr;width: 50%">
+                                            Nom du tuteur
+                                            &nbsp;&nbsp;&nbsp;
+                                            <span class="result-data">{{user.lastNameGuardian}}</span>
+                                        </td>
+                                        <td colspan="2" style="direction: rtl;width: 50%">
+                                            {{'الإسم العائلي للوصي'}}
+                                            &nbsp;&nbsp;&nbsp;
+                                            <span class="result-data">{{user.lastNameGuardianSecondaryLang}}</span>
+                                        </td>
+                                    </tr>
+                                    <tr class="acknowledgement-content-line">
+                                        <td colspan="2" style="direction: ltr;width: 50%">
+                                            Prénom du tuteur
+                                            &nbsp;&nbsp;&nbsp;
+                                            <span class="result-data">{{user.firstNameGuardian}}</span>
+                                        </td>
+                                        <td colspan="2" style="direction: rtl;width: 50%">
+                                            {{'الإسم الشخصي للوصي'}}
+                                            &nbsp;&nbsp;&nbsp;
+                                            <span class="result-data">{{user.firstNameGuardianSecondaryLang}}</span>
+                                        </td>
+                                    </tr>
+                                    <tr class="acknowledgement-content-line">
+                                        <td colspan="2" style="direction: ltr;width: 50%">
+                                            Lien de parenté *
+                                            &nbsp;&nbsp;&nbsp;
+                                            <span class="result-data">{{user.relationWithChild}}</span>
+                                        </td>
+                                        <td colspan="2" style="direction: rtl;width: 50%">
+                                            {{'صلة القرابة *'}}
+                                            &nbsp;&nbsp;&nbsp;
+                                            <span class="result-data">{{user.relationWithChildSecondaryLang}}</span>
+                                        </td>
+                                    </tr>
+                                    <tr class="acknowledgement-content-line">
+                                        <td style="direction: ltr;width: 43%">N° de la carte CNIE du tuteur</td>
+                                        <td class="result-data" colspan="2" style="text-align: center">&nbsp;&nbsp;</td>
+                                        <td style="direction: rtl;width: 43%">رقم البطاقة الوطنية لتعريف للوصي</td>
+                                    </tr>
+                                    <tr class="acknowledgement-content-line">
+                                        <td style="direction: ltr;width: 48%">Date d'expiration de la carte CNIE du
+                                            tuteur
+                                        </td>
+                                        <td class="result-data" colspan="2" style="text-align: center">&nbsp;&nbsp;</td>
+                                        <td style="direction: rtl;width: 48%">تاريخ انتهاء صلاحية البطاقة الوطنية لتعريف
+                                            الوصي
+                                        </td>
+                                    </tr>
+                                    <tr class="acknowledgement-content-line">
+                                        <td style="direction: ltr;width: 43%">Identifiant Digital Civil et Social du
+                                            tuteur
+                                        </td>
+                                        <td class="result-data" colspan="2"
+                                            style="text-align: center">{{user.parentOrGuardianUIN}}</td>
+                                        <td style="direction: rtl;width: 43%">المعرف الرقمي المدني والإجتماعي للوصي</td>
+                                    </tr>
+                                    <tr class="acknowledgement-content-line">
+                                        <td style="direction: ltr;width: 43%">Identifiant d'inscription au RNP</td>
+                                        <td class="result-data" colspan="2" style="text-align: center">&nbsp;&nbsp;</td>
+                                        <td style="direction: rtl;width: 43%">معرف التسجيل في السجل الوطني للسكان</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </mat-card-content>
+                        <mat-card-footer class="acknowledgement-footer-container">
+                            <table style="margin: 0; width: 100%">
+                                <tr class="acknowledgement-content-line">
+                                    <td colspan="2" style="direction: ltr; width: 50%">
+                                        * Lien de parenté : Mère – Père - Oncle.
+                                    </td>
+                                    <td colspan="2" style="direction: rtl;width: 50%">
+                                        * صلة القرابة: أم ـ أب ـ عم ـ خال
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4">
+                                        <mat-divider [vertical]="false"></mat-divider>
+                                    </td>
+                                </tr>
+                                <tr class="acknowledgement-content-line">
+                                    <td colspan="4" style="direction: rtl; font-size: 75%; text-align: center">
+                                        {{'يتوافق مضمون هذه االستمارة مع معطيات التسجيل القبلي على'}}
+                                        <a href="http://www.rnp.ma/">www.rnp.ma</a>
+                                        {{replaceDateTemplateInFooterMessageWithExpiryDate('وسيتم إزالته تلقائيًا من صفحتكم الرئيسية إبتداء من DD/MM/YYYY', user.createdDateTime)}}
+                                    </td>
+                                </tr>
+                                <tr class="acknowledgement-content-line">
+                                    <td colspan="4" style="direction: ltr;  font-size: 70%; text-align: center">
+                                        {{'Le contenu de ce formulaire correspond aux données de pré-inscription sur '}}
+                                        <a href="http://www.rnp.ma/">www.rnp.ma</a>
+                                        {{replaceDateTemplateInFooterMessageWithExpiryDate('et sera automatiquement  supprimée de votre tableau de bords à partir du DD/MM/YYYY', user.createdDateTime)}}
+                                    </td>
+                                </tr>
+                            </table>
+                        </mat-card-footer>
+                    </mat-card>
+                    <div style="display: block; page-break-after:always"></div>
+                    <mat-card class="acknowledgement-mat-card">
+                        <mat-card-header class="acknowledgement-header-container">
+                            <table class="top-page-header-table">
+                                <tr class="top-page-header-table-line">
+                                    <td class="top-page-header-table-line-img" colspan="2">
+                                        <table style="margin: 0; padding: 0; width: 100%">
+                                            <tr>
+                                                <td width="25%">
+                                                    <img width="40%" src="data:image/png;base64,{{user.qrCodeBlob}}" />
+                                                </td>
+                                                <td>
+                                                    <img width="15%" src="assets/img/armoiries-maroc.png"/>
+                                                </td>
+                                                <td width="25%"></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr class="top-page-header-table-line">
+                                    <td class="top-page-header-table-line-title" style="width: 50%;">
+                                        <h4><b>{{ 'acknowledgement.agenceTitle' | translate }}</b></h4>
+                                    </td>
+                                    <td class="top-page-header-table-line-title" style="width: 50%;direction: rtl;">
+                                        <h4 style="direction: rtl;"><b>{{secondaryLanguageLabels.agenceTitle}}</b></h4>
+                                    </td>
+                                </tr>
+                            </table>
+                            <div class="acknowledgement__body-content-title-centered">
+                                <h4><b>{{ 'acknowledgement.receiptPreRegTitle' | translate }}</b></h4>
+                                <h4 style="direction: rtl;"><b>{{secondaryLanguageLabels.receiptPreRegTitle}}</b></h4>
+                            </div>
+                        </mat-card-header>
+                        <mat-card-content class="acknowledgement-body-container">
+                            <div class="acknowledgement-body-content">
+                                <br/>
+                                <table class="acknowledgement__body-content-title">
+                                    <tr>
+                                        <td>
+                                            <h5><b>Declaration sur l'honneur</b></h5>
+                                        </td>
+                                        <td style="direction: rtl;">
+                                            <h5><b>تصريح بالشرف</b></h5>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <table class="acknowledgement-content-table">
+                                    <tr class="acknowledgement-content-line">
+                                        <td colspan="2" style="direction: ltr;width: 50%">
+                                            Je soussigne, M./Mme.
+                                            &nbsp;&nbsp;&nbsp;
+                                            <span>.................................</span>
+                                        </td>
+                                        <td colspan="2" style="direction: rtl;width: 50%">
+                                            {{'أنا الموقع اسفله السيد/ة'}}
+                                            &nbsp;&nbsp;&nbsp;
+                                            <span>.................................</span>
+                                        </td>
+                                    </tr>
+                                    <tr class="acknowledgement-content-line">
+                                        <td colspan="2" style="direction: ltr;width: 50%">
+                                            Porteur du numéro d’identité :
+                                            &nbsp;&nbsp;&nbsp;
+                                            <span>............................</span>
+                                        </td>
+                                        <td colspan="2" style="direction: rtl;width: 50%">
+                                            {{'الحامل/ة لرقم الهوية :'}}
+                                            &nbsp;&nbsp;&nbsp;
+                                            <span>............................</span>
+                                        </td>
+                                    </tr>
+                                    <tr class="acknowledgement-content-line">
+                                        <td colspan="2" style="direction: ltr; width: 50%">
+                                            Déclare l’exactitude des données personnelles renseignées dans le présent
+                                            formulaire.
+                                            Je m'engage également à déclarer tout changement relatif aux données
+                                            fournies
+                                            dans cette demande.
+                                        </td>
+                                        <td colspan="2" style="direction: rtl;width: 50%;">
+                                            اشهد بصحة المعلومات المدلى بها في هذا الملف
+                                            كما أني ألتزم بالتصريح بكل تغيير يطرأ على المعلومات التي أدليت بها في
+                                            الاستمارة
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="4">
+                                            <br>
+                                        </td>
+                                    </tr>
+                                    <tr class="acknowledgement-content-line">
+                                        <td style="direction: ltr; width: 25%">Fait à</td>
+                                        <td style="width: 25%">Le :</td>
+                                        <td style="direction: rtl;width: 25%">بتاريخ :</td>
+                                        <td style="direction: rtl;width: 25%">حرر ب</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="4">
+                                            <br>
+                                        </td>
+                                    </tr>
+                                    <tr class="acknowledgement-content-line">
+                                        <td colspan="2" style="direction: ltr; width: 50%">Signature</td>
+                                        <td colspan="2" style="direction: rtl;width: 50%">التوقيع</td>
+                                    </tr>
+                                </table>
+                                <table class="acknowledgement-content-table">
+                                    <tr>
+                                        <td colspan="4">
+                                            <br>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </mat-card-content>
+                        <mat-card-footer class="acknowledgement-footer-container">
+                            <table style="margin: 0; width: 100%">
+                                <tr class="acknowledgement-content-line">
+                                    <td colspan="2" style="direction: ltr; width: 50%">
+                                        * Lien de parenté : Mère – Père - Oncle.
+                                    </td>
+                                    <td colspan="2" style="direction: rtl;width: 50%">
+                                        * صلة القرابة: أم ـ أب ـ عم ـ خال
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4">
+                                        <mat-divider [vertical]="false"></mat-divider>
+                                    </td>
+                                </tr>
+                                <tr class="acknowledgement-content-line">
+                                    <td colspan="4" style="direction: rtl; font-size: 75%; text-align: center">
+                                        {{'يتوافق مضمون هذه االستمارة مع معطيات التسجيل القبلي على'}}
+                                        <a href="http://www.rnp.ma/">www.rnp.ma</a>
+                                        {{replaceDateTemplateInFooterMessageWithExpiryDate('وسيتم إزالته تلقائيًا من صفحتكم الرئيسية إبتداء من YYYY/MM/DD')}}
+                                    </td>
+                                </tr>
+                                <tr class="acknowledgement-content-line">
+                                    <td colspan="4" style="direction: ltr;  font-size: 70%; text-align: center">
+                                        {{'Le contenu de ce formulaire correspond aux données de pré-inscription sur '}}
+                                        <a href="http://www.rnp.ma/">www.rnp.ma</a>
+                                        {{replaceDateTemplateInFooterMessageWithExpiryDate('et sera automatiquement  supprimée de votre tableau de bords à partir du YYYY/MM/DD')}}
+                                    </td>
+                                </tr>
+                            </table>
+                        </mat-card-footer>
+                    </mat-card>
+                </ng-container>
+            </div>
+            <mat-card class="acknowledgement__button-container">
+                <div class="align-buttons-centered">
+                    <button mat-button
+                            (click)="sendAcknowledgement()"
+                            class="user-continue-btn">
+                        {{ 'acknowledgement.action_send' | translate }}
+                    </button>
+                    <button mat-button
+                            (click)="download()"
+                            class="user-continue-btn">
+                        {{ 'acknowledgement.action_download' | translate }}
+                    </button>
+                    <button mat-button
+                            printSectionId="print-section"
+                            ngxPrint
+                            class="user-continue-btn">
+                        {{ 'acknowledgement.action_print' | translate }}
+                    </button>
+                    <button mat-button
+                            (click)="returnToDashboard()"
+                            class="user-continue-btn">
+                        {{ 'acknowledgement.action_end' | translate }}
+                    </button>
+                </div>
+            </mat-card>
         </div>
-      </mat-card-header>
-      <mat-card-content>
-        <div id="message-container" class="ack__message-container">
-          <p>
-            <img style="vertical-align: middle;" src="assets/img/done.png" />&nbsp;&nbsp;{{
-              'acknowledgement.message' | translate
-            }}
-          </p>
-        </div>
-        <div id="body-container" *ngIf="user.registrationCenter" class="ack__body-container">
-          <div id="table-container">
-            <table>
-              <tr>
-                <td>{{ 'acknowledgement.label_name' | translate }}</td>
-                <td>:</td>
-                <td>{{ user.fullName }}</td>
-              </tr>
-              <tr>
-                <td>{{ 'acknowledgement.label_pre_id' | translate }}</td>
-                <td>:</td>
-                <td>{{ user.preRegId }}</td>
-              </tr>
-              <tr>
-                <td>{{ 'acknowledgement.label_reg_cntr' | translate }}</td>
-                <td>:</td>
-                <td>
-                  {{ user.registrationCenter.name }}, {{ user.registrationCenter.addressLine1 }},
-                  {{ user.registrationCenter.addressLine2 }}, {{ user.registrationCenter.addressLine3 }}
-                </td>
-              </tr>
-              <tr>
-                <td>{{ 'acknowledgement.label_cntr_contact_number' | translate }}</td>
-                <td>:</td>
-                <td>{{ user.registrationCenter.contactPhone }}</td>
-              </tr>
-              <tr>
-                <td>{{ 'acknowledgement.label_appointment_date_time' | translate }}</td>
-                <td>:</td>
-                <td>{{ user.bookingTimePrimary }}, {{ user.bookingDataPrimary }}</td>
-              </tr>
-            </table>
-          </div>
-          <div class="spacer"></div>
-          <div id="table-container" *ngIf="secondaryLanguagelabels && secondaryLanguageRegistrationCenter && primaryLanguage != secondaryLanguage">
-            <table>
-              <tr>
-                <td>{{ secondaryLanguagelabels.label_name }}</td>
-                <td>:</td>
-                <td>{{ user.fullNameSecondaryLang }}</td>
-              </tr>
-              <tr>
-                <td>{{ secondaryLanguagelabels.label_pre_id }}</td>
-                <td>:</td>
-                <td>{{ user.preRegId }}</td>
-              </tr>
-              <tr>
-                <td>{{ secondaryLanguagelabels.label_reg_cntr }}</td>
-                <td>:</td>
-                <td>
-                  {{ secondaryLanguageRegistrationCenter.name }},
-                  {{ secondaryLanguageRegistrationCenter.addressLine1 }},
-                  {{ secondaryLanguageRegistrationCenter.addressLine2 }},
-                  {{ secondaryLanguageRegistrationCenter.addressLine3 }}
-                </td>
-              </tr>
-              <tr>
-                <td>{{ secondaryLanguagelabels.label_cntr_contact_number }}</td>
-                <td>:</td>
-                <td>{{ user.registrationCenter.contactPhone }}</td>
-              </tr>
-              <tr>
-                <td>{{ secondaryLanguagelabels.label_appointment_date_time }}</td>
-                <td>:</td>
-                <td>{{ user.bookingTimeSecondary }}, {{ user.bookingDataSecondary }}</td>
-              </tr>
-            </table>
-          </div>
-          <div class="spacer"></div>
-          <div *ngIf="user.qrCodeBlob" id="qr-code-container" class="ack__qr-code">
-            <img id="qr-code" src="data:image/png;base64,{{ user.qrCodeBlob }}" />
-          </div>
-        </div>
-      </mat-card-content>
-      <mat-card-footer id="guidelines-container" class="ack__guidelines-container">
-        <h4>{{ 'acknowledgement.container_guideline' | translate }}</h4>
-        <table *ngIf="guidelines.length !== 0" class="ack__guidelines">
-          <tr *ngFor="let guideline of guidelines">
-            <td class="inner-guideline-content">{{ guideline }}</td>
-          </tr>
-        </table>
-      </mat-card-footer>
-    </mat-card>
-  </div>
-</div>
-<div>
-  <mat-card class="ack__button-container">
-    <!-- <button mat-button (click)="navigateBack()" class="user-back-btn">{{'preview.action_back'| translate}}</button> -->
-    <span class="spacer"></span>
-    <button
-      *ngIf=" notificationTypes && notificationTypes.length > 0 && notificationTypes[0] !== ''"
-      matTooltip="{{ 'helpText.send_email/sms' | translate }}"
-      mat-button
-      (click)="sendAcknowledgement()"
-      class="ack-book_later-btn"
-    >
-      {{ 'acknowledgement.action_send' | translate }}
-    </button>
-    <button mat-button (click)="download()" class="ack-book_later-btn">
-      {{ 'acknowledgement.action_download' | translate }}
-    </button>
-    <button
-      mat-button
-      [printStyle]="{
-        '#message-container': { display: 'none' },
-        '#body-container': { display: 'flex', 'flex-wrap': 'wrap', width: '100%' },
-        '#table-container table tr td': { padding: '10px' },
-        '#print-section': { 'page-break-after': 'always' },
-        '.print-section-inner-div': { 'page-break-after': 'always' }
-      }"
-      printSectionId="print-section"
-      ngxPrint
-      class="ack-continue-btn"
-    >
-      {{ 'acknowledgement.action_print' | translate }}
-    </button>
-  </mat-card>
+    </div>
 </div>

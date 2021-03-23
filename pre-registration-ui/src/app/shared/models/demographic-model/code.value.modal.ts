@@ -1,5 +1,5 @@
 export interface CodeValueModal {
-  valueCode: string;
-  valueName: string;
-  languageCode: string;
+    valueCode: string;
+    valueName: string;
+    languageCode: string;
 }

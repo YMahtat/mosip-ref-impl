@@ -1,0 +1,12 @@
+<app-top-nav (toggleSideNavBarBtnOutputEmitter)="toggleSideNavBarBtnOutputEmitterHandler($event, drawer)"
+             class="main-app-header-toolbar"
+             role="banner">
+</app-top-nav>
+<mat-drawer-container autosize class="main-app-container">
+    <mat-drawer #drawer class="app-sidenav" mode="side">
+        <app-side-nav></app-side-nav>
+    </mat-drawer>
+    <div class="main-content-container" data-simplebar role="main">
+        <router-outlet></router-outlet>
+    </div>
+</mat-drawer-container>

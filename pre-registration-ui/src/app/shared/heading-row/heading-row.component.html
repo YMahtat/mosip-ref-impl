@@ -1,0 +1,15 @@
+<div class="heading-row">
+    <div class="heading">
+        {{title}} <small *ngIf="extraTitle">({{extraTitle}})</small>
+    </div>
+    <div class="heading-user-buttons">
+        <button mat-stroked-button class="user-button" (click)="onClickHomeBtnHandler()">
+            <mat-icon style="color: white">dashboard_customize</mat-icon>
+            {{ 'header.link_applications' | translate }}
+        </button>
+        <button mat-stroked-button class="user-button" (click)="onClickLogoutBtnHandler()">
+            <mat-icon style="color: white">power_settings_new</mat-icon>
+            {{ 'header.link_logout' | translate }}
+        </button>
+    </div>
+</div>

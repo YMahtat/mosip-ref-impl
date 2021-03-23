@@ -1,0 +1,77 @@
+<div class="header-view-container">
+    <h3 class="header-view-title">{{authPartersViewLabels.title}}</h3>
+    <button (click)="onClickCreateNewAuthPatrnerBtnHandler()"
+            class="header-view-action-btn"
+            mat-raised-button>
+        {{authPartersViewLabels['create-new-auth-partner-btn-label']}}
+    </button>
+</div>
+
+<mat-card class="rnp-filter-card-container">
+    <mat-card-content>
+        <mat-form-field appearance="outline" class="rnp-filter-field">
+            <mat-label>{{authPartersViewLabels['filter-auth-partners-field-label']}}</mat-label>
+            <input (keyup)="onChangeFilterValueHandler($event)"
+                   [placeholder]="authPartersViewLabels['filter-auth-partners-field-placeholder']"
+                   matInput>
+            <mat-icon matSuffix>sort</mat-icon>
+            <mat-hint>{{authPartersViewLabels['filter-auth-partners-field-hint']}}</mat-hint>
+        </mat-form-field>
+    </mat-card-content>
+</mat-card>
+
+<div class="result-table-container mat-elevation-z8">
+
+    <table [dataSource]="authPartersDataSource" class="result-table-content" mat-table>
+
+        <!-- Position Column -->
+        <ng-container matColumnDef="partnerID">
+            <th *matHeaderCellDef class="rnp-id-header-cell"
+                mat-header-cell>{{authPartersViewLabels.columns['partnerID']}}</th>
+            <td *matCellDef="let element" mat-cell>
+                <button (click)="onClickViewAuthPartnerBtnHandler(element.partnerID)" class="rnp-row-link-btn"
+                        mat-button>
+                    {{element.partnerID}}
+                </button>
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="organizationName">
+            <th *matHeaderCellDef mat-header-cell>{{authPartersViewLabels.columns['organizationName']}}</th>
+            <td *matCellDef="let element" mat-cell> {{element.organizationName}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="partnerType">
+            <th *matHeaderCellDef mat-header-cell>{{authPartersViewLabels.columns['partnerType']}}</th>
+            <td *matCellDef="let element" mat-cell> {{element.partnerType}} </td>
+        </ng-container>
+
+
+        <ng-container matColumnDef="emailId">
+            <th *matHeaderCellDef mat-header-cell>{{authPartersViewLabels.columns['emailId']}}</th>
+            <td *matCellDef="let element" mat-cell> {{element.emailId}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="address">
+            <th *matHeaderCellDef mat-header-cell>{{authPartersViewLabels.columns['address']}}</th>
+            <td *matCellDef="let element" mat-cell> {{element.address}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="contactNumber">
+            <th *matHeaderCellDef mat-header-cell>{{authPartersViewLabels.columns['contactNumber']}}</th>
+            <td *matCellDef="let element" mat-cell> {{element.contactNumber}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="status">
+            <th *matHeaderCellDef mat-header-cell>{{authPartersViewLabels.columns['status']}}</th>
+            <td *matCellDef="let element" mat-cell> {{element.status}} </td>
+        </ng-container>
+
+        <tr *matHeaderRowDef="authPartersDisplayedColumns" mat-header-row></tr>
+        <tr *matRowDef="let row; columns: authPartersDisplayedColumns;" mat-row></tr>
+
+    </table>
+
+    <mat-paginator [pageSizeOptions]="[10, 20, 30]" showFirstLastButtons></mat-paginator>
+
+</div>

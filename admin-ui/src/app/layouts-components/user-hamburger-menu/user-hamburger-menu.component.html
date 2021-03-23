@@ -1,0 +1,20 @@
+<div id="menuButton">
+    <span>
+      <img alt="Profile" src="{{data?.profileImg}}">
+    </span>
+    <span>
+      <button [matMenuTriggerFor]="menu" class="menu-button">
+        <div class="mat-caption">{{userName}}</div>
+        <div class="zone-text">{{roleName}}
+            <div class="tool-tip-wraper">
+            <div class="tooltiptext">
+                {{roleNameSubstr}}
+            </div>
+          </div>
+        </div>
+      </button>
+    </span>
+    <mat-menu #menu="matMenu" backdropClass="profile">
+        <button (click)="onClickLogoutBtnHandler()" mat-menu-item>DECONNEXION</button>
+    </mat-menu>
+</div>

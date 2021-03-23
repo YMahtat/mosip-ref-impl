@@ -1,5 +1,6 @@
-import { IdentityModel } from './identity.modal';
+import {IdentityModel} from './identity.modal';
 
 export class DemoIdentityModel {
-  constructor(public identity: IdentityModel) {}
+    constructor(public identity: IdentityModel) {
+    }
 }

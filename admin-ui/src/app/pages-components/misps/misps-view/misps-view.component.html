@@ -1,0 +1,78 @@
+<div class="header-view-container">
+    <h3 class="header-view-title">{{mispsViewLabels.title}}</h3>
+    <button (click)="onClickCreateNewMispBtnHandler()"
+            class="header-view-action-btn"
+            mat-raised-button>
+        {{mispsViewLabels['create-new-misp-btn-label']}}
+    </button>
+</div>
+
+<mat-card class="rnp-filter-card-container">
+    <mat-card-content>
+        <mat-form-field appearance="outline" class="rnp-filter-field">
+            <mat-label>{{mispsViewLabels['filter-misps-field-label']}}</mat-label>
+            <input (keyup)="onChangeFilterValueHandler($event)"
+                   [placeholder]="mispsViewLabels['filter-misps-field-placeholder']"
+                   matInput>
+            <mat-icon matSuffix>sort</mat-icon>
+            <mat-hint>{{mispsViewLabels['filter-misps-field-hint']}}</mat-hint>
+        </mat-form-field>
+    </mat-card-content>
+</mat-card>
+
+<div class="result-table-container mat-elevation-z8">
+
+    <table [dataSource]="mispsDataSource" class="result-table-content" mat-table>
+
+        <ng-container matColumnDef="id">
+            <th *matHeaderCellDef class="rnp-id-header-cell" mat-header-cell>{{mispsViewLabels.columns['id']}}</th>
+            <td *matCellDef="let element" mat-cell>
+                <button (click)="onClickViewMispBtnHandler(element.id)" class="rnp-row-link-btn" mat-button>
+                    {{element.id}}
+                </button>
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="name">
+            <th *matHeaderCellDef mat-header-cell>{{mispsViewLabels.columns['name']}}</th>
+            <td *matCellDef="let element" mat-cell> {{element.name}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="userID">
+            <th *matHeaderCellDef mat-header-cell>{{mispsViewLabels.columns['userID']}}</th>
+            <td *matCellDef="let element" mat-cell> {{element.userID}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="emailId">
+            <th *matHeaderCellDef mat-header-cell>{{mispsViewLabels.columns['emailId']}}</th>
+            <td *matCellDef="let element" mat-cell> {{element.emailId}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="address">
+            <th *matHeaderCellDef mat-header-cell>{{mispsViewLabels.columns['address']}}</th>
+            <td *matCellDef="let element" mat-cell> {{element.address}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="contactNumber">
+            <th *matHeaderCellDef mat-header-cell>{{mispsViewLabels.columns['contactNumber']}}</th>
+            <td *matCellDef="let element" mat-cell> {{element.contactNumber}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="isActive">
+            <th *matHeaderCellDef mat-header-cell>{{mispsViewLabels.columns['isActive']}}</th>
+            <td *matCellDef="let element" mat-cell> {{element.isActive ? 'Active' : 'Inactive'}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="status_code">
+            <th *matHeaderCellDef mat-header-cell>{{mispsViewLabels.columns['status_code']}}</th>
+            <td *matCellDef="let element" mat-cell> {{element.status_code}} </td>
+        </ng-container>
+
+        <tr *matHeaderRowDef="mispsDisplayedColumns" mat-header-row></tr>
+        <tr *matRowDef="let row; columns: mispsDisplayedColumns;" mat-row></tr>
+
+    </table>
+
+    <mat-paginator [pageSizeOptions]="[10, 20, 30]" showFirstLastButtons></mat-paginator>
+
+</div>

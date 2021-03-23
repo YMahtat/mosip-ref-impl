@@ -1,0 +1,73 @@
+<div class="header-view-container">
+    <h3 class="header-view-title">{{devicesViewLabels.title}}</h3>
+    <button (click)="onClickCreateNewDeviceBtnHandler()"
+            class="header-view-action-btn"
+            mat-raised-button>
+        {{devicesViewLabels['create-new-device-btn-label']}}
+    </button>
+</div>
+
+<mat-card class="rnp-filter-card-container">
+    <mat-card-content>
+        <mat-form-field appearance="outline" class="rnp-filter-field">
+            <mat-label>{{devicesViewLabels['filter-devices-field-label']}}</mat-label>
+            <input (keyup)="onChangeFilterValueHandler($event)"
+                   [placeholder]="devicesViewLabels['filter-devices-field-placeholder']"
+                   matInput>
+            <mat-icon matSuffix>sort</mat-icon>
+            <mat-hint>{{devicesViewLabels['filter-devices-field-hint']}}</mat-hint>
+        </mat-form-field>
+    </mat-card-content>
+</mat-card>
+
+<div class="result-table-container mat-elevation-z8">
+
+    <table [dataSource]="devicesDataSource" class="result-table-content" mat-table>
+
+        <ng-container matColumnDef="name">
+            <th *matHeaderCellDef mat-header-cell>{{devicesViewLabels.columns['name']}}</th>
+            <td *matCellDef="let element" mat-cell>
+                <button (click)="onClickViewDeviceBtnHandler(element.id)" class="rnp-row-link-btn" mat-button>
+                    {{element.name}}
+                </button>
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="deviceTypeName">
+            <th *matHeaderCellDef mat-header-cell>{{devicesViewLabels.columns['deviceTypeName']}}</th>
+            <td *matCellDef="let element" mat-cell> {{element.deviceTypeName}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="macAddress">
+            <th *matHeaderCellDef mat-header-cell>{{devicesViewLabels.columns['macAddress']}}</th>
+            <td *matCellDef="let element" mat-cell> {{element.macAddress}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="serialNum">
+            <th *matHeaderCellDef mat-header-cell>{{devicesViewLabels.columns['serialNum']}}</th>
+            <td *matCellDef="let element" mat-cell> {{element.serialNum}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="mapStatus">
+            <th *matHeaderCellDef mat-header-cell>{{devicesViewLabels.columns['mapStatus']}}</th>
+            <td *matCellDef="let element" mat-cell> {{element.mapStatus}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="isActive">
+            <th *matHeaderCellDef mat-header-cell>{{devicesViewLabels.columns['isActive']}}</th>
+            <td *matCellDef="let element" mat-cell> {{element.isActive ? 'Active' : 'Inactive'}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="createdDateTime">
+            <th *matHeaderCellDef mat-header-cell>{{devicesViewLabels.columns['createdDateTime']}}</th>
+            <td *matCellDef="let element" mat-cell> {{element.createdDateTime}} </td>
+        </ng-container>
+
+        <tr *matHeaderRowDef="devicesDisplayedColumns" mat-header-row></tr>
+        <tr *matRowDef="let row; columns: devicesDisplayedColumns;" mat-row></tr>
+
+    </table>
+
+    <mat-paginator [pageSizeOptions]="[10, 20, 30]" showFirstLastButtons></mat-paginator>
+
+</div>

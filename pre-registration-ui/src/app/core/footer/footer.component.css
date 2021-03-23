@@ -1,21 +1,77 @@
 .main-footer {
-  display: flex;
-  justify-content: center;
-  font-family: Roboto;
-  font-size: 12px;
-  padding-top: 10px;
-  padding-bottom: 0px;
-  position: fixed;
-  bottom: -9px;
-  width: 100%;
-  z-index: -1;
-  margin-bottom: 2px;
-  background: white;
+    background: white;
 }
 
-.version-txt{
-  font-size: 8px;
-  font-family: "Roboto", sans-serif;
-  font-weight: 100;
-  display: block;
+footer {
+    background: #FFF;
+    position: relative;
+    z-index: 99;
+}
+
+.main-footer img.icon {
+    width: 63px;
+    height: 63px;
+}
+
+.main-footer .sub-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: #9d9d9d;
+    font-weight: bold;
+    font-size: 18px;
+    line-height: 24px;
+    padding: 26px 0;
+}
+
+.sub-footer .tictn {
+    display: flex;
+    max-width: 593px;
+    width: 100%;
+    align-items: center;
+}
+
+.sub-footer .tictn img.icon {
+    margin-right: 27px;
+}
+
+.contact-phone a {
+    font-family: Montserrat;
+    text-decoration: none;
+    color: #9d9d9d;
+    text-align: right;
+    font-size: 25px;
+    letter-spacing: 1px;
+    margin-bottom: 7px;
+    font-weight: bold;
+}
+
+.contact-phone {
+    font-size: 14px;
+    display: flex;
+    justify-content: flex-end;
+    flex-direction: column;
+    font-weight: 400;
+}
+
+.menu-footer {
+    display: flex;
+    justify-content: space-between;
+    padding: 27px 0;
+    color: #9d9d9d;
+}
+
+.menu-footer .menu-f a {
+    text-decoration: none;
+    color: #007e42;
+    padding: 0 14px;
+}
+
+.menu-footer .menu-f a:last-child {
+    padding-right: 0;
+}
+
+.ftext {
+    font-family: Montserrat;
+    font-size: 15px;
 }

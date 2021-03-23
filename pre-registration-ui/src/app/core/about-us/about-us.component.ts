@@ -1,19 +1,20 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 
 @Component({
-  selector: 'app-about-us',
-  templateUrl: './about-us.component.html',
-  styleUrls: ['./about-us.component.css']
+    selector: 'app-about-us',
+    templateUrl: './about-us.component.html',
+    styleUrls: ['./about-us.component.css']
 })
 export class AboutUsComponent implements OnInit {
 
-  langCode = '';
-  panelOpenState = -1;
+    langCode = '';
+    panelOpenState = -1;
 
-  constructor() { }
+    constructor() {
+    }
 
-  ngOnInit() {
-    this.langCode = localStorage.getItem('langCode');
-  }
+    ngOnInit() {
+        this.langCode = localStorage.getItem('langCode');
+    }
 
 }

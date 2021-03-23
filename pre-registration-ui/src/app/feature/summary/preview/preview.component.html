@@ -1,302 +1,142 @@
-<div *ngIf="previewData !== undefined && secondaryLanguagelabels !== undefined" class="preview__container">
-  <mat-card class="preview__header-container card-padding">
-    <mat-card-header class="preview__header-container">
-      <div class="preview__header">
-        <p>{{ 'preview.title_preview' | translate }}</p>
-      </div>
-    </mat-card-header>
-    <mat-card-content>
-      <div class="preview__body-content-container">
-        <div
-          [ngClass]="
-            primaryLanguage === 'ara' ? 'preview__body-content-div right spacing' : 'preview__body-content-div'
-          "
-        >
-          <div>
-            <p>{{ 'preview.language' | translate }}</p>
-            <h3>{{ 'preview.subheading_information' | translate }}</h3>
-            <hr />
-          </div>
-
-          <table>
-            <tr *ngFor="let field of uiFields">
-              <td>{{ field.labelName[primaryLanguage] }}</td>
-              <td>:</td>
-              <div *ngIf="field.controlType != 'dropdown'">
-                <td *ngIf="previewData[field.id].length > 2">
-                  {{ previewData[field.id] }}
-                </td>
-                <td *ngIf="previewData[field.id]">
-                  {{ previewData[field.id][0].value }}
-                </td>
-              </div>
-              <div *ngIf="field.controlType == 'dropdown'">
-                <td *ngIf="field.id == 'gender'">
-                  <div  *ngFor="let genderType of genders">
-                    <div  *ngIf = "genderType.langCode === primaryLanguage">
-                      <div  *ngIf = "previewData[field.id][0].value === genderType.code">
-                        {{genderType.genderName}}
-                      </div>
-                    </div>
-                  </div>
-                </td>
-                <td *ngIf="field.id == 'residenceStatus'">
-                  <div  *ngFor="let residentType of residenceStatus">
-                    <div  *ngIf = "residentType.langCode === primaryLanguage">
-                      <div  *ngIf = "previewData[field.id][0].value === residentType.code">
-                        {{residentType.name}}
-                      </div>
-                    </div>
-                  </div>
-                </td>
-                <div *ngIf="field.id != 'residenceStatus'">
-                  <div *ngIf="field.id != 'gender'">
-                    <td *ngIf="field.fieldType === 'dynamic'">
-                      <div *ngFor="let dropdown of primarydropDownFields[field.id]">
-                        <div  *ngIf = "previewData[field.id][0].value === dropdown.valueCode">
-                          {{ dropdown.valueName }}
+<div class="preview-body">
+    <app-heading-row [title]="'preview.title_preview' | translate"></app-heading-row>
+    <div class="wrapper">
+        <div *ngIf="previewData !== undefined && secondaryLanguagelabels !== undefined" class="preview__container">
+            <mat-card class="preview__header-container card-padding">
+                <mat-card-content>
+                    <div class="preview__body-content-container">
+                        <div [ngClass]="primaryLanguage === 'ara' ? 'preview__body-content-div right spacing' : 'preview__body-content-div left'">
+                            <!-- <h3>{{ 'preview.language' | translate }}</h3> -->
+                            <div class="title-lang">
+                                {{ "preview.language" | translate }}
+                            </div>
+                            <ng-container *ngFor="let group of uiFieldsGroups">
+                                <ng-container *ngIf="getFieldsOfGroup(group).length > 0">
+                                    <h4>{{ demographiclabels["fields_groups"][group] }} :</h4>
+                                    <mat-card class="fields-group">
+                                        <!-- <mat-card-header> -->
+                                        <!--     <mat-card-title class="fields-group-title"> -->
+                                        <!--         {{ demographiclabels["fields_groups"][group] }} -->
+                                        <!--     </mat-card-title> -->
+                                        <!-- </mat-card-header> -->
+                                        <mat-card-content>
+                                            <table>
+                                                <tr *ngFor="let field of getFieldsOfGroup(group)">
+                                                    <ng-container *ngIf="field.preview && previewData[field.id]">
+                                                        <div> {{ field.labelName[primaryLanguage] }} </div>
+                                                        <div *ngIf="field.controlType">
+                                                            <div *ngIf="previewData[field.id].length > 2 && field.controlType != 'date'">
+                                                                {{ previewData[field.id] }}
+                                                            </div>
+                                                            <div *ngIf="previewData[field.id] && field.controlType != 'dropdown' && field.controlType != 'date'">
+                                                                {{ previewData[field.id][0].value }}
+                                                            </div>
+                                                            <div *ngIf="previewData[field.id] && field.controlType == 'date'">
+                                                                {{getDateOfBirth()}}
+                                                            </div>
+                                                            <div *ngIf="previewData[field.id] && field.controlType == 'dropdown'">
+                                                                {{getSelectedPrimaryLanguageValueFromDropdown(field.id, previewData[field.id][0].value)}}
+                                                            </div>
+                                                        </div>
+                                                    </ng-container>
+                                                </tr>
+                                            </table>
+                                        </mat-card-content>
+                                    </mat-card>
+                                </ng-container>
+                            </ng-container>
                         </div>
-                      </div>
-                    </td>
-                    <td *ngIf="previewData[field.id].length > 2">
-                      {{ previewData[field.id] }}
-                    </td>
-                    <td *ngIf="previewData[field.id] && field.fieldType != 'dynamic'">
-                      {{ previewData[field.id][0].value }}
-                    </td>
-                  </div>
-                </div>
-              </div>
-            </tr>
-          </table>
-        </div>
-        <!-- <div [ngClass]="secondaryLanguage === 'ara' ? 'preview__body-content-div right' : 'preview__body-content-div'">
-          <div>
-            <div class="preview__modify-div">
-              <span>{{ secondaryLanguagelabels.language }}</span>
-              <span
-                (click)="modifyDemographic()"
-                class="preview__modify-div-span"
-                matTooltip="{{ 'helpText.modify_at_DemoPreview' | translate }}"
-                ><img src="assets/edit.png" /> {{ 'preview.action_modify' | translate }}</span
-              >
-            </div>
-            <h3>{{ secondaryLanguagelabels.subheading_information }}</h3>
-            <hr />
-          </div>
-            <table>
-              <tr *ngFor="let field of uiFields">
-                <td>{{ field.labelName[secondaryLanguage] }}</td>
-                <td>:</td>
-                <div *ngIf="field.controlType">
-                  <td *ngIf="previewData[field.id].length > 2">
-                    {{ previewData[field.id] }}
-                  </td>
-                  <td *ngIf="previewData[field.id]">
-                    {{ previewData[field.id][1].value }}
-                  </td>
-                </div>
-              </tr>
-            </table>
-          </div> -->
-        <div *ngIf="primaryLanguage == secondaryLanguage">
-          <div class="preview__modify-div">
-              <span
-                (click)="modifyDemographic()"
-                class="preview__modify-div-span"
-                matTooltip="{{ 'helpText.modify_at_DemoPreview' | translate }}"
-                ><img src="assets/edit.png" /> {{ 'preview.action_modify' | translate }}</span
-              >
-            </div>
-        </div>
-        <div *ngIf="primaryLanguage != secondaryLanguage" [ngClass]="secondaryLanguage === 'ara' ? 'preview__body-content-div right' : 'preview__body-content-div'">
-          <div>
-            <div class="preview__modify-div">
-              <span>{{ secondaryLanguagelabels.language }}</span>
-              <span
-                (click)="modifyDemographic()"
-                class="preview__modify-div-span"
-                matTooltip="{{ 'helpText.modify_at_DemoPreview' | translate }}"
-                ><img src="assets/edit.png" /> {{ 'preview.action_modify' | translate }}</span
-              >
-            </div>
-            <h3>{{ secondaryLanguagelabels.subheading_information }}</h3>
-            <hr />
-          </div>
-          <table>
-            <tr *ngFor="let field of uiFields">
-              <td>{{ field.labelName[secondaryLanguage] }}</td>
-              <td>:</td>
-              <div *ngIf="field.controlType != 'dropdown'">
-                <td *ngIf="previewData[field.id].length > 2">
-                  {{ previewData[field.id] }}
-                </td>
-                <td *ngIf="previewData[field.id]">
-                  {{ previewData[field.id][1].value }}
-                </td>
-              </div>
-              <div *ngIf="field.controlType == 'dropdown'">
-                <td *ngIf="field.id == 'gender'">
-                  <div  *ngFor="let genderType of genders">
-                    <div  *ngIf = "genderType.langCode === secondaryLanguage">
-                      <div  *ngIf = "previewData[field.id][0].value === genderType.code">
-                        {{genderType.genderName}}
-                      </div>
-                    </div>
-                  </div>
-                </td>
-                <td *ngIf="field.id == 'residenceStatus'">
-                  <div  *ngFor="let residentType of residenceStatus">
-                    <div  *ngIf = "residentType.langCode === secondaryLanguage">
-                      <div  *ngIf = "previewData[field.id][0].value === residentType.code">
-                        {{residentType.name}}
-                      </div>
-                    </div>
-                  </div>
-                </td>
-                <div *ngIf="field.id != 'residenceStatus'">
-                  <div *ngIf="field.id != 'gender'">
-                    <td *ngIf="field.fieldType === 'dynamic'">
-                      <div *ngFor="let dropdown of primarydropDownFields[field.id]">
-                        <div  *ngIf = "previewData[field.id][0].value === dropdown.valueCode">
-                          {{ dropdown.valueName }}
+                        <div class="preview__modify-div">
+                            <span (click)="modifyDemographic()"
+                                  class="preview__modify-file"
+                                  matTooltip="{{ 'helpText.modify_at_DemoPreview' | translate }}">
+                                {{ 'preview.action_modify' | translate }}
+                            </span>
                         </div>
-                      </div>
-                    </td>
-                    <td *ngIf="previewData[field.id].length > 2">
-                      {{ previewData[field.id] }}
-                    </td>
-                    <td *ngIf="previewData[field.id] && field.fieldType != 'dynamic'">
-                      {{ previewData[field.id][1].value }}
-                    </td>
-                  </div>
+                        <div [ngClass]="secondaryLanguage === 'ara' ? 'preview__body-content-div right ' : 'preview__body-content-div'">
+                            <!-- <h3>{{ secondaryLanguagelabels.language }}</h3> -->
+                            <div class="title-lang ara">
+                                {{ secondaryLanguagelabels.language }}
+                            </div>
+                            <ng-container *ngFor="let group of uiFieldsGroups">
+                                <ng-container *ngIf="getFieldsOfGroup(group).length > 0">
+                                    <h4>{{ secondaryLanguageDemographiclabels["fields_groups"][group] }} :</h4>
+                                    <mat-card class="fields-group">
+                                        <!-- <mat-card-header> -->
+                                        <!--     <mat-card-title class="fields-group-title"> -->
+                                        <!--          {{ secondaryLanguageDemographiclabels["fields_groups"][group] }} -->
+                                        <!--     </mat-card-title> -->
+                                        <!-- </mat-card-header> -->
+                                        <mat-card-content>
+                                            <table>
+                                                <tr *ngFor="let field of getFieldsOfGroup(group)">
+                                                    <ng-container *ngIf="field.preview && previewData[field.id]">
+                                                        <div>{{ field.labelName[secondaryLanguage] }}</div>
+                                                        <div *ngIf="field.controlType">
+                                                            <div *ngIf="previewData[field.id].length > 2 && field.controlType != 'date'">
+                                                                {{ previewData[field.id] }}
+                                                            </div>
+                                                            <div *ngIf="previewData[field.id] && field.controlType != 'dropdown' && field.controlType != 'date'">
+                                                                {{ previewData[field.id][1].value }}
+                                                            </div>
+                                                            <div *ngIf="previewData[field.id] && field.controlType == 'date'">
+                                                                {{ getDateOfBirth() }}
+                                                            </div>
+                                                            <div *ngIf="previewData[field.id] && field.controlType == 'dropdown'">
+                                                                {{ getSelectedSecondaryLanguageValueFromDropdown(field.id, previewData[field.id][1].value) }}
+                                                            </div>
+                                                        </div>
+                                                    </ng-container>
+                                                </tr>
+                                            </table>
+                                        </mat-card-content>
+                                    </mat-card>
+                                </ng-container>
+                            </ng-container>
+                        </div>
+                    </div>
+                </mat-card-content>
+                <div class="preview__footer-header">
+                    <h3 class="left">{{ 'preview.title_document' | translate }}</h3>
+                    <span (click)="modifyDocument()"
+                          class="preview__modify-file"
+                          matTooltip="{{ 'helpText.modify_at_DocumentPreview' | translate }}">
+                        {{ 'preview.action_modify' | translate }}
+                    </span>
+                    <h3 class="right">{{ secondaryLanguagelabels.title_document }}</h3>
                 </div>
-              </div>
-            </tr>
-          </table>
-          <!-- <div>
-            <table *ngIf="secondaryLanguagelabels !== undefined" class="preview__personal-info-table">
-              <tr>
-                <td>{{ secondaryLanguagelabels.label_name }}</td>
-                <td>:</td>
-                <td>{{ previewData.fullName[1].value }}</td>
-              </tr>
-              <tr>
-                <td>{{ secondaryLanguagelabels.label_DOB }}</td>
-                <td>:</td>
-                <td>{{ dateOfBirthSecondary }}</td>
-              </tr>
-              <tr>
-                <td>{{ secondaryLanguagelabels.label_age }}</td>
-                <td>:</td>
-                <td>{{ previewData.age }} {{ secondaryLanguagelabels.text_years }}</td>
-              </tr>
-              <tr>
-                <td>{{ secondaryLanguagelabels.text_gender }}</td>
-                <td>:</td>
-                <td>{{ previewData.gender[1].name }}</td>
-              </tr>
-              <tr>
-                <td>{{ secondaryLanguagelabels.text_resident_status }}</td>
-                <td>:</td>
-                <td>{{ previewData.residenceStatus[1].name }}</td>
-              </tr>
-            </table>
-          </div>
-          <div>
-            <h3>{{ secondaryLanguagelabels.subheading_contact }}</h3>
-            <hr />
-          </div>
-          <div>
-            <table *ngIf="previewData.fullName !== undefined" class="preview__personal-info-table">
-              <tr>
-                <td>{{ secondaryLanguagelabels.label_address }}</td>
-                <td>:</td>
-                <td>{{ previewData.secondaryAddress }}</td>
-              </tr>
-              <tr>
-                <td>{{ secondaryLanguagelabels.label_region }}</td>
-                <td>:</td>
-                <td>{{ previewData.region[1].name }}</td>
-              </tr>
-              <tr>
-                <td>{{ secondaryLanguagelabels.label_province }}</td>
-                <td>:</td>
-                <td>{{ previewData.province[1].name }}</td>
-              </tr>
-              <tr>
-                <td>{{ secondaryLanguagelabels.label_city }}</td>
-                <td>:</td>
-                <td>{{ previewData.city[1].name }}</td>
-              </tr>
-              <tr>
-                <td>{{ secondaryLanguagelabels.label_zone }}</td>
-                <td>:</td>
-                <td>{{ previewData.zone[1].name }}</td>
-              </tr>
-              <tr>
-                <td>{{ secondaryLanguagelabels.label_mob_num }}</td>
-                <td>:</td>
-                <td>{{ previewData.phone }}</td>
-              </tr>
-              <tr>
-                <td>{{ secondaryLanguagelabels.label_email_id }}</td>
-                <td>:</td>
-                <td>{{ previewData.email }}</td>
-              </tr>
-              <tr>
-                <td>{{ secondaryLanguagelabels.label_pin }}</td>
-                <td>:</td>
-                <td>{{ previewData.referenceIdentityNumber }}</td> 
-              </tr>
-            </table>
-          </div> -->
+                <mat-card-footer class="preview__footer-container">
+                    <div class="preview__footer">
+                        <div class="preview__file-container">
+                            <table style="width:100%" *ngIf="documentMapObject">
+                                <tr class="preview__file__table__header">
+                                    <td *ngFor="let object of documentMapObject">{{ object.name }}</td>
+                                </tr>
+                                <tr class="preview__file__table__data">
+                                    <td *ngFor="let object of documentMapObject">
+                                        <div *ngIf="object.fileName !== undefined">{{ object.fileName }}</div>
+                                        <div class="error"
+                                             *ngIf="object.fileName === undefined">{{ 'preview.text_not_uploaded' | translate }}</div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </mat-card-footer>
+            </mat-card>
+            <mat-card class="center-selection__button-container">
+                <button (click)="navigateBack()" class="user-back-btn">{{ 'preview.action_back' | translate }}</button>
+                <div class="rightB">
+                    <button matTooltip="{{ 'helpText.add_applicant' | translate }}"
+                            (click)="navigateDashboard()"
+                            class="user-book_later-btn">
+                        {{ 'preview.action_add_applicant' | translate }}
+                    </button>
+                    <button (click)="navigateNext()" class="user-continue-btn">
+                        {{ 'preview.action_continue' | translate }}
+                    </button>
+                </div>
+            </mat-card>
         </div>
-      </div>
-    </mat-card-content>
-    <div class="preview__footer-header">
-      <span>{{ 'preview.title_document' | translate }}</span>
-      <span
-        (click)="modifyDocument()"
-        class="preview__modify-file"
-        matTooltip="{{ 'helpText.modify_at_DocumentPreview' | translate }}"
-        ><img src="assets/edit.png" /> {{ 'preview.action_modify' | translate }}</span
-      >
     </div>
-    <mat-card-footer class="preview__footer-container">
-      <div class="preview__footer">
-        <div class="preview__file-container">
-          <!-- <span class="preview__file-span" *ngFor="let file of files">
-            <img src="assets/pdf.png" />&nbsp;&nbsp;{{ file.doc_name }}
-          </span> -->
-          <table style="width:100%" *ngIf="documentMapObject">
-            <tr class="preview__file__table__header">
-              <td *ngFor="let object of documentMapObject">{{ object.name }}</td>
-            </tr>
-            <tr class="preview__file__table__data">
-              <td *ngFor="let object of documentMapObject">
-                <p *ngIf="object.fileName !== undefined">{{ object.fileName }}</p>
-                <p class="error" *ngIf="object.fileName === undefined">{{ 'preview.text_not_uploaded' | translate }}</p>
-              </td>
-            </tr>
-          </table>
-        </div>
-      </div>
-    </mat-card-footer>
-  </mat-card>
 </div>
-
-<mat-card class="center-selection__button-container">
-  <button (click)="navigateBack()" class="user-back-btn">{{ 'preview.action_back' | translate }}</button>
-  <span class="spacer"></span>
-  <button
-    matTooltip="{{ 'helpText.add_applicant' | translate }}"
-    (click)="navigateDashboard()"
-    class="user-book_later-btn"
-  >
-    {{ 'preview.action_add_applicant' | translate }}
-  </button>
-  <button (click)="navigateNext()" class="user-continue-btn">
-    {{ 'preview.action_continue' | translate }}
-  </button>
-</mat-card>

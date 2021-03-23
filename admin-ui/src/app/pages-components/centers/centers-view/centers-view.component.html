@@ -1,0 +1,83 @@
+<div class="header-view-container">
+    <h3 class="header-view-title">{{centersViewLabels.title}}</h3>
+    <button (click)="onClickCreateNewCenterBtnHandler()"
+            class="header-view-action-btn"
+            mat-raised-button>
+        {{centersViewLabels['create-new-center-btn-label']}}
+    </button>
+</div>
+
+<mat-card class="rnp-filter-card-container">
+    <mat-card-content>
+        <mat-form-field appearance="outline" class="rnp-filter-field">
+            <mat-label>{{centersViewLabels['filter-centers-field-label']}}</mat-label>
+            <input (keyup)="onChangeFilterValueHandler($event)"
+                   [placeholder]="centersViewLabels['filter-centers-field-placeholder']"
+                   matInput>
+            <mat-icon matSuffix>sort</mat-icon>
+            <mat-hint>{{centersViewLabels['filter-centers-field-hint']}}</mat-hint>
+        </mat-form-field>
+    </mat-card-content>
+</mat-card>
+
+<div class="result-table-container mat-elevation-z8">
+
+    <table [dataSource]="centersDataSource" class="result-table-content" mat-table>
+
+        <ng-container matColumnDef="name">
+            <th *matHeaderCellDef class="rnp-id-header-cell" mat-header-cell>{{centersViewLabels.columns['name']}}</th>
+            <td *matCellDef="let element" mat-cell>
+                <button (click)="onClickViewCenterBtnHandler(element.id)" class="rnp-row-link-btn" mat-button>
+                    {{element.name}}
+                </button>
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="centerTypeName">
+            <th *matHeaderCellDef mat-header-cell>{{centersViewLabels.columns['centerTypeName']}}</th>
+            <td *matCellDef="let element" mat-cell> {{element.centerTypeName}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="users">
+            <th *matHeaderCellDef mat-header-cell>{{centersViewLabels.columns['users']}}</th>
+            <td *matCellDef="let element" mat-cell> {{element.users}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="devices">
+            <th *matHeaderCellDef mat-header-cell>{{centersViewLabels.columns['devices']}}</th>
+            <td *matCellDef="let element" mat-cell> {{element.devices}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="machines">
+            <th *matHeaderCellDef mat-header-cell>{{centersViewLabels.columns['machines']}}</th>
+            <td *matCellDef="let element" mat-cell> {{element.machines}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="contactPerson">
+            <th *matHeaderCellDef mat-header-cell>{{centersViewLabels.columns['contactPerson']}}</th>
+            <td *matCellDef="let element" mat-cell> {{element.contactPerson}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="contactPhone">
+            <th *matHeaderCellDef mat-header-cell>{{centersViewLabels.columns['contactPhone']}}</th>
+            <td *matCellDef="let element" mat-cell> {{element.contactPhone}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="isActive">
+            <th *matHeaderCellDef mat-header-cell>{{centersViewLabels.columns['isActive']}}</th>
+            <td *matCellDef="let element" mat-cell> {{element.isActive ? 'Active' : 'Inactive'}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="createdDateTime">
+            <th *matHeaderCellDef mat-header-cell>{{centersViewLabels.columns['createdDateTime']}}</th>
+            <td *matCellDef="let element" mat-cell> {{element.createdDateTime}} </td>
+        </ng-container>
+
+        <tr *matHeaderRowDef="centersDisplayedColumns" mat-header-row></tr>
+        <tr *matRowDef="let row; columns: centersDisplayedColumns;" mat-row></tr>
+
+    </table>
+
+    <mat-paginator [pageSizeOptions]="[10, 20, 30]" showFirstLastButtons></mat-paginator>
+
+</div>

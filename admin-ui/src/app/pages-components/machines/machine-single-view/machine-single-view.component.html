@@ -1,0 +1,89 @@
+<div class="header-view-container">
+    <h3 class="header-view-title">{{getMachineSingleViewTitleLabel()}}</h3>
+</div>
+
+<mat-card class="rnp-form-container">
+
+    <mat-card-content>
+
+        <form [formGroup]="machineSingleViewFormGroup">
+
+            <mat-form-field *ngIf="machineIdParam" appearance="outline">
+                <mat-label>{{machineSingleViewLabels.columns['machineId']}}</mat-label>
+                <input formControlName="machineId" matInput readonly>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>{{machineSingleViewLabels.columns['name']}}</mat-label>
+                <input formControlName="name" matInput>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>{{machineSingleViewLabels.columns['serialNum']}}</mat-label>
+                <input formControlName="serialNum" matInput>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>{{machineSingleViewLabels.columns['macAddress']}}</mat-label>
+                <input formControlName="macAddress" matInput>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>{{machineSingleViewLabels.columns['ipAddress']}}</mat-label>
+                <input formControlName="ipAddress" matInput>
+            </mat-form-field>
+
+            <mat-form-field *ngIf="false" appearance="outline"> <!-- TODO @Youssef : à rectifier ! -->
+                <mat-label>{{machineSingleViewLabels.columns['validity']}}</mat-label>
+                <input formControlName="validity" matInput type="datetime-local">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>{{machineSingleViewLabels.columns['zoneAdministrative']}}</mat-label>
+                <mat-select formControlName="zoneAdministrative">
+                    <mat-option *ngFor="let data of dropDownValues.zone.primary" [value]="data.code">
+                        {{ data.name }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>{{machineSingleViewLabels.columns['machineSpecId']}}</mat-label>
+                <mat-select formControlName="machineSpecId">
+                    <mat-option *ngFor="let data of dropDownValues.machineTypeCode.primary" [value]="data.fieldCode">
+                        {{ data.fieldValue }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>{{machineSingleViewLabels.columns['publicKey']}}</mat-label>
+                <textarea formControlName="publicKey" matInput></textarea>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>{{machineSingleViewLabels.columns['isActive']}}</mat-label>
+                <mat-select formControlName="isActive">
+                    <mat-option [value]="true">Active</mat-option>
+                    <mat-option [value]="false">Inactive</mat-option>
+                </mat-select>
+            </mat-form-field>
+
+        </form>
+
+    </mat-card-content>
+
+    <mat-card-actions>
+        <button (click)="onClickSubmitBtnHandler()"
+                class="rnp-form-btn rnp-form-submit-btn"
+                mat-raised-button>
+            {{machineSingleViewLabels['submit-btn-label']}}
+        </button>
+        <button (click)="onClickCancelBtnHandler()"
+                class="rnp-form-btn"
+                mat-raised-button>
+            {{machineSingleViewLabels['cancel-btn-label']}}
+        </button>
+    </mat-card-actions>
+
+</mat-card>

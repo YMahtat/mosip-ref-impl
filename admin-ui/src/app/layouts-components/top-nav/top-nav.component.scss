@@ -1,0 +1,76 @@
+.header-bar {
+    color: white !important;
+}
+
+.header-bar-spacer {
+    flex: 1 1 auto;
+}
+
+.toggle-menu-btn {
+    margin-right: 1rem;
+}
+
+
+.rnp-mosip-logo {
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.rnp-mosip-logo-title {
+    font-size: 1.1rem;
+}
+
+.zone {
+    text-align: center;
+    // flex: 1;
+    background: #c1272d 0% 0% no-repeat padding-box;
+    border-radius: 26px;
+    opacity: 0.8;
+    color: #ffffff;
+    opacity: 1;
+    // min-width: 115px;
+    width: 100px;
+    text-overflow: ellipsis;
+
+    .zone-text {
+        height: 20px;
+        position: relative;
+        font-family: "Roboto", sans-serif;
+        font-size: 11px;
+        text-transform: uppercase;
+        font-weight: 100;
+    }
+
+    @media (max-width: 840px) {
+        h6 {
+            width: 50px;
+            overflow: hidden;
+            position: relative;
+            display: inline-block;
+            text-align: center;
+            text-decoration: none;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+    }
+}
+
+::ng-deep .profile {
+    flex: 2;
+    text-align: right;
+
+    span {
+        display: inline-block;
+        vertical-align: middle;
+    }
+
+    img {
+        margin-top: 10px;
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        border-style: solid;
+        border-width: 2px;
+        border-color: #ffffff;
+    }
+}

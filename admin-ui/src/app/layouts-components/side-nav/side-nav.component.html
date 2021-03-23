@@ -1,0 +1,57 @@
+<mat-accordion class="app-sidenav-mat-accordion">
+
+    <mat-expansion-panel hideToggle>
+        <mat-expansion-panel-header (click)="onClickNavigateTHomeHandler()">
+            <mat-panel-title>
+                <b>ACCUEIL</b>
+            </mat-panel-title>
+        </mat-expansion-panel-header>
+    </mat-expansion-panel>
+
+    <mat-expansion-panel>
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+                <b>RESSOURCES</b>
+            </mat-panel-title>
+        </mat-expansion-panel-header>
+        <mat-nav-list>
+            <mat-list-item (click)="onClickNavigateToCentersServicesHandler()">CENTERS</mat-list-item>
+            <mat-divider></mat-divider>
+            <mat-list-item (click)="onClickNavigateToMachinesServicesHandler()">MACHINES</mat-list-item>
+            <mat-divider></mat-divider>
+            <mat-list-item (click)="onClickNavigateToDevicesServicesHandler()">DEVICES</mat-list-item>
+            <mat-divider></mat-divider>
+        </mat-nav-list>
+    </mat-expansion-panel>
+
+    <mat-expansion-panel>
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+                <b>PARTNERS</b>
+            </mat-panel-title>
+        </mat-expansion-panel-header>
+        <mat-nav-list>
+            <mat-list-item (click)="onClickNavigateToMispsServicesHandler()">MISPS</mat-list-item>
+            <mat-divider></mat-divider>
+            <mat-list-item (click)="onClickNavigateToAuthPartnersServicesHandler()">AUTH PARTNER</mat-list-item>
+            <mat-divider></mat-divider>
+            <mat-list-item (click)="onClickNavigateToRequestsServicesHandler()">REQUESTS</mat-list-item>
+            <mat-divider></mat-divider>
+        </mat-nav-list>
+    </mat-expansion-panel>
+
+    <mat-expansion-panel>
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+                <b>PARTNER SERVICES</b>
+            </mat-panel-title>
+        </mat-expansion-panel-header>
+        <mat-nav-list>
+            <mat-list-item>MISP Service</mat-list-item>
+            <mat-divider></mat-divider>
+            <mat-list-item>AUTH Service</mat-list-item>
+            <mat-divider></mat-divider>
+        </mat-nav-list>
+    </mat-expansion-panel>
+
+</mat-accordion>

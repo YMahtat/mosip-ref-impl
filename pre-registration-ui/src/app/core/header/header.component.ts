@@ -1,76 +1,103 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { AuthService } from '../../auth/auth.service';
-import { Router } from '@angular/router';
-import { TranslateService } from '@ngx-translate/core';
-import { MatDialog } from '@angular/material';
-import { DialougComponent } from 'src/app/shared/dialoug/dialoug.component';
-import { Subscription } from 'rxjs';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {AuthService} from '../../auth/auth.service';
+import {NavigationEnd, Router} from '@angular/router';
+import {TranslateService} from '@ngx-translate/core';
+import {MatDialog} from '@angular/material';
+import {DialougComponent} from 'src/app/shared/dialoug/dialoug.component';
+import {Subscription} from 'rxjs';
 import LanguageFactory from 'src/assets/i18n';
+import {AutoLogoutService} from "../services/auto-logout.service";
 
 @Component({
-  selector: 'app-header',
-  templateUrl: './header.component.html',
-  styleUrls: ['./header.component.css']
+    selector: 'app-header',
+    templateUrl: './header.component.html',
+    styleUrls: ['./header.component.css']
 })
 export class HeaderComponent implements OnInit, OnDestroy {
-  flag = false;
-  subscription: Subscription;
-  primaryLang:string;
-  constructor(
-    public authService: AuthService,
-    private translate: TranslateService,
-    private router: Router,
-    private dialog: MatDialog
-  ) {
-    this.translate.use(localStorage.getItem('langCode'));
-  }
 
-  ngOnInit() {
-   this.primaryLang = localStorage.getItem('langCode');
-  }
+    flag = false;
+    subscription: Subscription;
+    primaryLang: string;
 
-  onLogoClick() {
-    if (this.authService.isAuthenticated()) {
-      this.router.navigate([localStorage.getItem('langCode'),'dashboard']);
-    } else {
-      this.router.navigate(['/']);
+    isDash: boolean;
+
+    message = {};
+    subscriptions: Subscription[] = [];
+
+    constructor(
+        public authService: AuthService,
+        private translate: TranslateService,
+        private autoLogout: AutoLogoutService,
+        private router: Router,
+        private dialog: MatDialog
+    ) {
+        this.translate.use(localStorage.getItem('langCode'));
     }
-  }
 
-  onHome() {
-    this.router.navigate([localStorage.getItem('langCode'),"dashboard"]);
-  }
-
-  async doLogout() {
-    await this.showMessage();
-  }
-
-  showMessage() {
-    let factory = new LanguageFactory(localStorage.getItem('langCode'));
-    let response = factory.getCurrentlanguage();
-    const secondaryLanguagelabels = response['login']['logout_msg'];
-    const data = {
-      case: 'MESSAGE',
-      message: secondaryLanguagelabels
-    };
-    this.dialog
-      .open(DialougComponent, {
-        width: '350px',
-        data: data
-      })
-      .afterClosed()
-      .subscribe(response => {
-        if(response){
-          localStorage.removeItem('loggedOutLang');
-          localStorage.removeItem('loggedOut');
-          this.authService.onLogout();
-        }
-        
-      }
+    ngOnInit() {
+        this.primaryLang = localStorage.getItem('langCode');
+        const subs = this.autoLogout.currentMessageAutoLogout.subscribe(
+            (message) => (this.message = message)
         );
-  }
+        this.subscriptions.push(subs);
+        if (!this.message["timerFired"]) {
+            this.autoLogout.getValues(this.primaryLang);
+            this.autoLogout.setValues();
+            this.autoLogout.keepWatching();
+        } else {
+            this.autoLogout.getValues(this.primaryLang);
+            this.autoLogout.continueWatching();
+        }
+        this.router.events.forEach((event) => {
+            if (event instanceof NavigationEnd) {
+                event.urlAfterRedirects == "/eng" ? this.isDash = false : this.isDash = true;
+            }
+        });
+    }
 
-  ngOnDestroy() {
-    this.subscription.unsubscribe();
-  }
+    onLogoClick() {
+        if (this.authService.isAuthenticated()) {
+            this.router.navigate([localStorage.getItem('langCode'), 'dashboard']);
+        } else {
+            this.router.navigate(['/']);
+        }
+    }
+
+    onHome() {
+        this.router.navigate([localStorage.getItem('langCode'), "dashboard"]);
+    }
+
+    async doLogout() {
+        await this.showMessage();
+    }
+
+    showMessage() {
+        let factory = new LanguageFactory(localStorage.getItem('langCode'));
+        let response = factory.getCurrentlanguage();
+        const secondaryLanguagelabels = response['login']['logout_msg'];
+        const data = {
+            case: 'MESSAGE',
+            message: secondaryLanguagelabels
+        };
+        this.dialog
+            .open(DialougComponent, {
+                width: '350px',
+                data: data
+            })
+            .afterClosed()
+            .subscribe(response => {
+                    if (response) {
+                        localStorage.removeItem('loggedOutLang');
+                        localStorage.removeItem('loggedOut');
+                        this.authService.onLogout();
+                    }
+
+                }
+            );
+    }
+
+    ngOnDestroy() {
+        this.subscription.unsubscribe();
+    }
+
 }

@@ -1,0 +1,214 @@
+<div class="header-view-container">
+    <h3 class="header-view-title">{{getCenterSingleViewTitleLabel()}}</h3>
+</div>
+
+<mat-card class="rnp-form-container">
+
+    <mat-card-content>
+
+        <form [formGroup]="centerSingleViewFormGroup">
+
+            <mat-form-field *ngIf="centerIdParam" appearance="outline">
+                <mat-label>{{centerSingleViewLabels.columns['centerId']}}</mat-label>
+                <input formControlName="centerId" matInput readonly>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>{{centerSingleViewLabels.columns['name']}}</mat-label>
+                <input formControlName="name" matInput>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>{{centerSingleViewLabels.columns['centerType']}}</mat-label>
+                <mat-select formControlName="centerType">
+                    <mat-option *ngFor="let data of dropDownValues.centerTypeCode.primary" [value]="data.fieldCode">
+                        {{ data.fieldValue }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>{{centerSingleViewLabels.columns['contactPerson']}}</mat-label>
+                <input formControlName="contactPerson" matInput>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>{{centerSingleViewLabels.columns['contactPhone']}}</mat-label>
+                <input formControlName="contactPhone" matInput>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>{{centerSingleViewLabels.columns['longitude']}}</mat-label>
+                <input formControlName="longitude" matInput>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>{{centerSingleViewLabels.columns['latitude']}}</mat-label>
+                <input formControlName="latitude" matInput>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>{{centerSingleViewLabels.columns['addressLine1']}}</mat-label>
+                <input formControlName="addressLine1" matInput>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>{{centerSingleViewLabels.columns['addressLine2']}}</mat-label>
+                <input formControlName="addressLine2" matInput>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>{{centerSingleViewLabels.columns['addressLine3']}}</mat-label>
+                <input formControlName="addressLine3" matInput>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>{{centerSingleViewLabels.columns['region']}}</mat-label>
+                <mat-select formControlName="region">
+                    <mat-option *ngFor="let data of dropDownValues.region.primary" [value]="data.code">
+                        {{ data.name }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>{{centerSingleViewLabels.columns['province']}}</mat-label>
+                <mat-select formControlName="province">
+                    <mat-option *ngFor="let data of dropDownValues.province.primary" [value]="data.code">
+                        {{ data.name }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>{{centerSingleViewLabels.columns['city']}}</mat-label>
+                <mat-select formControlName="city">
+                    <mat-option *ngFor="let data of dropDownValues.city.primary" [value]="data.code">
+                        {{ data.name }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>{{centerSingleViewLabels.columns['zone']}}</mat-label>
+                <mat-select formControlName="zone">
+                    <mat-option *ngFor="let data of dropDownValues.postalCode.primary" [value]="data.code">
+                        {{ data.name }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+
+
+            <mat-form-field appearance="outline">
+                <mat-label>{{centerSingleViewLabels.columns['zoneAdministrative']}}</mat-label>
+                <mat-select formControlName="zoneAdministrative">
+                    <mat-option *ngFor="let data of dropDownValues.zone.primary" [value]="data.code">
+                        {{ data.name }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>{{centerSingleViewLabels.columns['holidayLocation']}}</mat-label>
+                <mat-select formControlName="holidayLocation">
+                    <mat-option *ngFor="let data of dropDownValues.holidayZone.primary" [value]="data.code">
+                        {{ data.name }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>{{centerSingleViewLabels.columns['numberOfKiosks']}}</mat-label>
+                <input formControlName="numberOfKiosks" matInput>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>{{centerSingleViewLabels.columns['perKioskProcessTime']}}</mat-label>
+                <mat-select formControlName="perKioskProcessTime">
+                    <mat-option *ngFor="let data of dropDownValues.processingTime" [value]="data">
+                        {{ data }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>{{centerSingleViewLabels.columns['centerStartTime']}}</mat-label>
+                <mat-select formControlName="centerStartTime">
+                    <mat-option *ngFor="let data of dropDownValues.startTime" [value]="data">
+                        {{ data }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>{{centerSingleViewLabels.columns['centerEndTime']}}</mat-label>
+                <mat-select formControlName="centerEndTime">
+                    <mat-option *ngFor="let data of dropDownValues.startTime" [value]="data">
+                        {{ data }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>{{centerSingleViewLabels.columns['workingHours']}}</mat-label>
+                <input formControlName="workingHours" matInput>
+            </mat-form-field>
+
+
+            <mat-form-field appearance="outline">
+                <mat-label>{{centerSingleViewLabels.columns['lunchStartTime']}}</mat-label>
+                <mat-select formControlName="lunchStartTime">
+                    <mat-option *ngFor="let data of dropDownValues.lunchStartTime" [value]="data">
+                        {{ data }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>{{centerSingleViewLabels.columns['lunchEndTime']}}</mat-label>
+                <mat-select formControlName="lunchEndTime">
+                    <mat-option *ngFor="let data of dropDownValues.lunchEndTime" [value]="data">
+                        {{ data }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+
+
+            <mat-form-field appearance="outline">
+                <mat-label>{{centerSingleViewLabels.columns['workingDays']}}</mat-label>
+                <input hidden matInput value=" ">
+                <mat-selection-list formControlName="workingDays" multiple>
+                    <div class="working-days-options-container">
+                        <mat-list-option *ngFor="let day of weekDays" [value]="day.code" checkboxPosition="before">
+                            {{ day.name }}
+                        </mat-list-option>
+                    </div>
+                </mat-selection-list>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>{{centerSingleViewLabels.columns['isActive']}}</mat-label>
+                <mat-select formControlName="isActive">
+                    <mat-option [value]="true">Active</mat-option>
+                    <mat-option [value]="false">Inactive</mat-option>
+                </mat-select>
+            </mat-form-field>
+
+        </form>
+
+    </mat-card-content>
+
+    <mat-card-actions>
+        <button (click)="onClickSubmitBtnHandler()"
+                class="rnp-form-btn rnp-form-submit-btn"
+                mat-raised-button>
+            {{centerSingleViewLabels['submit-btn-label']}}
+        </button>
+        <button (click)="onClickCancelBtnHandler()"
+                class="rnp-form-btn"
+                mat-raised-button>
+            {{centerSingleViewLabels['cancel-btn-label']}}
+        </button>
+    </mat-card-actions>
+
+</mat-card>

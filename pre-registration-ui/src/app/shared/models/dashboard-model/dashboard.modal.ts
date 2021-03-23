@@ -6,13 +6,15 @@
  * @interface Applicant
  */
 export interface Applicant {
-  applicationID: string;
-  name: string;
-  appointmentDateTime: string;
-  appointmentDate: string;
-  appointmentTime: string;
-  status: string;
-  regDto: any;
-  nameInSecondaryLanguage: string;
-  postalCode: string;
+    applicationID: string;
+    name: string;
+    appointmentDateTime: string;
+    appointmentDate: string;
+    appointmentTime: string;
+    status: string;
+    regDto: any;
+    nameInSecondaryLanguage: string;
+    postalCode: string;
+    center?: string;
+    request?: any;
 }

@@ -1,0 +1,77 @@
+<div class="header-view-container">
+    <h3 class="header-view-title">{{getAuthPartnerSingleViewTitleLabel()}}</h3>
+</div>
+
+<mat-card class="rnp-form-container">
+
+    <mat-card-content>
+
+        <form [formGroup]="authPartnerSingleViewFormGroup">
+
+            <p>
+                <mat-form-field appearance="outline">
+                    <mat-label>{{authPartnerSingleViewLabels.columns['partnerId']}}</mat-label>
+                    <input formControlName="partnerId" matInput>
+                </mat-form-field>
+            </p>
+
+            <p>
+                <mat-form-field appearance="outline">
+                    <mat-label>{{authPartnerSingleViewLabels.columns['partnerType']}}</mat-label>
+                    <input formControlName="partnerType" matInput>
+                </mat-form-field>
+            </p>
+
+            <p>
+                <mat-form-field appearance="outline">
+                    <mat-label>{{authPartnerSingleViewLabels.columns['organizationName']}}</mat-label>
+                    <input formControlName="organizationName" matInput>
+                </mat-form-field>
+            </p>
+
+            <p>
+                <mat-form-field appearance="outline">
+                    <mat-label>{{authPartnerSingleViewLabels.columns['policyGroup']}}</mat-label>
+                    <input formControlName="policyGroup" matInput>
+                </mat-form-field>
+            </p>
+
+            <p>
+                <mat-form-field appearance="outline">
+                    <mat-label>{{authPartnerSingleViewLabels.columns['emailId']}}</mat-label>
+                    <input formControlName="emailId" matInput>
+                </mat-form-field>
+            </p>
+
+            <p>
+                <mat-form-field appearance="outline">
+                    <mat-label>{{authPartnerSingleViewLabels.columns['contactNumber']}}</mat-label>
+                    <input formControlName="contactNumber" matInput>
+                </mat-form-field>
+            </p>
+
+            <p>
+                <mat-form-field appearance="outline">
+                    <mat-label>{{authPartnerSingleViewLabels.columns['address']}}</mat-label>
+                    <input formControlName="address" matInput>
+                </mat-form-field>
+            </p>
+
+        </form>
+
+    </mat-card-content>
+
+    <mat-card-actions>
+        <button (click)="onClickSubmitBtnHandler()"
+                class="rnp-form-btn rnp-form-submit-btn"
+                mat-raised-button>
+            {{authPartnerSingleViewLabels['submit-btn-label']}}
+        </button>
+        <button (click)="onClickCancelBtnHandler()"
+                class="rnp-form-btn"
+                mat-raised-button>
+            {{authPartnerSingleViewLabels['cancel-btn-label']}}
+        </button>
+    </mat-card-actions>
+
+</mat-card>

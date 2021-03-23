@@ -1,5 +1,6 @@
-import { FileModel } from './file.model';
+import {FileModel} from './file.model';
 
 export class FilesModel {
-  constructor(public documentsMetaData?: FileModel[]) {}
+    constructor(public documentsMetaData?: FileModel[]) {
+    }
 }

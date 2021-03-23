@@ -1,9 +1,9 @@
-import { AttributeModel } from './attribute.modal';
+import {AttributeModel} from './attribute.modal';
 
 describe('AttributeModel interface check', () => {
-  it('should conform to Attribute interface', () => {
-    const attributeModel = new AttributeModel('fre', 'franch');
+    it('should conform to Attribute interface', () => {
+        const attributeModel = new AttributeModel('fre', 'franch');
 
-    expect(typeof attributeModel.language).toEqual('string');
-  });
+        expect(typeof attributeModel.language).toEqual('string');
+    });
 });

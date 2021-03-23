@@ -1,0 +1,28 @@
+.mat-expansion-panel-spacing {
+    margin: 0 0;
+}
+
+.mat-expansion-panel:not([class*=mat-elevation-z]) {
+    box-shadow: unset !important;
+}
+
+::ng-deep .mat-expansion-panel-header {
+    padding: 0 0rem !important;
+    padding-left: 0.3rem !important;
+    padding-right: 1.5rem !important;
+}
+
+::ng-deep .mat-expansion-panel-body {
+    padding: 0 0 0 !important;
+    font-size: 80%;
+}
+
+
+::ng-deep .mat-list-base {
+    padding-top: 0 !important;
+}
+
+
+::ng-deep .mat-list-base .mat-list-item {
+    font-size: 0.8rem !important;
+}

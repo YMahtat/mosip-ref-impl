@@ -1,10 +1,10 @@
 <div class="captcha">
-  <re-captcha
-    hl="ar"
-    id="grecaptcha"
-    class="g-recaptcha"
-    (resolved)="recaptcha($event)"
-    siteKey="{{ captchaSiteKey }}"
-    data-error-callback="recaptchaError($event)"
-  ></re-captcha>
+    <re-captcha
+            (resolved)="recaptcha($event)"
+            class="g-recaptcha"
+            data-error-callback="recaptchaError($event)"
+            hl="ar"
+            id="grecaptcha"
+            siteKey="{{ captchaSiteKey }}"
+    ></re-captcha>
 </div>

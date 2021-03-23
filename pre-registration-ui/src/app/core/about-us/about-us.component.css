@@ -9,7 +9,7 @@
 
 .spacer {
     flex: 1 1 auto;
-  }
+}
 
 .header-text {
     color: #FD5D93;
@@ -71,13 +71,14 @@ th {
 
 table, th, td {
     border: 2px solid black;
-    
+
 }
 
-@media(max-width: 500px) {
+@media (max-width: 500px) {
     .breadcrumb {
         display: none;
     }
+
     .header-text {
         margin-left: 0;
     }

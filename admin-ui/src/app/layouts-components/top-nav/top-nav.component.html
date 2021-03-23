@@ -1,0 +1,23 @@
+<mat-toolbar class="header-bar" color="primary">
+    <button (click)="onClickToggleSideNavBarBtnHandler()" aria-label="Example icon-button with menu icon"
+            class="toggle-menu-btn"
+            mat-icon-button>
+        <mat-icon>menu</mat-icon>
+    </button>
+    <div class="rnp-mosip-logo">
+        <span>
+            <img alt="Logo" height="30" src="./assets/images/armoiries-maroc.svg" width="30"/>
+        </span>&nbsp;
+        <span class="rnp-mosip-logo-title">
+            <b class="mosip-text">{{topNavLabels.title}}</b>
+        </span>
+    </div>
+    <span class="header-bar-spacer"></span>
+    <div class="zone">
+        <span class="zone-text">{{ zone }}</span>
+    </div>
+    <span class="header-bar-spacer"></span>
+    <div class="profile">
+        <app-user-hamburger-menu [data]="userData"></app-user-hamburger-menu>
+    </div>
+</mat-toolbar>

@@ -1,0 +1,89 @@
+<div class="header-view-container">
+    <h3 class="header-view-title">{{getDeviceSingleViewTitleLabel()}}</h3>
+</div>
+
+<mat-card class="rnp-form-container">
+
+    <mat-card-content>
+
+        <form [formGroup]="deviceSingleViewFormGroup">
+
+            <mat-form-field *ngIf="deviceIdParam" appearance="outline">
+                <mat-label>{{deviceSingleViewLabels.columns['deviceId']}}</mat-label>
+                <input formControlName="deviceId" matInput readonly>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>{{deviceSingleViewLabels.columns['name']}}</mat-label>
+                <input formControlName="name" matInput>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>{{deviceSingleViewLabels.columns['serialNum']}}</mat-label>
+                <input formControlName="serialNum" matInput>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>{{deviceSingleViewLabels.columns['macAddress']}}</mat-label>
+                <input formControlName="macAddress" matInput>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>{{deviceSingleViewLabels.columns['ipAddress']}}</mat-label>
+                <input formControlName="ipAddress" matInput>
+            </mat-form-field>
+
+            <mat-form-field *ngIf="false" appearance="outline"> <!-- TODO @Youssef : à rectifier ! -->
+                <mat-label>{{deviceSingleViewLabels.columns['validity']}}</mat-label>
+                <input formControlName="validity" matInput type="date">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>{{deviceSingleViewLabels.columns['zoneAdministrative']}}</mat-label>
+                <mat-select formControlName="zoneAdministrative">
+                    <mat-option *ngFor="let data of dropDownValues.zone.primary" [value]="data.code">
+                        {{ data.name }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>{{deviceSingleViewLabels.columns['deviceSpecId']}}</mat-label>
+                <mat-select formControlName="deviceSpecId">
+                    <mat-option *ngFor="let data of dropDownValues.deviceTypeCode.primary" [value]="data.fieldCode">
+                        {{ data.fieldValue }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>{{deviceSingleViewLabels.columns['center']}}</mat-label>
+                <input formControlName="center" matInput>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>{{deviceSingleViewLabels.columns['isActive']}}</mat-label>
+                <mat-select formControlName="isActive">
+                    <mat-option [value]="true">Active</mat-option>
+                    <mat-option [value]="false">Inactive</mat-option>
+                </mat-select>
+            </mat-form-field>
+
+        </form>
+
+    </mat-card-content>
+
+    <mat-card-actions>
+        <button (click)="onClickSubmitBtnHandler()"
+                class="rnp-form-btn rnp-form-submit-btn"
+                mat-raised-button>
+            {{deviceSingleViewLabels['submit-btn-label']}}
+        </button>
+        <button (click)="onClickCancelBtnHandler()"
+                class="rnp-form-btn"
+                mat-raised-button>
+            {{deviceSingleViewLabels['cancel-btn-label']}}
+        </button>
+    </mat-card-actions>
+
+</mat-card>

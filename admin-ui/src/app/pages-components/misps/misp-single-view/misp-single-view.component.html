@@ -1,0 +1,158 @@
+<div class="header-view-container">
+    <h3 class="header-view-title">{{getMispSingleViewTitleLabel()}}</h3>
+</div>
+
+<mat-card class="rnp-form-container">
+
+    <mat-card-content>
+
+        <form [formGroup]="mispSingleViewFormGroup">
+
+            <p>
+                <mat-form-field *ngIf="mispIdParam" appearance="outline">
+                    <mat-label>{{mispSingleViewLabels.columns['mispId']}}</mat-label>
+                    <input formControlName="mispId" matInput readonly>
+                </mat-form-field>
+            </p>
+
+            <p>
+                <mat-form-field *ngIf="mispIdParam" appearance="outline">
+                    <mat-label>{{mispSingleViewLabels.columns['userID']}}</mat-label>
+                    <input formControlName="userID" matInput readonly>
+                </mat-form-field>
+            </p>
+
+            <p>
+                <mat-form-field appearance="outline">
+                    <mat-label>{{mispSingleViewLabels.columns['organizationName']}}</mat-label>
+                    <input formControlName="organizationName" matInput>
+                </mat-form-field>
+            </p>
+
+            <p>
+                <mat-form-field appearance="outline">
+                    <mat-label>{{mispSingleViewLabels.columns['emailId']}}</mat-label>
+                    <input formControlName="emailId" matInput>
+                </mat-form-field>
+            </p>
+
+            <p>
+                <mat-form-field appearance="outline">
+                    <mat-label>{{mispSingleViewLabels.columns['contactNumber']}}</mat-label>
+                    <input formControlName="contactNumber" matInput>
+                </mat-form-field>
+            </p>
+
+            <p>
+                <mat-form-field appearance="outline">
+                    <mat-label>{{mispSingleViewLabels.columns['address']}}</mat-label>
+                    <input formControlName="address" matInput>
+                </mat-form-field>
+            </p>
+
+            <p>
+                <mat-form-field *ngIf="mispIdParam" appearance="outline">
+                    <mat-label>{{mispSingleViewLabels.columns['isActive']}}</mat-label>
+                    <input formControlName="status" matInput readonly>
+                </mat-form-field>
+            </p>
+
+            <p>
+                <mat-form-field *ngIf="mispIdParam" appearance="outline">
+                    <mat-label>{{mispSingleViewLabels.columns['status_code']}}</mat-label>
+                    <input formControlName="approbation" matInput readonly>
+                </mat-form-field>
+            </p>
+
+            <mat-accordion *ngIf="mispLicenceKey">
+                <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            <h5 class="rnp-form-accordion-sub-container-title">
+                                {{mispSingleViewLabels['misp-licence-accordion-title']}}
+                            </h5>
+                        </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <div class="rnp-form-accordion-sub-container-content">
+
+                        <p>
+                            <mat-form-field appearance="outline">
+                                <mat-label>{{mispSingleViewLabels.columns['mispLicenseKey']}}</mat-label>
+                                <input formControlName="mispLicenseKey" matInput readonly>
+                            </mat-form-field>
+                        </p>
+
+                        <p>
+                            <mat-form-field *ngIf="mispIdParam" appearance="outline">
+                                <mat-label>{{mispSingleViewLabels.columns['mispLicenseKeyExpiry']}}</mat-label>
+                                <input formControlName="mispLicenseKeyExpiry" type="date" matInput readonly>
+                            </mat-form-field>
+                        </p>
+
+                        <p>
+                            <mat-form-field *ngIf="mispIdParam" appearance="outline">
+                                <mat-label>{{mispSingleViewLabels.columns['mispLicenseStatus']}}</mat-label>
+                                <input formControlName="mispLicenseStatus" matInput readonly>
+                            </mat-form-field>
+                        </p>
+
+                    </div>
+                </mat-expansion-panel>
+            </mat-accordion>
+
+            <p>
+                <mat-form-field *ngIf="mispIdParam" appearance="outline">
+                    <mat-label>{{mispSingleViewLabels.columns['activation-actions']}}</mat-label>
+                    <input matInput value=" " hidden>
+                    <button (click)="onClickSubmitBtnHandler()"
+                            class="rnp-form-btn rnp-form-submit-btn rnp-action-btn"
+                            [disabled]="mispIsActiveStatus"
+                            mat-raised-button>
+                        {{mispSingleViewLabels.columns['activate-btn-label']}}
+                    </button>
+                    <button (click)="onClickSubmitBtnHandler()"
+                            class="rnp-form-btn rnp-form-danger-btn rnp-action-btn"
+                            [disabled]="!mispIsActiveStatus"
+                            mat-raised-button>
+                        {{mispSingleViewLabels.columns['desactivate-btn-label']}}
+                    </button>
+                </mat-form-field>
+            </p>
+
+            <p>
+                <mat-form-field *ngIf="mispIdParam" appearance="outline">
+                    <mat-label>{{mispSingleViewLabels.columns['approbation-actions']}}</mat-label>
+                    <input matInput value=" " hidden>
+                    <button (click)="onClickSubmitBtnHandler()"
+                            class="rnp-form-btn rnp-form-submit-btn rnp-action-btn"
+                            [disabled]="!isMispApprobationInProgress"
+                            mat-raised-button>
+                        {{mispSingleViewLabels.columns['approve-btn-label']}}
+                    </button>
+                    <button (click)="onClickSubmitBtnHandler()"
+                            class="rnp-form-btn rnp-form-danger-btn rnp-action-btn"
+                            [disabled]="!isMispApprobationInProgress"
+                            mat-raised-button>
+                        {{mispSingleViewLabels.columns['reject-btn-label']}}
+                    </button>
+                </mat-form-field>
+            </p>
+
+        </form>
+
+    </mat-card-content>
+
+    <mat-card-actions>
+        <button (click)="onClickSubmitBtnHandler()"
+                class="rnp-form-btn rnp-form-submit-btn"
+                mat-raised-button>
+            {{mispSingleViewLabels['submit-btn-label']}}
+        </button>
+        <button (click)="onClickCancelBtnHandler()"
+                class="rnp-form-btn"
+                mat-raised-button>
+            {{mispSingleViewLabels['cancel-btn-label']}}
+        </button>
+    </mat-card-actions>
+
+</mat-card>

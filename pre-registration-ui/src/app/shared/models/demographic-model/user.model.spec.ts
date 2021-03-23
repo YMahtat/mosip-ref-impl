@@ -1,9 +1,9 @@
-import { UserModel } from './user.modal';
+import {UserModel} from './user.modal';
 
 describe('User model check', () => {
-  it('should conform to UserModel ', () => {
-    const fileModel = new UserModel('fre');
+    it('should conform to UserModel ', () => {
+        const fileModel = new UserModel('fre');
 
-    expect(typeof fileModel.preRegId).toEqual('string');
-  });
+        expect(typeof fileModel.preRegId).toEqual('string');
+    });
 });

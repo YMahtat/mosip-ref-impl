@@ -1,10 +1,10 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
-import { DashboardRoutingModule } from './dashboard-routing.module';
-import { SharedModule } from 'src/app/shared/shared.module';
-import { DashBoardComponent } from './dashboard/dashboard.component';
+import {DashboardRoutingModule} from './dashboard-routing.module';
+import {SharedModule} from 'src/app/shared/shared.module';
+import {DashBoardComponent} from './dashboard/dashboard.component';
 
 /**
  * @description This is the feature module for dashboard component.
@@ -14,7 +14,8 @@ import { DashBoardComponent } from './dashboard/dashboard.component';
  * @class DashboardModule
  */
 @NgModule({
-  declarations: [DashBoardComponent],
-  imports: [CommonModule, DashboardRoutingModule, FormsModule, ReactiveFormsModule, SharedModule]
+    declarations: [DashBoardComponent],
+    imports: [CommonModule, DashboardRoutingModule, FormsModule, ReactiveFormsModule, SharedModule]
 })
-export class DashboardModule {}
+export class DashboardModule {
+}
