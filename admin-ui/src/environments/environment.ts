@@ -5,8 +5,8 @@
 export const environment = {
     production: false,
     realBaseBasicUrl: 'https://mosipsbox.rnpdev.shop',
-    baseBasicUrl: 'https://mosipsbox.rnpdev.shop/',
-    baseUrl: 'https://mosipsbox.rnpdev.shop/v1/',
+    baseBasicUrl: '/api-basic/',
+    baseUrl: '/api/',
     realBaseUrl: 'https://mosipsbox.rnpdev.shop/v1'
 };
 

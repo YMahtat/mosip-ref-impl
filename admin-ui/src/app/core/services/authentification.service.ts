@@ -65,7 +65,7 @@ export class AuthentificationService {
 
     redirectToLoginPageByConservingRoutingContext(url: string): void {
         const stateParam = uuidv4();
-        this.cookieService.set('state', stateParam, undefined, '/', environment.realBaseUrl);
+        this.cookieService.set('state', stateParam, undefined, '/');
         // console.log('returning false login redirect' + stateParam);
         window.location.href = `${environment.realBaseUrl}/${MOSIP_URI.login}` + btoa(url);
     }

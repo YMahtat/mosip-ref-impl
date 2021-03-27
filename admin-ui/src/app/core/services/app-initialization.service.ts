@@ -1,7 +1,6 @@
 import {Injectable} from '@angular/core';
-import {AuthentificationService} from '../auth-service/authentification.service';
-import {MatDialog} from '@angular/material/dialog';
-import {AppLoadingComponent} from '../../shared/components/app-loading/app-loading.component';
+import {AuthentificationService} from './authentification.service';
+import {AppPopUpDialogUtilityService} from '../../shared/utilities/app-pop-up-dialog-utility.service';
 
 @Injectable({
     providedIn: 'root'
@@ -10,12 +9,12 @@ export class AppInitializationService {
 
     constructor(
         private authentificationService: AuthentificationService,
-        private matDialog: MatDialog
+        private appPopUpDialogUtilityService: AppPopUpDialogUtilityService
     ) {
     }
 
     loadInitialization(): Promise<void> {
-        const appLoadingMatDialogRef = this.matDialog.open(AppLoadingComponent, { disableClose: true });
+        const appLoadingMatDialogRef = this.appPopUpDialogUtilityService.openAppLoadingPopUp();
         return new Promise<void>((resolve, reject) => {
             this.authentificationService.setUserAuthentificationDetailsFromAuthManger().then(() => {
                 resolve();

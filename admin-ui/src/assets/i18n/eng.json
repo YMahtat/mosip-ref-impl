@@ -3,6 +3,9 @@
     "top-nav": {
         "title": "RNP Portail d'Administration"
     },
+    "home": {
+        "title": "ACCUEIL"
+    },
     "centers": {
         "title": "CENTRES",
         "manage-centers": {
@@ -159,6 +162,7 @@
         "misp-single-view": {
             "create-title": "Creation de MISP",
             "update-title": "Edition de MISP",
+            "misp-licence-accordion-title": "RNP INFRASTRUCTURE PROVIDER LICENCE",
             "columns": {
                 "mispId": "MISP ID",
                 "organizationName": "ORGANISATION",
@@ -167,7 +171,16 @@
                 "address": "ADRESSE",
                 "contactNumber": "TELEPHONE",
                 "isActive": "STATUT",
-                "status_code": "APPROBATION"
+                "status_code": "APPROBATION",
+                "mispLicenseKey": "CLÉ DE LICENCE",
+                "mispLicenseKeyExpiry": "EXPIRATION DE LICENCE",
+                "mispLicenseStatus": "STATUT DE LICENCE",
+                "activation-actions": "MODIFIRE L'ETAT D'ACTIVATION",
+                "activate-btn-label": "ACTIVER",
+                "desactivate-btn-label": "DESACTIVER",
+                "approbation-actions": "MODIFIRE L'ETAT D'APPROBATION",
+                "approve-btn-label": "APPROUVER",
+                "reject-btn-label": "REJETER"
             },
             "submit-btn-label": "VALIDER",
             "cancel-btn-label": "ANNULER"
@@ -209,14 +222,14 @@
             "cancel-btn-label": "ANNULER"
         }
     },
-    "requests": {
+    "partners-requests": {
         "title": "RNP PARTNERS REQUESTS",
-        "manage-requests": {
+        "manage-partners-requests": {
             "title": "Gestion des requêtes des Partenaires",
-            "create-new-request-btn-label": "Créer une nouvelle requête",
-            "filter-requests-field-label": "Filtre",
-            "filter-requests-field-placeholder": "Ex. 100",
-            "filter-requests-field-hint": "Il est possible de filter par rapport à tous les champs.",
+            "create-new-partner-request-btn-label": "Créer une nouvelle requête",
+            "filter-partners-requests-field-label": "Filtre",
+            "filter-partners-requests-field-placeholder": "Ex. 100",
+            "filter-partners-requests-field-hint": "Il est possible de filter par rapport à tous les champs.",
             "columns": {
                 "partnerID": "PARTNER-ID",
                 "apiKeyReqNo": "N° REQUETE",
@@ -227,15 +240,15 @@
             },
             "items-per-page-label": "resultats des requêtes par page : "
         },
-        "request-single-view": {
-            "create-title": "Creation de Requête",
-            "update-title": "Edition de Requête",
+        "partner-request-single-view": {
+            "create-title": "Creation de Requête de Partenaire",
+            "update-title": "Edition de Requête de Partenaire",
             "columns": {
                 "partnerID": "PARTNER-ID",
-                "apiKeyReqNo": "N° REQUETE",
-                "organizationName": "ORGANISATION",
-                "policyName": "POLITIQUE",
-                "policyDesc": "DESC. DE LA POLITIQUE",
+                "requestId": "N° REQUÊTE",
+                "organizationName": "NOM DE L'ORGANISATION",
+                "policyName": "NOM DE LA POLITIQUE",
+                "policyDesc": "DESCRIPTION DE LA POLITIQUE",
                 "status": "STATUT"
             },
             "submit-btn-label": "VALIDER",

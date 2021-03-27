@@ -6,8 +6,7 @@ import {Router} from '@angular/router';
 import {DEFAULT_PRIMARY_LANGUAGE_CODE, ROUTES} from '../../../app.constants';
 import LanguageFactory from '../../../../assets/i18n';
 import {PartnerRequestClientService} from '../../../shared/rest-api-client-services/partner-request-client.service';
-import {MatDialog} from '@angular/material/dialog';
-import {AppLoadingComponent} from '../../../shared/components/app-loading/app-loading.component';
+import {AppPopUpDialogUtilityService} from '../../../shared/utilities/app-pop-up-dialog-utility.service';
 
 @Component({
     selector: 'app-partners-requests-view',
@@ -28,7 +27,7 @@ export class PartnersRequestsViewComponent implements OnInit, AfterViewInit {
     constructor(
         private appLanguageStorageService: AppLanguageStorageService,
         private partnerRequestClientService: PartnerRequestClientService,
-        private matDialog: MatDialog,
+        private appPopUpDialogUtilityService: AppPopUpDialogUtilityService,
         private router: Router
     ) {
         this.primaryLanguageCode = DEFAULT_PRIMARY_LANGUAGE_CODE;
@@ -39,7 +38,7 @@ export class PartnersRequestsViewComponent implements OnInit, AfterViewInit {
         this.setRequestsViewLabels(this.primaryLanguageCode);
         // @ts-ignore
         this.paginator._intl.itemsPerPageLabel = this.requestsViewLabels['items-per-page-label'];
-        const appLoadingMatDialogRef = this.matDialog.open(AppLoadingComponent, { disableClose: true });
+        const appLoadingMatDialogRef = this.appPopUpDialogUtilityService.openAppLoadingPopUp();
         this.partnerRequestClientService.getRegistrationRequestsDetails().subscribe(
             (requestsResponse) => {
                 const requests = (requestsResponse && requestsResponse.response && requestsResponse.response.apikeyRequests) ?

@@ -3,10 +3,256 @@
     "top-nav": {
         "title": "بوابة إدارة الشركاء"
     },
+    "home": {
+        "title": "ACCUEIL"
+    },
+    "centers": {
+        "title": "CENTRES",
+        "manage-centers": {
+            "title": "Gestion des centres",
+            "create-new-center-btn-label": "Créer un nouveau centre",
+            "filter-centers-field-label": "Filtre",
+            "filter-centers-field-placeholder": "Ex. 100",
+            "filter-centers-field-hint": "Il est possible de filter par rapport à tous les champs.",
+            "columns": {
+                "name": "CENTRE",
+                "centerTypeName": "TYPE",
+                "users": "UTILISATEURS",
+                "devices": "DISPOSITIFS",
+                "machines": "MACHINES",
+                "contactPerson": "CONTACT",
+                "contactPhone": "TELEPHONE",
+                "isActive": "STATUT",
+                "createdDateTime": "CREATION"
+            },
+            "items-per-page-label": "resultats des centres par page : "
+        },
+        "center-single-view": {
+            "create-title": "Creation de centre",
+            "update-title": "Edition de centre",
+            "columns": {
+                "centerId": "ID",
+                "name": "CENTRE",
+                "centerType": "TYPE",
+                "contactPerson": "CONTACT",
+                "contactPhone": "TELEPHONE",
+                "longitude": "LONGITUDE",
+                "latitude": "LATITUDE",
+                "addressLine1": "ADRESSE LIGNE 1",
+                "addressLine2": "ADRESSE LIGNE 2",
+                "addressLine3": "ADRESSE LIGNE 3",
+                "region": "REGION",
+                "province": "PROVINCE",
+                "city": "VILLE",
+                "zone": "ZONE",
+                "zoneAdministrative": "ZONE ADMINISTRATIVE",
+                "holidayLocation": "ZONE DE VACANCE",
+                "numberOfKiosks": "NOMBRE DE KIOSQUE",
+                "perKioskProcessTime": "TEMPS DE TRAITEMENT PAR KIOSQUE",
+                "centerStartTime": "HEURE DE DEBUT",
+                "centerEndTime": "HEURE DE FIN",
+                "workingHours": "HEURES DE TRAVAIL",
+                "lunchStartTime": "HEURE DU DÉJEUNER",
+                "lunchEndTime": "HEURE DE FIN DU DÉJEUNER",
+                "workingDays": "JOURS DE TRAVAIL",
+                "exceptionalHoliday": "VACANCES EXCEPTIONNELLES",
+                "isActive": "STATUT"
+            },
+            "submit-btn-label": "VALIDER",
+            "cancel-btn-label": "ANNULER"
+        }
+    },
+    "machines": {
+        "title": "MACHINES",
+        "manage-machines": {
+            "title": "Gestion des machines",
+            "create-new-machine-btn-label": "Créer une nouvelle machine",
+            "filter-machines-field-label": "Filtre",
+            "filter-machines-field-placeholder": "Ex. 100",
+            "filter-machines-field-hint": "Il est possible de filter par rapport à tous les champs.",
+            "columns": {
+                "name": "MACHINE",
+                "machineTypeName": "TYPE",
+                "macAddress": "MAC",
+                "serialNum": "SERIAL",
+                "mapStatus": "MAP STATUS",
+                "isActive": "STATUT",
+                "createdDateTime": "CREATION"
+            },
+            "items-per-page-label": "resultats des machines par page : "
+        },
+        "machine-single-view": {
+            "create-title": "Creation de machine",
+            "update-title": "Edition de machine",
+            "columns": {
+                "machineId": "ID",
+                "name": "NOM DE LA MACHINE",
+                "serialNum": "NUMERO DE SERIAL",
+                "macAddress": "ADRESSE MAC",
+                "ipAddress": "ADRESSE IP",
+                "validity": "DATE DE VALIDITÉ",
+                "zoneAdministrative": "ZONE ADMINISTRATIVE",
+                "machineSpecId": "IDENTIFIANT DE LA MACHINE",
+                "publicKey": "CLÉ PUBLIQUE",
+                "isActive": "STATUT"
+            },
+            "submit-btn-label": "VALIDER",
+            "cancel-btn-label": "ANNULER"
+        }
+    },
+    "devices": {
+        "title": "DISPOSITIFS",
+        "manage-devices": {
+            "title": "Gestion des Dispositifs",
+            "create-new-device-btn-label": "Créer un nouveau Dispositif",
+            "filter-devices-field-label": "Filtre",
+            "filter-devices-field-placeholder": "Ex. 100",
+            "filter-devices-field-hint": "Il est possible de filter par rapport à tous les champs.",
+            "columns": {
+                "name": "DISPOSITIF",
+                "deviceTypeName": "TYPE",
+                "macAddress": "MAC",
+                "serialNum": "SERIAL",
+                "mapStatus": "MAP STATUS",
+                "isActive": "STATUT",
+                "createdDateTime": "CREATION"
+            },
+            "items-per-page-label": "resultats des dispositif par page : "
+        },
+        "device-single-view": {
+            "create-title": "Creation de Dispositif",
+            "update-title": "Edition de Dispositif",
+            "columns": {
+                "deviceId": "ID",
+                "name": "NOM DE LA MACHINE",
+                "serialNum": "NUMERO DE SERIAL",
+                "macAddress": "ADRESSE MAC",
+                "ipAddress": "ADRESSE IP",
+                "validity": "DATE DE VALIDITÉ",
+                "zoneAdministrative": "ZONE ADMINISTRATIVE",
+                "deviceSpecId": "IDENTIFIANT DE LA MACHINE",
+                "center": "CENTRE",
+                "publicKey": "CLÉ PUBLIQUE",
+                "isActive": "STATUT"
+            },
+            "submit-btn-label": "VALIDER",
+            "cancel-btn-label": "ANNULER"
+        }
+    },
     "misps": {
-        "title": "MISPs"
+        "title": "RNP INFRASTRUCTURE PROVIDER",
+        "manage-misps": {
+            "title": "Gestion des MISPs Partners",
+            "create-new-misp-btn-label": "Créer un nouveau MISP",
+            "filter-misps-field-label": "Filtre",
+            "filter-misps-field-placeholder": "Ex. 100",
+            "filter-misps-field-hint": "Il est possible de filter par rapport à tous les champs.",
+            "columns": {
+                "id": "ID",
+                "name": "ORGANISATION",
+                "userID": "UTILISATEUR",
+                "emailId": "EMAIL",
+                "address": "ADRESSE",
+                "contactNumber": "TELEPHONE",
+                "isActive": "STATUT",
+                "status_code": "APPROBATION"
+            },
+            "items-per-page-label": "resultats des misps par page : "
+        },
+        "misp-single-view": {
+            "create-title": "Creation de MISP",
+            "update-title": "Edition de MISP",
+            "misp-licence-accordion-title": "RNP INFRASTRUCTURE PROVIDER LICENCE",
+            "columns": {
+                "mispId": "MISP ID",
+                "organizationName": "ORGANISATION",
+                "userID": "UTILISATEUR",
+                "emailId": "EMAIL",
+                "address": "ADRESSE",
+                "contactNumber": "TELEPHONE",
+                "isActive": "STATUT",
+                "status_code": "APPROBATION",
+                "mispLicenseKey": "CLÉ DE LICENCE",
+                "mispLicenseKeyExpiry": "EXPIRATION DE LICENCE",
+                "mispLicenseStatus": "STATUT DE LICENCE",
+                "activation-actions": "MODIFIRE L'ETAT D'ACTIVATION",
+                "activate-btn-label": "ACTIVER",
+                "desactivate-btn-label": "DESACTIVER",
+                "approbation-actions": "MODIFIRE L'ETAT D'APPROBATION",
+                "approve-btn-label": "APPROUVER",
+                "reject-btn-label": "REJETER"
+            },
+            "submit-btn-label": "VALIDER",
+            "cancel-btn-label": "ANNULER"
+        }
     },
     "auth-partners": {
-        "title": "AUTH PARTNERs"
+        "title": "RNP AUTH PARTNERS",
+        "manage-auth-partners": {
+            "title": "Gestion des Authentifications des Partenaires",
+            "create-new-auth-partner-btn-label": "Créer un nouveau Auth Partner",
+            "filter-auth-partners-field-label": "Filtre",
+            "filter-auth-partners-field-placeholder": "Ex. 100",
+            "filter-auth-partners-field-hint": "Il est possible de filter par rapport à tous les champs.",
+            "columns": {
+                "partnerID": "ID",
+                "partnerType": "TYPE",
+                "organizationName": "ORGANISATION",
+                "emailId": "EMAIL",
+                "address": "ADRESSE",
+                "contactNumber": "TELEPHONE",
+                "status": "STATUT"
+            },
+            "items-per-page-label": "resultats des partners par page : "
+        },
+        "auth-partner-single-view": {
+            "create-title": "Creation d'Auth Partner",
+            "update-title": "Edition d'Auth Partner",
+            "columns": {
+                "partnerId": "ID",
+                "partnerType": "TYPE",
+                "policyGroup": "POLICY GROUP",
+                "organizationName": "ORGANISATION",
+                "emailId": "EMAIL",
+                "address": "ADRESSE",
+                "contactNumber": "TELEPHONE",
+                "status": "STATUT"
+            },
+            "submit-btn-label": "VALIDER",
+            "cancel-btn-label": "ANNULER"
+        }
+    },
+    "partners-requests": {
+        "title": "RNP PARTNERS REQUESTS",
+        "manage-partners-requests": {
+            "title": "Gestion des requêtes des Partenaires",
+            "create-new-partner-request-btn-label": "Créer une nouvelle requête",
+            "filter-partners-requests-field-label": "Filtre",
+            "filter-partners-requests-field-placeholder": "Ex. 100",
+            "filter-partners-requests-field-hint": "Il est possible de filter par rapport à tous les champs.",
+            "columns": {
+                "partnerID": "PARTNER-ID",
+                "apiKeyReqNo": "N° REQUETE",
+                "organizationName": "ORGANISATION",
+                "policyName": "POLITIQUE",
+                "policyDesc": "DESC. DE LA POLITIQUE",
+                "status": "STATUT"
+            },
+            "items-per-page-label": "resultats des requêtes par page : "
+        },
+        "partner-request-single-view": {
+            "create-title": "Creation de Requête de Partenaire",
+            "update-title": "Edition de Requête de Partenaire",
+            "columns": {
+                "partnerID": "PARTNER-ID",
+                "requestId": "N° REQUÊTE",
+                "organizationName": "NOM DE L'ORGANISATION",
+                "policyName": "NOM DE LA POLITIQUE",
+                "policyDesc": "DESCRIPTION DE LA POLITIQUE",
+                "status": "STATUT"
+            },
+            "submit-btn-label": "VALIDER",
+            "cancel-btn-label": "ANNULER"
+        }
     }
 }

@@ -6,8 +6,7 @@ import {Router} from '@angular/router';
 import {DEFAULT_PRIMARY_LANGUAGE_CODE, ROUTES} from '../../../app.constants';
 import LanguageFactory from '../../../../assets/i18n';
 import {MachineClientService} from '../../../shared/rest-api-client-services/machine-client.service';
-import {MatDialog} from '@angular/material/dialog';
-import {AppLoadingComponent} from '../../../shared/components/app-loading/app-loading.component';
+import {AppPopUpDialogUtilityService} from '../../../shared/utilities/app-pop-up-dialog-utility.service';
 
 @Component({
     selector: 'app-machines-view',
@@ -26,7 +25,7 @@ export class MachinesViewComponent implements OnInit, AfterViewInit {
     constructor(
         private appLanguageStorageService: AppLanguageStorageService,
         private machineClientService: MachineClientService,
-        private matDialog: MatDialog,
+        private appPopUpDialogUtilityService: AppPopUpDialogUtilityService,
         private router: Router
     ) {
         this.primaryLanguageCode = DEFAULT_PRIMARY_LANGUAGE_CODE;
@@ -67,7 +66,7 @@ export class MachinesViewComponent implements OnInit, AfterViewInit {
     }
 
     private setMachinesDataSource(pageNumber: number): void {
-        const appLoadingMatDialogRef = this.matDialog.open(AppLoadingComponent, {disableClose: true});
+        const appLoadingMatDialogRef = this.appPopUpDialogUtilityService.openAppLoadingPopUp();
         this.machineClientService.getMachines(this.primaryLanguageCode, pageNumber).subscribe(
             (machinesResponse) => {
                 const machinesResponseContent = (machinesResponse && machinesResponse.response) ? machinesResponse.response : {};

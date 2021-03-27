@@ -7,13 +7,15 @@ import {NgMaterialDesignImportsModule} from '../../ng-material-design-imports/ng
 import {ReactiveFormsModule} from '@angular/forms';
 import {SharedModule} from '../../shared/shared.module';
 import {AuthPartnerSingleViewComponent} from './auth-partner-single-view/auth-partner-single-view.component';
+import {AuthPartnerApiKeysViewComponent} from './auth-partner-single-view/auth-partner-api-keys-view/auth-partner-api-keys-view.component';
 
 
 @NgModule({
     declarations: [
         AuthPartnersComponent,
         AuthPartnersViewComponent,
-        AuthPartnerSingleViewComponent
+        AuthPartnerSingleViewComponent,
+        AuthPartnerApiKeysViewComponent
     ],
     imports: [
         CommonModule,

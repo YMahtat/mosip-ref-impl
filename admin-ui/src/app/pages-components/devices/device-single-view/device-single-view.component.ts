@@ -3,7 +3,6 @@ import {CenterDropdown} from '../../../shared/models/center-dropdown.model';
 import {FormControl, FormGroup} from '@angular/forms';
 import {MasterdataClientService} from '../../../shared/rest-api-client-services/masterdata-client.service';
 import {AppLanguageStorageService} from '../../../shared/storage-services/app-language-storage.service';
-import {MatDialog} from '@angular/material/dialog';
 import {ActivatedRoute, Router} from '@angular/router';
 import {DEFAULT_PRIMARY_LANGUAGE_CODE, ROUTES} from '../../../app.constants';
 import LanguageFactory from '../../../../assets/i18n';
@@ -14,7 +13,8 @@ import {RequestModel} from '../../../shared/models/request.model';
 import {DeviceClientService} from '../../../shared/rest-api-client-services/device-client.service';
 import {TimeUtilityService} from '../../../shared/utilities/time-utility.service';
 import {DeviceDto} from '../../../shared/models/device-dto.model';
-import {AppLoadingComponent} from '../../../shared/components/app-loading/app-loading.component';
+import {CenterClientService} from '../../../shared/rest-api-client-services/center-client.service';
+import {AppPopUpDialogUtilityService} from '../../../shared/utilities/app-pop-up-dialog-utility.service';
 
 @Component({
     selector: 'app-device-single-view',
@@ -26,9 +26,6 @@ export class DeviceSingleViewComponent implements OnInit {
     primaryLanguageCode: string;
     deviceSingleViewLabels: any;
 
-    deviceIdParam: string | undefined;
-
-    dropDownValues = new CenterDropdown();
     deviceSingleViewFormGroup = new FormGroup({
         deviceId: new FormControl('', []),
         name: new FormControl('', []),
@@ -41,17 +38,23 @@ export class DeviceSingleViewComponent implements OnInit {
         center: new FormControl('', []),
         isActive: new FormControl('', [])
     });
-    private deviceDataSource: any;
+
+    deviceIdParam: string | undefined;
+    dropDownValues = new CenterDropdown();
+    deviceDataSource: any;
+    centersDataSource: Array<any>;
 
     constructor(
         private deviceClientService: DeviceClientService,
+        private centerClientService: CenterClientService,
         private masterdataClientService: MasterdataClientService,
         private appLanguageStorageService: AppLanguageStorageService,
-        private matDialog: MatDialog,
+        private appPopUpDialogUtilityService: AppPopUpDialogUtilityService,
         private router: Router,
         private activatedRoute: ActivatedRoute
     ) {
         this.primaryLanguageCode = DEFAULT_PRIMARY_LANGUAGE_CODE;
+        this.centersDataSource = [];
     }
 
     get deviceSingleViewFormGroupControls(): any {
@@ -63,6 +66,7 @@ export class DeviceSingleViewComponent implements OnInit {
         this.setDeviceSingleViewLabels(this.primaryLanguageCode);
         this.setZoneAdministrativeDropdownValues();
         this.setDeviceSpecificationsDropdownValue();
+        this.setCentersDataSource(0);
         this.activatedRoute.params.subscribe(params => {
             this.deviceIdParam = params && params.id;
             if (this.deviceIdParam) {
@@ -120,9 +124,30 @@ export class DeviceSingleViewComponent implements OnInit {
         });
     }
 
+    private setCentersDataSource(pageNumber: number): void {
+        const appLoadingMatDialogRef = this.appPopUpDialogUtilityService.openAppLoadingPopUp();
+        this.centerClientService.getRegistrationCentersDetails(this.primaryLanguageCode, pageNumber).subscribe(
+            (centersResponse) => {
+                const centersResponseContent = (centersResponse && centersResponse.response) ? centersResponse.response : {};
+                pageNumber++;
+                const resultsSize = (centersResponseContent.totalRecord) ? centersResponseContent.totalRecord : undefined;
+                const centers = (centersResponseContent.data) ? [...centersResponseContent.data] : [];
+                this.centersDataSource = [...this.centersDataSource, ...centers];
+                if (resultsSize && centers && this.centersDataSource.length < resultsSize) {
+                    this.setCentersDataSource(pageNumber);
+                }
+            },
+            () => {
+            },
+            () => {
+                appLoadingMatDialogRef.close();
+            }
+        );
+    }
+
     private setDeviceSingleViewFormGroupControlsValuesWithViewData(): void {
         if (this.deviceIdParam) {
-            const appLoadingMatDialogRef = this.matDialog.open(AppLoadingComponent, { disableClose: true });
+            const appLoadingMatDialogRef = this.appPopUpDialogUtilityService.openAppLoadingPopUp();
             this.deviceClientService.getDevices(this.primaryLanguageCode, 0, this.deviceIdParam).subscribe(
                 (deviceResponse) => {
                     const reponseContent = (deviceResponse && deviceResponse.response) ? deviceResponse.response : {};
@@ -132,6 +157,7 @@ export class DeviceSingleViewComponent implements OnInit {
                     this.deviceSingleViewFormGroup.controls.serialNum.setValue(this.deviceDataSource.serialNum);
                     this.deviceSingleViewFormGroup.controls.macAddress.setValue(this.deviceDataSource.macAddress);
                     this.deviceSingleViewFormGroup.controls.ipAddress.setValue(this.deviceDataSource.ipAddress);
+                    this.deviceSingleViewFormGroup.controls.center.setValue(this.deviceDataSource.regCenterId);
                     this.deviceSingleViewFormGroup.controls.validity.setValue(
                         TimeUtilityService.formatDate(this.deviceDataSource.validityDateTime)
                     );
@@ -150,7 +176,7 @@ export class DeviceSingleViewComponent implements OnInit {
     }
 
     private createNewDevice(): void {
-        const appLoadingMatDialogRef = this.matDialog.open(AppLoadingComponent, { disableClose: true });
+        const appLoadingMatDialogRef = this.appPopUpDialogUtilityService.openAppLoadingPopUp();
         const deviceToCreate = new DeviceDto(
             this.deviceSingleViewFormGroup.controls.zoneAdministrative.value,
             null, // TODO @Youssef : à rectifier !,
@@ -181,7 +207,7 @@ export class DeviceSingleViewComponent implements OnInit {
     }
 
     private updateDevice(): void {
-        const appLoadingMatDialogRef = this.matDialog.open(AppLoadingComponent, { disableClose: true });
+        const appLoadingMatDialogRef = this.appPopUpDialogUtilityService.openAppLoadingPopUp();
         const deviceToUpdate = new DeviceDto(
             this.deviceSingleViewFormGroup.controls.zoneAdministrative.value,
             null, // TODO @Youssef : à rectifier !,

@@ -1,6 +1,6 @@
 {
     "/api/": {
-        "target": "https://mosipsbox.rnpdev.shop/v1/",
+        "target": "https://mosipsbox-dev1.rnpdev.shop/v1/",
         "secure": false,
         "changeOrigin": true,
         "pathRewrite": {
@@ -9,7 +9,7 @@
         "logLevel": "debug"
     },
     "/api-basic/": {
-        "target": "https://mosipsbox.rnpdev.shop/",
+        "target": "https://mosipsbox-dev1.rnpdev.shop/",
         "secure": false,
         "changeOrigin": true,
         "pathRewrite": {

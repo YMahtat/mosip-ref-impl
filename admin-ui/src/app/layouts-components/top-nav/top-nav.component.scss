@@ -23,7 +23,7 @@
 .zone {
     text-align: center;
     // flex: 1;
-    background: #c1272d 0% 0% no-repeat padding-box;
+    background: #119DB5 0% 0% no-repeat padding-box;
     border-radius: 26px;
     opacity: 0.8;
     color: #ffffff;
@@ -32,13 +32,21 @@
     width: 100px;
     text-overflow: ellipsis;
 
+    .zone-icon {
+        margin-left: 0.2rem;
+        font-size: 1rem;
+        height: 1rem;
+        width: 1rem;
+    }
+
     .zone-text {
         height: 20px;
         position: relative;
         font-family: "Roboto", sans-serif;
-        font-size: 11px;
+        font-size: 1.2rem;
         text-transform: uppercase;
         font-weight: 100;
+        margin-right: 0.2rem;
     }
 
     @media (max-width: 840px) {
@@ -56,7 +64,7 @@
 }
 
 ::ng-deep .profile {
-    flex: 2;
+    //flex: 1;
     text-align: right;
 
     span {

@@ -33,6 +33,15 @@
                 <input formControlName="ipAddress" matInput>
             </mat-form-field>
 
+            <mat-form-field appearance="outline">
+                <mat-label>{{deviceSingleViewLabels.columns['center']}}</mat-label>
+                <mat-select formControlName="center">
+                    <mat-option *ngFor="let center of centersDataSource" [value]="center.id">
+                        {{ center.name }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+
             <mat-form-field *ngIf="false" appearance="outline"> <!-- TODO @Youssef : à rectifier ! -->
                 <mat-label>{{deviceSingleViewLabels.columns['validity']}}</mat-label>
                 <input formControlName="validity" matInput type="date">

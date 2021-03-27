@@ -1,0 +1,35 @@
+<div class="result-table-container mat-elevation-z8">
+
+    <table [dataSource]="authPartnerApiKeysDatasource" class="result-table-content" mat-table>
+
+        <!-- Position Column -->
+        <ng-container matColumnDef="apiKeyReqID">
+            <th *matHeaderCellDef mat-header-cell>{{authPartnerApiKeysViewLabels.columns['apiKeyReqID']}}</th>
+            <td *matCellDef="let element" mat-cell> {{element.apiKeyReqID}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="partnerApiKey">
+            <th *matHeaderCellDef mat-header-cell>{{authPartnerApiKeysViewLabels.columns['partnerApiKey']}}</th>
+            <td *matCellDef="let element" mat-cell> {{element.partnerApiKey}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="apiKeyRequestStatus">
+            <th *matHeaderCellDef mat-header-cell>{{authPartnerApiKeysViewLabels.columns['apiKeyRequestStatus']}}</th>
+            <td *matCellDef="let element" mat-cell> {{element.apiKeyRequestStatus}} </td>
+        </ng-container>
+
+
+        <ng-container matColumnDef="validityTill">
+            <th *matHeaderCellDef mat-header-cell>{{authPartnerApiKeysViewLabels.columns['validityTill']}}</th>
+            <td *matCellDef="let element" mat-cell> {{element.validityTill}} </td>
+        </ng-container>
+
+        <tr *matHeaderRowDef="authPartnerApiKeysDisplayedColumns" mat-header-row></tr>
+        <tr *matRowDef="let row; columns: authPartnerApiKeysDisplayedColumns;" mat-row></tr>
+
+    </table>
+
+    <mat-paginator [pageSizeOptions]="[10, 20, 30]" showFirstLastButtons></mat-paginator>
+
+</div>
+

@@ -1,13 +1,18 @@
 import {Component, OnInit} from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
 import {AppLanguageStorageService} from '../../../shared/storage-services/app-language-storage.service';
-import {MatDialog} from '@angular/material/dialog';
 import {ActivatedRoute, Router} from '@angular/router';
-import {DEFAULT_PRIMARY_LANGUAGE_CODE, ROUTES} from '../../../app.constants';
+import {
+    DEFAULT_PRIMARY_LANGUAGE_CODE,
+    RNP_MOSIP_AUTH_PARTNER_ACTIVE_STATUS,
+    RNP_MOSIP_AUTH_PARTNER_DESACTIVE_STATUS,
+    ROUTES
+} from '../../../app.constants';
 import LanguageFactory from '../../../../assets/i18n';
 import {AuthPartnerClientService} from '../../../shared/rest-api-client-services/auth-partner-client.service';
-import {AppLoadingComponent} from '../../../shared/components/app-loading/app-loading.component';
 import {AuthPartnerDto} from '../../../shared/models/auth-partner-dto.model';
+import {UdpateAuthPartnerStatusDto} from '../../../shared/models/udpate-auth-partner-status-dto.model';
+import {AppPopUpDialogUtilityService} from '../../../shared/utilities/app-pop-up-dialog-utility.service';
 
 @Component({
     selector: 'app-auth-partner-single-view',
@@ -19,8 +24,6 @@ export class AuthPartnerSingleViewComponent implements OnInit {
     primaryLanguageCode: string;
     authPartnerSingleViewLabels: any;
 
-    partnerIdParam: string | undefined;
-
     authPartnerSingleViewFormGroup = new FormGroup({
         partnerId: new FormControl('', []),
         organizationName: new FormControl('', []),
@@ -29,12 +32,18 @@ export class AuthPartnerSingleViewComponent implements OnInit {
         emailId: new FormControl('', []),
         contactNumber: new FormControl('', []),
         address: new FormControl('', []),
+        status: new FormControl('', []),
     });
+
+    partnerIdParam: string | undefined;
+    authPartnerApiKeys: Array<any> | undefined;
+    isActiveAuthPartner: boolean | undefined;
+    isDesactiveAuthPartner: boolean | undefined;
 
     constructor(
         private authPartnerClientService: AuthPartnerClientService,
         private appLanguageStorageService: AppLanguageStorageService,
-        private matDialog: MatDialog,
+        private appPopUpDialogUtilityService: AppPopUpDialogUtilityService,
         private router: Router,
         private activatedRoute: ActivatedRoute
     ) {
@@ -56,6 +65,10 @@ export class AuthPartnerSingleViewComponent implements OnInit {
         });
     }
 
+    getAuthPartnerSingleViewTitleLabel(): string {
+        return (this.partnerIdParam) ? this.authPartnerSingleViewLabels['update-title'] : this.authPartnerSingleViewLabels['create-title'];
+    }
+
     onClickSubmitBtnHandler(): void {
         if (this.authPartnerSingleViewFormGroup.valid) {
             if (!this.partnerIdParam) {
@@ -72,8 +85,17 @@ export class AuthPartnerSingleViewComponent implements OnInit {
         this.router.navigate([`${this.primaryLanguageCode}/${ROUTES.AUTH_PARTNERS}`]);
     }
 
-    getAuthPartnerSingleViewTitleLabel(): string {
-        return (this.partnerIdParam) ? this.authPartnerSingleViewLabels['update-title'] : this.authPartnerSingleViewLabels['create-title'];
+    onClickActiveAuthPartnerBtnHandler(): void {
+        if (!this.isActiveAuthPartner) {
+            this.updateAuthPartnerStatus(RNP_MOSIP_AUTH_PARTNER_ACTIVE_STATUS);
+        }
+    }
+
+
+    onClickDesactiveAuthPartnerBtnHandler(): void {
+        if (!this.isDesactiveAuthPartner) {
+            this.updateAuthPartnerStatus(RNP_MOSIP_AUTH_PARTNER_DESACTIVE_STATUS);
+        }
     }
 
     private setAuthPartnerSingleViewLabels(primaryLanguageCode: string): void {
@@ -85,7 +107,7 @@ export class AuthPartnerSingleViewComponent implements OnInit {
 
     private setAuthPartnerSingleViewFormGroupControlsValuesWithViewData(): void {
         if (this.partnerIdParam) {
-            const appLoadingMatDialogRef = this.matDialog.open(AppLoadingComponent, { disableClose: true });
+            const appLoadingMatDialogRef = this.appPopUpDialogUtilityService.openAppLoadingPopUp();
             this.authPartnerClientService.getAuthPartnerDetailsById(this.partnerIdParam).subscribe(
                 (partnerResponse) => {
                     const partnerReponseContent = (partnerResponse && partnerResponse.response) ? partnerResponse.response : {};
@@ -96,6 +118,27 @@ export class AuthPartnerSingleViewComponent implements OnInit {
                     this.authPartnerSingleViewFormGroup.controls.emailId.setValue(partnerReponseContent.emailId);
                     this.authPartnerSingleViewFormGroup.controls.contactNumber.setValue(partnerReponseContent.contactNumber);
                     this.authPartnerSingleViewFormGroup.controls.address.setValue(partnerReponseContent.address);
+                    this.authPartnerSingleViewFormGroup.controls.status.setValue(partnerReponseContent.status);
+                    this.isActiveAuthPartner = (partnerReponseContent.status === RNP_MOSIP_AUTH_PARTNER_ACTIVE_STATUS);
+                    this.isDesactiveAuthPartner = !this.isActiveAuthPartner;
+                    this.setAuthPartnerApiKeysViewValuesWithViewData();
+                },
+                () => {
+                },
+                () => {
+                    appLoadingMatDialogRef.close();
+                }
+            );
+        }
+    }
+
+    private setAuthPartnerApiKeysViewValuesWithViewData(): void {
+        if (this.partnerIdParam) {
+            const appLoadingMatDialogRef = this.appPopUpDialogUtilityService.openAppLoadingPopUp();
+            this.authPartnerClientService.getRegistrationAuthPartnersApiKeysDetails(this.partnerIdParam).subscribe(
+                (partnerApiKeysResponse) => {
+                    // tslint:disable-next-line:max-line-length
+                    this.authPartnerApiKeys = (partnerApiKeysResponse && partnerApiKeysResponse.response) ? partnerApiKeysResponse.response : {};
                 },
                 () => {
                 },
@@ -107,7 +150,7 @@ export class AuthPartnerSingleViewComponent implements OnInit {
     }
 
     private createNewAuthPartner(): void {
-        const appLoadingMatDialogRef = this.matDialog.open(AppLoadingComponent, { disableClose: true });
+        const appLoadingMatDialogRef = this.appPopUpDialogUtilityService.openAppLoadingPopUp();
         const authPartnerToCreate = new AuthPartnerDto(
             this.authPartnerSingleViewFormGroup.controls.partnerId.value,
             this.authPartnerSingleViewFormGroup.controls.partnerType.value,
@@ -135,7 +178,7 @@ export class AuthPartnerSingleViewComponent implements OnInit {
     }
 
     private updateAuthPartner(): void {
-        const appLoadingMatDialogRef = this.matDialog.open(AppLoadingComponent, { disableClose: true });
+        const appLoadingMatDialogRef = this.appPopUpDialogUtilityService.openAppLoadingPopUp();
         const authPartnerToUpdate = new AuthPartnerDto(
             this.authPartnerSingleViewFormGroup.controls.partnerId.value,
             null,
@@ -161,6 +204,30 @@ export class AuthPartnerSingleViewComponent implements OnInit {
                 appLoadingMatDialogRef.close();
             }
         );
+    }
+
+
+    private updateAuthPartnerStatus(authPartnerStatus: string): void {
+        if (this.partnerIdParam) {
+            const appLoadingMatDialogRef = this.appPopUpDialogUtilityService.openAppLoadingPopUp();
+            const updateAuthPartnerStatusRequest = new UdpateAuthPartnerStatusDto(this.partnerIdParam, authPartnerStatus);
+            this.authPartnerClientService.updateAuthPartnerStatus(updateAuthPartnerStatusRequest).subscribe(
+                updateResponse => {
+                    console.table(updateResponse);
+                    if (!updateResponse.errors || !updateResponse.errors.size || updateResponse.errors.size === 0) {
+                        appLoadingMatDialogRef.close();
+                        this.router.navigate([`${this.primaryLanguageCode}/${ROUTES.AUTH_PARTNERS}`]);
+                    } else {
+                        alert('error !');
+                    }
+                },
+                () => {
+                },
+                () => {
+                    appLoadingMatDialogRef.close();
+                }
+            );
+        }
     }
 
 }

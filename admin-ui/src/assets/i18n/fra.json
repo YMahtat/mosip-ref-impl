@@ -3,6 +3,9 @@
     "top-nav": {
         "title": "RNP Portail d'Administration"
     },
+    "home": {
+        "title": "ACCUEIL"
+    },
     "centers": {
         "title": "CENTRES",
         "manage-centers": {
@@ -87,6 +90,7 @@
                 "serialNum": "NUMERO DE SERIAL",
                 "macAddress": "ADRESSE MAC",
                 "ipAddress": "ADRESSE IP",
+                "center": "CENTRE",
                 "validity": "DATE DE VALIDITÉ",
                 "zoneAdministrative": "ZONE ADMINISTRATIVE",
                 "machineSpecId": "IDENTIFIANT DE LA MACHINE",
@@ -125,6 +129,7 @@
                 "serialNum": "NUMERO DE SERIAL",
                 "macAddress": "ADRESSE MAC",
                 "ipAddress": "ADRESSE IP",
+                "center": "CENTRE",
                 "validity": "DATE DE VALIDITÉ",
                 "zoneAdministrative": "ZONE ADMINISTRATIVE",
                 "deviceSpecId": "IDENTIFIANT DE LA MACHINE",
@@ -205,6 +210,7 @@
         "auth-partner-single-view": {
             "create-title": "Creation d'Auth Partner",
             "update-title": "Edition d'Auth Partner",
+            "keys-apis-accordion-title": "REQUÊTES DES CLÉS d'API",
             "columns": {
                 "partnerId": "ID",
                 "partnerType": "TYPE",
@@ -213,7 +219,19 @@
                 "emailId": "EMAIL",
                 "address": "ADRESSE",
                 "contactNumber": "TELEPHONE",
-                "status": "STATUT"
+                "status": "STATUT",
+                "activation-actions": "MODIFIRE L'ETAT D'ACTIVATION",
+                "activate-btn-label": "ACTIVER",
+                "desactivate-btn-label": "DESACTIVER"
+            },
+            "manage-auth-partner-api-keys": {
+                "columns": {
+                    "apiKeyReqID": "ID DE LA REQUÊTE",
+                    "apiKeyRequestStatus": "STATUT",
+                    "partnerApiKey": "CLÉ D'API DU PARTENAIRE",
+                    "validityTill": "VALIDE JUSQU'AU"
+                },
+                "items-per-page-label": ""
             },
             "submit-btn-label": "VALIDER",
             "cancel-btn-label": "ANNULER"

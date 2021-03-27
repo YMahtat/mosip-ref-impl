@@ -11,6 +11,7 @@ export class MachineDto {
         public langCode: string,
         public id?: string,
         public isActive?: boolean,
+        public regCenterId?: string
     ) {
     }
 }

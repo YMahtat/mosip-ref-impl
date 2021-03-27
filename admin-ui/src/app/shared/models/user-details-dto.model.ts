@@ -49,7 +49,7 @@ export class UserDetailsDto {
         }
     }
 
-    getRoleCodes(): string | null  {
+    getRoleCodes(): string | null {
         return this.roles;
     }
 
@@ -57,7 +57,7 @@ export class UserDetailsDto {
         this.zone = zone;
     }
 
-    getZone(): string  | null {
+    getZone(): string | null {
         return this.zone;
     }
 
@@ -65,7 +65,7 @@ export class UserDetailsDto {
         this.jwtToken = jwtToken;
     }
 
-    getJwtToken(): string | null  {
+    getJwtToken(): string | null {
         return this.jwtToken;
     }
 

@@ -32,7 +32,7 @@
             <p>
                 <mat-form-field appearance="outline">
                     <mat-label>{{authPartnerSingleViewLabels.columns['policyGroup']}}</mat-label>
-                    <input formControlName="policyGroup" matInput>
+                    <input [readonly]="partnerIdParam" formControlName="policyGroup" matInput>
                 </mat-form-field>
             </p>
 
@@ -54,6 +54,49 @@
                 <mat-form-field appearance="outline">
                     <mat-label>{{authPartnerSingleViewLabels.columns['address']}}</mat-label>
                     <input formControlName="address" matInput>
+                </mat-form-field>
+            </p>
+
+            <p>
+                <mat-form-field *ngIf="partnerIdParam" appearance="outline">
+                    <mat-label>{{authPartnerSingleViewLabels.columns['status']}}</mat-label>
+                    <input formControlName="status" matInput readonly>
+                </mat-form-field>
+            </p>
+
+            <mat-accordion *ngIf="partnerIdParam && authPartnerApiKeys">
+                <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            <h5 class="rnp-form-accordion-sub-container-title">
+                                {{authPartnerSingleViewLabels['keys-apis-accordion-title']}}
+                            </h5>
+                        </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <div class="rnp-form-accordion-sub-container-content">
+                        <app-auth-partner-api-keys-view [authPartnerApiKeys]="authPartnerApiKeys"
+                                                        [authPartnerSingleViewLabels]="authPartnerSingleViewLabels">
+                        </app-auth-partner-api-keys-view>
+                    </div>
+                </mat-expansion-panel>
+            </mat-accordion>
+
+            <p>
+                <mat-form-field *ngIf="partnerIdParam" appearance="outline">
+                    <mat-label>{{authPartnerSingleViewLabels.columns['activation-actions']}}</mat-label>
+                    <input hidden matInput value=" ">
+                    <button (click)="onClickActiveAuthPartnerBtnHandler()"
+                            [disabled]="isActiveAuthPartner"
+                            class="rnp-form-btn rnp-form-submit-btn rnp-action-btn"
+                            mat-raised-button>
+                        {{authPartnerSingleViewLabels.columns['activate-btn-label']}}
+                    </button>
+                    <button (click)="onClickDesactiveAuthPartnerBtnHandler()"
+                            [disabled]="isDesactiveAuthPartner"
+                            class="rnp-form-btn rnp-form-danger-btn rnp-action-btn"
+                            mat-raised-button>
+                        {{authPartnerSingleViewLabels.columns['desactivate-btn-label']}}
+                    </button>
                 </mat-form-field>
             </p>
 

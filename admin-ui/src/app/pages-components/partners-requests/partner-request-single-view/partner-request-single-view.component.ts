@@ -1,13 +1,12 @@
 import {Component, OnInit} from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
 import {AppLanguageStorageService} from '../../../shared/storage-services/app-language-storage.service';
-import {MatDialog} from '@angular/material/dialog';
 import {ActivatedRoute, Router} from '@angular/router';
 import {DEFAULT_PRIMARY_LANGUAGE_CODE, ROUTES} from '../../../app.constants';
 import LanguageFactory from '../../../../assets/i18n';
-import {AppLoadingComponent} from '../../../shared/components/app-loading/app-loading.component';
 import {PartnerRequestClientService} from '../../../shared/rest-api-client-services/partner-request-client.service';
 import {PartnerRequestDto} from '../../../shared/models/partner-request-dto.model';
+import {AppPopUpDialogUtilityService} from '../../../shared/utilities/app-pop-up-dialog-utility.service';
 
 @Component({
     selector: 'app-partner-request-single-view',
@@ -31,7 +30,7 @@ export class PartnerRequestSingleViewComponent implements OnInit {
     constructor(
         private partnerRequestClientService: PartnerRequestClientService,
         private appLanguageStorageService: AppLanguageStorageService,
-        private matDialog: MatDialog,
+        private appPopUpDialogUtilityService: AppPopUpDialogUtilityService,
         private router: Router,
         private activatedRoute: ActivatedRoute
     ) {
@@ -81,7 +80,7 @@ export class PartnerRequestSingleViewComponent implements OnInit {
 
     private setRequestSingleViewFormGroupControlsValuesWithViewData(): void {
         if (this.requestIdParam) {
-            const appLoadingMatDialogRef = this.matDialog.open(AppLoadingComponent, { disableClose: true });
+            const appLoadingMatDialogRef = this.appPopUpDialogUtilityService.openAppLoadingPopUp();
             this.partnerRequestClientService.getRegistrationRequestDetailById(this.requestIdParam).subscribe(
                 (requestResponse) => {
                     // tslint:disable-next-line:max-line-length
@@ -105,7 +104,7 @@ export class PartnerRequestSingleViewComponent implements OnInit {
     }
 
     private createNewPartnerRequest(): void {
-        const appLoadingMatDialogRef = this.matDialog.open(AppLoadingComponent, { disableClose: true });
+        const appLoadingMatDialogRef = this.appPopUpDialogUtilityService.openAppLoadingPopUp();
         const requestToCreate = new PartnerRequestDto(
         );
         this.partnerRequestClientService.createRequest(requestToCreate).subscribe(
@@ -127,7 +126,7 @@ export class PartnerRequestSingleViewComponent implements OnInit {
     }
 
     private updatePartnerRequest(): void {
-        const appLoadingMatDialogRef = this.matDialog.open(AppLoadingComponent, { disableClose: true });
+        const appLoadingMatDialogRef = this.appPopUpDialogUtilityService.openAppLoadingPopUp();
         const requestToUpdate = new PartnerRequestDto(
         );
         console.table(requestToUpdate);

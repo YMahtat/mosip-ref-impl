@@ -1,13 +1,21 @@
 import {Component, OnInit} from '@angular/core';
-import {DEFAULT_PRIMARY_LANGUAGE_CODE, ROUTES} from '../../../app.constants';
+import {
+    DEFAULT_PRIMARY_LANGUAGE_CODE,
+    RNP_MOSIP_MISP_ACTIVE_STATUS,
+    RNP_MOSIP_MISP_APPROVED_STATUS,
+    RNP_MOSIP_MISP_DESACTIVE_STATUS,
+    RNP_MOSIP_MISP_IN_PROGRESS_STATUS,
+    RNP_MOSIP_MISP_REJECTED_STATUS,
+    ROUTES
+} from '../../../app.constants';
 import {AppLanguageStorageService} from '../../../shared/storage-services/app-language-storage.service';
 import LanguageFactory from '../../../../assets/i18n';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {MispDto} from '../../../shared/models/misp-dto.model';
 import {MispClientService} from '../../../shared/rest-api-client-services/misp-client.service';
 import {ActivatedRoute, Router} from '@angular/router';
-import {MatDialog} from '@angular/material/dialog';
-import {AppLoadingComponent} from '../../../shared/components/app-loading/app-loading.component';
+import {UdpateMispStatusDto} from '../../../shared/models/udpate-misp-status-dto.model';
+import {AppPopUpDialogUtilityService} from '../../../shared/utilities/app-pop-up-dialog-utility.service';
 
 @Component({
     selector: 'app-misp-single-view',
@@ -21,6 +29,7 @@ export class MispSingleViewComponent implements OnInit {
 
     mispIdParam: string | undefined;
     mispLicenceKey: string | undefined;
+    mispToViewAndEdit: any;
     mispIsActiveStatus = false;
     isMispApprobationInProgress = false;
 
@@ -41,7 +50,7 @@ export class MispSingleViewComponent implements OnInit {
     constructor(
         private mispClientService: MispClientService,
         private appLanguageStorageService: AppLanguageStorageService,
-        private matDialog: MatDialog,
+        private appPopUpDialogUtilityService: AppPopUpDialogUtilityService,
         private router: Router,
         private activatedRoute: ActivatedRoute
     ) {
@@ -63,6 +72,11 @@ export class MispSingleViewComponent implements OnInit {
         });
     }
 
+
+    getMispSingleViewTitleLabel(): string {
+        return (this.mispIdParam) ? this.mispSingleViewLabels['update-title'] : this.mispSingleViewLabels['create-title'];
+    }
+
     onClickSubmitBtnHandler(): void {
         if (this.mispSingleViewFormGroup.valid) {
             if (!this.mispIdParam) {
@@ -79,8 +93,30 @@ export class MispSingleViewComponent implements OnInit {
         this.router.navigate([`${this.primaryLanguageCode}/${ROUTES.MISPS}`]);
     }
 
-    getMispSingleViewTitleLabel(): string {
-        return (this.mispIdParam) ? this.mispSingleViewLabels['update-title'] : this.mispSingleViewLabels['create-title'];
+
+    onClickActiveMispBtnHandler(): void {
+        if (!this.mispIsActiveStatus) {
+            this.updateMispStatus(RNP_MOSIP_MISP_ACTIVE_STATUS);
+        }
+    }
+
+
+    onClickDesactiveMispBtnHandler(): void {
+        if (this.mispIsActiveStatus) {
+            this.updateMispStatus(RNP_MOSIP_MISP_DESACTIVE_STATUS);
+        }
+    }
+
+    onClickApproveMispBtnHandler(): void {
+        if (this.isMispApprobationInProgress) {
+            this.updateMispApprovalStatus(RNP_MOSIP_MISP_APPROVED_STATUS);
+        }
+    }
+
+    onClickRejectMispBtnHandler(): void {
+        if (this.isMispApprobationInProgress) {
+            this.updateMispApprovalStatus(RNP_MOSIP_MISP_REJECTED_STATUS);
+        }
     }
 
     private setMispSingleViewLabels(primaryLanguageCode: string): void {
@@ -91,21 +127,21 @@ export class MispSingleViewComponent implements OnInit {
 
     private setMispSingleViewFormGroupControlsValuesWithViewData(): void {
         if (this.mispIdParam) {
-            const appLoadingMatDialogRef = this.matDialog.open(AppLoadingComponent, { disableClose: true });
+            const appLoadingMatDialogRef = this.appPopUpDialogUtilityService.openAppLoadingPopUp();
             this.mispClientService.getRegistrationMISPDetailById(this.mispIdParam).subscribe(
                 (mispResponse) => {
                     // tslint:disable-next-line:max-line-length
-                    const mispReponseContent = (mispResponse && mispResponse.response && mispResponse.response.misp) ? mispResponse.response.misp : {};
+                    this.mispToViewAndEdit = (mispResponse && mispResponse.response && mispResponse.response.misp) ? mispResponse.response.misp : {};
                     this.mispSingleViewFormGroup.controls.mispId.setValue(this.mispIdParam);
-                    this.mispSingleViewFormGroup.controls.userID.setValue(mispReponseContent.userID);
-                    this.mispSingleViewFormGroup.controls.organizationName.setValue(mispReponseContent.name);
-                    this.mispSingleViewFormGroup.controls.emailId.setValue(mispReponseContent.emailId);
-                    this.mispSingleViewFormGroup.controls.contactNumber.setValue(mispReponseContent.contactNumber);
-                    this.mispSingleViewFormGroup.controls.address.setValue(mispReponseContent.address);
-                    this.mispIsActiveStatus = mispReponseContent.isActive;
-                    this.mispSingleViewFormGroup.controls.status.setValue((mispReponseContent.isActive) ? 'Active' : 'Desactive');
-                    this.isMispApprobationInProgress = (mispReponseContent.status_code === 'Inprogress');
-                    this.mispSingleViewFormGroup.controls.approbation.setValue(mispReponseContent.status_code);
+                    this.mispSingleViewFormGroup.controls.userID.setValue(this.mispToViewAndEdit.userID);
+                    this.mispSingleViewFormGroup.controls.organizationName.setValue(this.mispToViewAndEdit.name);
+                    this.mispSingleViewFormGroup.controls.emailId.setValue(this.mispToViewAndEdit.emailId);
+                    this.mispSingleViewFormGroup.controls.contactNumber.setValue(this.mispToViewAndEdit.contactNumber);
+                    this.mispSingleViewFormGroup.controls.address.setValue(this.mispToViewAndEdit.address);
+                    this.mispIsActiveStatus = this.mispToViewAndEdit.isActive;
+                    this.mispSingleViewFormGroup.controls.status.setValue((this.mispToViewAndEdit.isActive) ? 'Active' : 'Desactive');
+                    this.isMispApprobationInProgress = (this.mispToViewAndEdit.status_code === RNP_MOSIP_MISP_IN_PROGRESS_STATUS);
+                    this.mispSingleViewFormGroup.controls.approbation.setValue(this.mispToViewAndEdit.status_code);
                     this.setMispSingleViewFormGroupControlsValuesWithMispLicenceData();
                 },
                 () => {
@@ -119,7 +155,7 @@ export class MispSingleViewComponent implements OnInit {
 
     private setMispSingleViewFormGroupControlsValuesWithMispLicenceData(): void {
         if (this.mispIdParam) {
-            const appLoadingMatDialogRef = this.matDialog.open(AppLoadingComponent, { disableClose: true });
+            const appLoadingMatDialogRef = this.appPopUpDialogUtilityService.openAppLoadingPopUp();
             this.mispClientService.getRegistrationMISPLicencesDetails(this.mispIdParam).subscribe(
                 (mispLicenceResponse) => {
                     // tslint:disable-next-line:max-line-length
@@ -139,7 +175,7 @@ export class MispSingleViewComponent implements OnInit {
     }
 
     private createNewMosip(): void {
-        const appLoadingMatDialogRef = this.matDialog.open(AppLoadingComponent, { disableClose: true });
+        const appLoadingMatDialogRef = this.appPopUpDialogUtilityService.openAppLoadingPopUp();
         const mispToCreate = new MispDto(
             this.mispSingleViewFormGroup.controls.organizationName.value,
             this.mispSingleViewFormGroup.controls.emailId.value,
@@ -165,7 +201,7 @@ export class MispSingleViewComponent implements OnInit {
     }
 
     private updateMosip(): void {
-        const appLoadingMatDialogRef = this.matDialog.open(AppLoadingComponent, { disableClose: true });
+        const appLoadingMatDialogRef = this.appPopUpDialogUtilityService.openAppLoadingPopUp();
         const mispToUpdate = new MispDto(
             null,
             this.mispSingleViewFormGroup.controls.emailId.value,
@@ -176,6 +212,48 @@ export class MispSingleViewComponent implements OnInit {
         );
         console.table(mispToUpdate);
         this.mispClientService.updateMisp(mispToUpdate).subscribe(
+            updateResponse => {
+                console.table(updateResponse);
+                if (!updateResponse.errors || !updateResponse.errors.size || updateResponse.errors.size === 0) {
+                    appLoadingMatDialogRef.close();
+                    this.router.navigate([`${this.primaryLanguageCode}/${ROUTES.MISPS}`]);
+                } else {
+                    alert('error !');
+                }
+            },
+            () => {
+            },
+            () => {
+                appLoadingMatDialogRef.close();
+            }
+        );
+    }
+
+    private updateMispStatus(mispStatus: string): void {
+        const appLoadingMatDialogRef = this.appPopUpDialogUtilityService.openAppLoadingPopUp();
+        const updateMispStatusRequest = new UdpateMispStatusDto(this.mispToViewAndEdit.id, mispStatus);
+        this.mispClientService.updateMispStatus(updateMispStatusRequest).subscribe(
+            updateResponse => {
+                console.table(updateResponse);
+                if (!updateResponse.errors || !updateResponse.errors.size || updateResponse.errors.size === 0) {
+                    appLoadingMatDialogRef.close();
+                    this.router.navigate([`${this.primaryLanguageCode}/${ROUTES.MISPS}`]);
+                } else {
+                    alert('error !');
+                }
+            },
+            () => {
+            },
+            () => {
+                appLoadingMatDialogRef.close();
+            }
+        );
+    }
+
+    private updateMispApprovalStatus(mispApprovalStatus: string): void {
+        const appLoadingMatDialogRef = this.appPopUpDialogUtilityService.openAppLoadingPopUp();
+        const updateMispStatusRequest = new UdpateMispStatusDto(this.mispToViewAndEdit.id, mispApprovalStatus);
+        this.mispClientService.updateMispApprovalStatus(updateMispStatusRequest).subscribe(
             updateResponse => {
                 console.table(updateResponse);
                 if (!updateResponse.errors || !updateResponse.errors.size || updateResponse.errors.size === 0) {

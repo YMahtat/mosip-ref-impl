@@ -6,8 +6,7 @@ import {Router} from '@angular/router';
 import {DEFAULT_PRIMARY_LANGUAGE_CODE, ROUTES} from '../../../app.constants';
 import LanguageFactory from '../../../../assets/i18n';
 import {CenterClientService} from '../../../shared/rest-api-client-services/center-client.service';
-import {MatDialog} from '@angular/material/dialog';
-import {AppLoadingComponent} from '../../../shared/components/app-loading/app-loading.component';
+import {AppPopUpDialogUtilityService} from '../../../shared/utilities/app-pop-up-dialog-utility.service';
 
 @Component({
     selector: 'app-centers-view',
@@ -31,7 +30,7 @@ export class CentersViewComponent implements OnInit, AfterViewInit {
     constructor(
         private appLanguageStorageService: AppLanguageStorageService,
         private centerClientService: CenterClientService,
-        private matDialog: MatDialog,
+        private appPopUpDialogUtilityService: AppPopUpDialogUtilityService,
         private router: Router
     ) {
         this.primaryLanguageCode = DEFAULT_PRIMARY_LANGUAGE_CODE;
@@ -72,7 +71,7 @@ export class CentersViewComponent implements OnInit, AfterViewInit {
     }
 
     private setCentersDataSource(pageNumber: number): void {
-        const appLoadingMatDialogRef = this.matDialog.open(AppLoadingComponent, { disableClose: true });
+        const appLoadingMatDialogRef = this.appPopUpDialogUtilityService.openAppLoadingPopUp();
         this.centerClientService.getRegistrationCentersDetails(this.primaryLanguageCode, pageNumber).subscribe(
             (centersResponse) => {
                 const centersResponseContent = (centersResponse && centersResponse.response) ? centersResponse.response : {};

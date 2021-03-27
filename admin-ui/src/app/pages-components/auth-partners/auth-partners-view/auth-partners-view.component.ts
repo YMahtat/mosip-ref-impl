@@ -6,8 +6,7 @@ import {MatTableDataSource} from '@angular/material/table';
 import {MatPaginator} from '@angular/material/paginator';
 import {AuthPartnerClientService} from '../../../shared/rest-api-client-services/auth-partner-client.service';
 import {Router} from '@angular/router';
-import {MatDialog} from '@angular/material/dialog';
-import {AppLoadingComponent} from '../../../shared/components/app-loading/app-loading.component';
+import {AppPopUpDialogUtilityService} from '../../../shared/utilities/app-pop-up-dialog-utility.service';
 
 @Component({
     selector: 'app-auth-partners-view',
@@ -28,7 +27,7 @@ export class AuthPartnersViewComponent implements OnInit, AfterViewInit {
     constructor(
         private appLanguageStorageService: AppLanguageStorageService,
         private authPartnerClientService: AuthPartnerClientService,
-        private matDialog: MatDialog,
+        private appPopUpDialogUtilityService: AppPopUpDialogUtilityService,
         private router: Router
     ) {
         this.primaryLanguageCode = DEFAULT_PRIMARY_LANGUAGE_CODE;
@@ -39,7 +38,7 @@ export class AuthPartnersViewComponent implements OnInit, AfterViewInit {
         this.setAuthPartnersViewLabels(this.primaryLanguageCode);
         // @ts-ignore
         this.paginator._intl.itemsPerPageLabel = this.authPartersViewLabels['items-per-page-label'];
-        const appLoadingMatDialogRef = this.matDialog.open(AppLoadingComponent, { disableClose: true });
+        const appLoadingMatDialogRef = this.appPopUpDialogUtilityService.openAppLoadingPopUp();
         this.authPartnerClientService.getRegistrationAuthPartnersDetails().subscribe(
             (authPartersResponse) => {
                 const authParterns = (authPartersResponse && authPartersResponse.response) ? authPartersResponse.response.partners : [];

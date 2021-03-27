@@ -97,13 +97,26 @@ export const MOSIP_ENDPOINT_URI = {
     mispsService: 'partnermanagement/v1/misps/misps',
     singleMispService: 'partnermanagement/v1/misps/misps/mispId/{mispId}',
     mispUpdateService: 'partnermanagement/v1/misps/misps/{mispId}',
+    mispUpdateApprovalStatusService: 'partnermanagement/v1/misps/misps/{mispId}/status',
     mispLicences: 'partnermanagement/v1/misps/misps/{mispId}/licenseKey',
     authPartners: 'partnermanagement/v1/pmpartners/pmpartners',
     authPartnersServices: 'partnermanagement/v1/partners/partners',
-    authPartnersDetailsServices: 'partnermanagement/v1/partners/partners/{partnerID}',
+    authPartnerDetailsServices: 'partnermanagement/v1/pmpartners/pmpartners/{partnerID}',
+    singleAuthPartnerServices: 'partnermanagement/v1/partners/partners/{partnerID}',
     authService: 'partnermanagement/v1/pmpartners/pmpartners/{partnerID}',
     authPartnersApiKeys: 'partnermanagement/v1/partners/partners/{partnerId}/partnerAPIKeyRequests',
     partnersRequests: 'partnermanagement/v1/pmpartners/pmpartners/PartnerAPIKeyRequests',
     partnersRequestsServices: 'partnermanagement/v1/partners/partners/{partnerId}/partnerAPIKeyRequests',
     singlePartnersRequestServices: 'partnermanagement/v1/partners/partners/{partnerId}/partnerAPIKeyRequests'
 };
+
+
+export const RNP_MOSIP_MISP_ACTIVE_STATUS = 'Active';
+export const RNP_MOSIP_MISP_DESACTIVE_STATUS = 'De-active';
+
+export const RNP_MOSIP_MISP_IN_PROGRESS_STATUS = 'Inprogress';
+export const RNP_MOSIP_MISP_APPROVED_STATUS = 'Approved';
+export const RNP_MOSIP_MISP_REJECTED_STATUS = 'Rejected';
+
+export const RNP_MOSIP_AUTH_PARTNER_ACTIVE_STATUS = 'Active';
+export const RNP_MOSIP_AUTH_PARTNER_DESACTIVE_STATUS = 'De-active';

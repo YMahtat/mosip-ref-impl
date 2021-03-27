@@ -1,7 +1,6 @@
 import {AfterViewChecked, ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
 import {AppLanguageStorageService} from '../../../shared/storage-services/app-language-storage.service';
-import {MatDialog} from '@angular/material/dialog';
 import {ActivatedRoute, Router} from '@angular/router';
 import {
     DEFAULT_PRIMARY_LANGUAGE_CODE,
@@ -20,10 +19,10 @@ import {OptionalFilterValuesModel} from '../../../shared/models/optional-filter-
 import {RequestModel} from '../../../shared/models/request.model';
 import {FilterRequest} from '../../../shared/models/filter-request.model';
 import {MasterdataClientService} from '../../../shared/rest-api-client-services/masterdata-client.service';
-import {AppLoadingComponent} from '../../../shared/components/app-loading/app-loading.component';
 import {TimeUtilityService} from '../../../shared/utilities/time-utility.service';
 import {UpdateCenterDto} from '../../../shared/models/update-center-dto.model';
 import {CreateCenterDto} from '../../../shared/models/create-center-dto.model';
+import {AppPopUpDialogUtilityService} from '../../../shared/utilities/app-pop-up-dialog-utility.service';
 
 @Component({
     selector: 'app-center-single-view',
@@ -78,7 +77,7 @@ export class CenterSingleViewComponent implements OnInit, AfterViewChecked {
         private centerClientService: CenterClientService,
         private masterdataClientService: MasterdataClientService,
         private appLanguageStorageService: AppLanguageStorageService,
-        private matDialog: MatDialog,
+        private appPopUpDialogUtilityService: AppPopUpDialogUtilityService,
         private router: Router,
         private activatedRoute: ActivatedRoute,
         private cdr: ChangeDetectorRef
@@ -267,7 +266,7 @@ export class CenterSingleViewComponent implements OnInit, AfterViewChecked {
 
     private setCenterSingleViewFormGroupControlsValuesWithViewData(): void {
         if (this.centerIdParam) {
-            const appLoadingMatDialogRef = this.matDialog.open(AppLoadingComponent, { disableClose: true });
+            const appLoadingMatDialogRef = this.appPopUpDialogUtilityService.openAppLoadingPopUp();
             this.centerClientService.getRegistrationCentersDetails(
                 this.primaryLanguageCode,
                 0,
@@ -326,7 +325,7 @@ export class CenterSingleViewComponent implements OnInit, AfterViewChecked {
     }
 
     private createNewCenter(): void {
-        const appLoadingMatDialogRef = this.matDialog.open(AppLoadingComponent, { disableClose: true });
+        const appLoadingMatDialogRef = this.appPopUpDialogUtilityService.openAppLoadingPopUp();
         const centerToCreate = new CreateCenterDto(
             this.centerSingleViewFormGroup.controls.addressLine1.value,
             this.centerSingleViewFormGroup.controls.addressLine2.value,
@@ -372,7 +371,7 @@ export class CenterSingleViewComponent implements OnInit, AfterViewChecked {
     }
 
     private updateCenter(): void {
-        const appLoadingMatDialogRef = this.matDialog.open(AppLoadingComponent, { disableClose: true });
+        const appLoadingMatDialogRef = this.appPopUpDialogUtilityService.openAppLoadingPopUp();
         const centerToUpdate = new UpdateCenterDto(
             this.centerSingleViewFormGroup.controls.addressLine1.value,
             this.centerSingleViewFormGroup.controls.addressLine2.value,

@@ -6,8 +6,7 @@ import {MispClientService} from '../../../shared/rest-api-client-services/misp-c
 import {MatTableDataSource} from '@angular/material/table';
 import {MatPaginator} from '@angular/material/paginator';
 import {Router} from '@angular/router';
-import {MatDialog} from '@angular/material/dialog';
-import {AppLoadingComponent} from '../../../shared/components/app-loading/app-loading.component';
+import {AppPopUpDialogUtilityService} from '../../../shared/utilities/app-pop-up-dialog-utility.service';
 
 @Component({
     selector: 'app-misps-view',
@@ -26,7 +25,7 @@ export class MispsViewComponent implements OnInit, AfterViewInit {
     constructor(
         private appLanguageStorageService: AppLanguageStorageService,
         private mispClientService: MispClientService,
-        private matDialog: MatDialog,
+        private appPopUpDialogUtilityService: AppPopUpDialogUtilityService,
         private router: Router
     ) {
         this.primaryLanguageCode = DEFAULT_PRIMARY_LANGUAGE_CODE;
@@ -37,7 +36,7 @@ export class MispsViewComponent implements OnInit, AfterViewInit {
         this.setMispsViewLabels(this.primaryLanguageCode);
         // @ts-ignore
         this.paginator._intl.itemsPerPageLabel = this.mispsViewLabels['items-per-page-label'];
-        const appLoadingMatDialogRef = this.matDialog.open(AppLoadingComponent, { disableClose: true });
+        const appLoadingMatDialogRef = this.appPopUpDialogUtilityService.openAppLoadingPopUp();
         this.mispClientService.getRegistrationMISPsDetails().subscribe(
             (mispsResponse) => {
                 const misps = mispsResponse.response.map((r: { misp: any; }) => r.misp);

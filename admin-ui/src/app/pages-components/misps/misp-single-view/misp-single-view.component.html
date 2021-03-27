@@ -32,7 +32,7 @@
             <p>
                 <mat-form-field appearance="outline">
                     <mat-label>{{mispSingleViewLabels.columns['emailId']}}</mat-label>
-                    <input formControlName="emailId" matInput>
+                    <input formControlName="emailId" matInput type="email">
                 </mat-form-field>
             </p>
 
@@ -85,7 +85,7 @@
                         <p>
                             <mat-form-field *ngIf="mispIdParam" appearance="outline">
                                 <mat-label>{{mispSingleViewLabels.columns['mispLicenseKeyExpiry']}}</mat-label>
-                                <input formControlName="mispLicenseKeyExpiry" type="date" matInput readonly>
+                                <input formControlName="mispLicenseKeyExpiry" matInput readonly type="date">
                             </mat-form-field>
                         </p>
 
@@ -103,16 +103,16 @@
             <p>
                 <mat-form-field *ngIf="mispIdParam" appearance="outline">
                     <mat-label>{{mispSingleViewLabels.columns['activation-actions']}}</mat-label>
-                    <input matInput value=" " hidden>
-                    <button (click)="onClickSubmitBtnHandler()"
-                            class="rnp-form-btn rnp-form-submit-btn rnp-action-btn"
+                    <input hidden matInput value=" ">
+                    <button (click)="onClickActiveMispBtnHandler()"
                             [disabled]="mispIsActiveStatus"
+                            class="rnp-form-btn rnp-form-submit-btn rnp-action-btn"
                             mat-raised-button>
                         {{mispSingleViewLabels.columns['activate-btn-label']}}
                     </button>
-                    <button (click)="onClickSubmitBtnHandler()"
-                            class="rnp-form-btn rnp-form-danger-btn rnp-action-btn"
+                    <button (click)="onClickDesactiveMispBtnHandler()"
                             [disabled]="!mispIsActiveStatus"
+                            class="rnp-form-btn rnp-form-danger-btn rnp-action-btn"
                             mat-raised-button>
                         {{mispSingleViewLabels.columns['desactivate-btn-label']}}
                     </button>
@@ -122,16 +122,16 @@
             <p>
                 <mat-form-field *ngIf="mispIdParam" appearance="outline">
                     <mat-label>{{mispSingleViewLabels.columns['approbation-actions']}}</mat-label>
-                    <input matInput value=" " hidden>
-                    <button (click)="onClickSubmitBtnHandler()"
-                            class="rnp-form-btn rnp-form-submit-btn rnp-action-btn"
+                    <input hidden matInput value=" ">
+                    <button (click)="onClickApproveMispBtnHandler()"
                             [disabled]="!isMispApprobationInProgress"
+                            class="rnp-form-btn rnp-form-submit-btn rnp-action-btn"
                             mat-raised-button>
                         {{mispSingleViewLabels.columns['approve-btn-label']}}
                     </button>
-                    <button (click)="onClickSubmitBtnHandler()"
-                            class="rnp-form-btn rnp-form-danger-btn rnp-action-btn"
+                    <button (click)="onClickRejectMispBtnHandler()"
                             [disabled]="!isMispApprobationInProgress"
+                            class="rnp-form-btn rnp-form-danger-btn rnp-action-btn"
                             mat-raised-button>
                         {{mispSingleViewLabels.columns['reject-btn-label']}}
                     </button>
