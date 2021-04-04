@@ -7,6 +7,8 @@ export const ERROR_CODE = 'errorCode';
 export const PRE_REGISTRATION_ID = 'pre_registration_id';
 export const APPENDER = '/';
 export const DEFAULT_LANG_CODE = 'eng';
+export const DEFAULT_LTR_LANGUAGE_CODE = 'eng';
+export const DEFAULT_RTL_LANGUAGE_CODE = 'ara';
 export const IDSchemaVersionLabel = 'IDSchemaVersion';
 
 export const IDS = {

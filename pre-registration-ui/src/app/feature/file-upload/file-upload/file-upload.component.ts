@@ -1309,6 +1309,10 @@ export class FileUploadComponent implements OnInit, OnDestroy {
         return Math.abs(ageDate.getUTCFullYear() - 1970);
     }
 
+    getPrimaryDirection() {
+        return (this.primaryLang === 'ara') ? 'rtl' : 'ltr';
+    }
+
 }
 
 export interface DocumentUploadRequestDTO {

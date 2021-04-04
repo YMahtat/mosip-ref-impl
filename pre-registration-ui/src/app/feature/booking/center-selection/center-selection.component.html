@@ -115,11 +115,11 @@
                                                     <span><img src="assets/img/calendar.png"/></span>
                                                     <span class="rdv-flag"
                                                           *ngIf="this.center.centerTypeCode.indexOf('-AVRDV') >= 0">
-                                                        Centre Avec RDV
+                                                        {{ 'centerSelection.centerWithRDV' | translate }}
                                                     </span>
                                                     <span class="rdv-flag"
                                                           *ngIf="this.center.centerTypeCode.indexOf('-AVRDV') < 0">
-                                                        Centre sans RDV
+                                                        {{ 'centerSelection.centerWithoutRDV' | translate }}
                                                     </span>
                                                 </div>
                                             </div>
@@ -128,7 +128,7 @@
                                             <div>
                                                 <span class="timeLunch">
                                                     {{ 'centerSelection.text_timing' | translate }}&nbsp; &nbsp; : &nbsp;
-                                                    <strong>
+                                                    <strong dir="ltr">
                                                         {{
                                                         changeTimeFormat(center.centerStartTime.substring(0, 5)) +
                                                         ' - ' +

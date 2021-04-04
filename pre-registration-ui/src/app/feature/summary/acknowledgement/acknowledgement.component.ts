@@ -8,7 +8,7 @@ import {DataStorageService} from "src/app/core/services/data-storage.service";
 import {NotificationDtoModel} from "src/app/shared/models/notification-model/notification-dto.model";
 import Utils from "src/app/app.util";
 import * as appConstants from "../../../app.constants";
-import {CONFIG_KEYS, IDS} from "../../../app.constants";
+import {CONFIG_KEYS, DEFAULT_LTR_LANGUAGE_CODE, DEFAULT_RTL_LANGUAGE_CODE, IDS} from "../../../app.constants";
 import {RequestModel} from "src/app/shared/models/request-model/RequestModel";
 import LanguageFactory from "src/assets/i18n";
 import {Subscription} from "rxjs";
@@ -25,15 +25,20 @@ import {CodeValueModal} from "../../../shared/models/demographic-model/code.valu
 })
 export class AcknowledgementComponent implements OnInit, OnDestroy {
 
-    primaryLanguagelabels: any;
-    secondaryLanguageLabels: any;
-    secondaryLang = localStorage.getItem("secondaryLangCode");
+    primaryLanguage = localStorage.getItem("langCode");
+    primaryLeftTorRightLanguage = DEFAULT_LTR_LANGUAGE_CODE;
+    secondaryLanguage = localStorage.getItem("secondaryLangCode");
+    secondaryRightToLeftLanguage = DEFAULT_RTL_LANGUAGE_CODE;
+
+    primaryLeftToRightLanguageLabels: any;
+    secondaryRightToLeftLanguageLabels: any;
+
     identityData;
     locationHeirarchy;
-    primarydropDownFields = {};
-    secondaryDropDownLables = {};
+    primaryLeftTorRightLanguageDropDownFields = {};
+    secondaryRightToLeftLanguageDropDownLables = {};
     usersInfo = [];
-    secondaryLanguageRegistrationCenter: any;
+    secondaryRightToLeftLanguageLanguageRegistrationCenter: any;
     guidelines = [];
     opt = {};
     fileBlob: Blob;
@@ -61,7 +66,6 @@ export class AcknowledgementComponent implements OnInit, OnDestroy {
         phoneNumber: undefined,
     };
     regCenterId;
-    primaryLangCode;
     lastName = "";
     applicantContactDetails = [];
 
@@ -75,7 +79,6 @@ export class AcknowledgementComponent implements OnInit, OnDestroy {
         private router: Router
     ) {
         this.translate.use(localStorage.getItem("langCode"));
-        this.primaryLangCode = localStorage.getItem("langCode");
     }
 
     async ngOnInit() {
@@ -185,6 +188,9 @@ export class AcknowledgementComponent implements OnInit, OnDestroy {
                     nameList.monthOfBirth = user["request"].demographicDetails.identity["monthOfBirth"];
                     nameList.dayOfBirth = user["request"].demographicDetails.identity["dayOfBirth"];
                     nameList.emailId = user["request"].demographicDetails.identity["email"];
+                    nameList.passportNumber = user["request"].demographicDetails.identity["passportNumber"];
+                    nameList.parentOrGuardianRID = user["request"].demographicDetails.identity["parentOrGuardianRID"];
+                    nameList.parentOrGuardianCNIE = user["request"].demographicDetails.identity["parentOrGuardianCNIE"];
                     if (user["request"].demographicDetails.identity["birthCertificateNumber"]) {
                         nameList.birthCertificateNumber = user["request"].demographicDetails.identity["birthCertificateNumber"];
                     }
@@ -193,42 +199,45 @@ export class AcknowledgementComponent implements OnInit, OnDestroy {
                     }
                     nameList.phoneNumber = user["request"].demographicDetails.identity["phone"];
                     if (user["request"].demographicDetails.identity["nationality"] && user["request"].demographicDetails.identity["nationality"].length > 0) {
-                        nameList.nationality = user["request"].demographicDetails.identity["nationality"][0].value;
-                        if (user["request"].demographicDetails.identity["nationality"][1])
-                            nameList.nationalitySecondaryLang = user["request"].demographicDetails.identity["nationality"][1].value;
+                        this.recoverDynamicFieldValues('nationality', this.primaryLeftTorRightLanguage).then(() => {
+                            nameList.nationality = this.primaryLeftTorRightLanguageDropDownFields['nationality'].filter(nationality => nationality.valueCode === user["request"].demographicDetails.identity["nationality"][0].value)[0].valueName;
+                        });
+                        this.recoverDynamicFieldValues('nationality', this.secondaryRightToLeftLanguage).then(() => {
+                            nameList.nationalitySecondaryLang = this.secondaryRightToLeftLanguageDropDownLables['nationality'].filter(nationality => nationality.valueCode === user["request"].demographicDetails.identity["nationality"][1].value)[0].valueName;
+                        });
                     }
                     this.dropdownApiCall(this.configService.getConfig()[CONFIG_KEYS.mosip_country_code], 'region').then(() => {
-                        nameList.region = this.primarydropDownFields['region'].filter(region => region.valueCode === user["request"].demographicDetails.identity["region"][0].value)[0].valueName;
-                        nameList.regionSecondaryLang = this.secondaryDropDownLables['region'].filter(region => region.valueCode === user["request"].demographicDetails.identity["region"][0].value)[0].valueName;
+                        nameList.region = this.primaryLeftTorRightLanguageDropDownFields['region'].filter(region => region.valueCode === user["request"].demographicDetails.identity["region"][0].value)[0].valueName;
+                        nameList.regionSecondaryLang = this.secondaryRightToLeftLanguageDropDownLables['region'].filter(region => region.valueCode === user["request"].demographicDetails.identity["region"][0].value)[0].valueName;
                     });
                     this.dropdownApiCall(user["request"].demographicDetails.identity["region"][0].value, 'province').then(() => {
-                        nameList.province = this.primarydropDownFields['province'].filter(province => province.valueCode === user["request"].demographicDetails.identity["province"][0].value)[0].valueName;
-                        nameList.provinceSecondaryLang = this.secondaryDropDownLables['province'].filter(province => province.valueCode === user["request"].demographicDetails.identity["province"][0].value)[0].valueName;
+                        nameList.province = this.primaryLeftTorRightLanguageDropDownFields['province'].filter(province => province.valueCode === user["request"].demographicDetails.identity["province"][0].value)[0].valueName;
+                        nameList.provinceSecondaryLang = this.secondaryRightToLeftLanguageDropDownLables['province'].filter(province => province.valueCode === user["request"].demographicDetails.identity["province"][0].value)[0].valueName;
                     });
                     this.dropdownApiCall(user["request"].demographicDetails.identity["province"][0].value, 'city').then(() => {
-                        nameList.city = this.primarydropDownFields['city'].filter(city => city.valueCode === user["request"].demographicDetails.identity["city"][0].value)[0].valueName;
-                        nameList.citySecondaryLang = this.secondaryDropDownLables['city'].filter(city => city.valueCode === user["request"].demographicDetails.identity["city"][0].value)[0].valueName;
+                        nameList.city = this.primaryLeftTorRightLanguageDropDownFields['city'].filter(city => city.valueCode === user["request"].demographicDetails.identity["city"][0].value)[0].valueName;
+                        nameList.citySecondaryLang = this.secondaryRightToLeftLanguageDropDownLables['city'].filter(city => city.valueCode === user["request"].demographicDetails.identity["city"][0].value)[0].valueName;
                     });
                     this.dropdownApiCall(user["request"].demographicDetails.identity["province"][0].value, 'city').then(() => {
-                        nameList.city = this.primarydropDownFields['city'].filter(city => city.valueCode === user["request"].demographicDetails.identity["city"][0].value)[0].valueName;
-                        nameList.citySecondaryLang = this.secondaryDropDownLables['city'].filter(city => city.valueCode === user["request"].demographicDetails.identity["city"][0].value)[0].valueName;
+                        nameList.city = this.primaryLeftTorRightLanguageDropDownFields['city'].filter(city => city.valueCode === user["request"].demographicDetails.identity["city"][0].value)[0].valueName;
+                        nameList.citySecondaryLang = this.secondaryRightToLeftLanguageDropDownLables['city'].filter(city => city.valueCode === user["request"].demographicDetails.identity["city"][0].value)[0].valueName;
                     });
                     this.dropdownApiCall(user["request"].demographicDetails.identity["city"][0].value, 'zone').then(() => {
-                        nameList.zone = this.primarydropDownFields['zone'].filter(zone => zone.valueCode === user["request"].demographicDetails.identity["zone"][0].value)[0].valueName;
-                        nameList.zoneSecondaryLang = this.secondaryDropDownLables['zone'].filter(zone => zone.valueCode === user["request"].demographicDetails.identity["zone"][0].value)[0].valueName;
+                        nameList.zone = this.primaryLeftTorRightLanguageDropDownFields['zone'].filter(zone => zone.valueCode === user["request"].demographicDetails.identity["zone"][0].value)[0].valueName;
+                        nameList.zoneSecondaryLang = this.secondaryRightToLeftLanguageDropDownLables['zone'].filter(zone => zone.valueCode === user["request"].demographicDetails.identity["zone"][0].value)[0].valueName;
                     });
                     this.dropdownApiCall(`COM${user["request"].demographicDetails.identity["province"][0].value}`, 'commun').then(() => {
-                        nameList.commun = this.primarydropDownFields['commun'].filter(commun => commun.valueCode === user["request"].demographicDetails.identity["commun"][0].value)[0].valueName;
-                        nameList.communSecondaryLang = this.secondaryDropDownLables['commun'].filter(commun => commun.valueCode === user["request"].demographicDetails.identity["commun"][0].value)[0].valueName;
+                        nameList.commun = this.primaryLeftTorRightLanguageDropDownFields['commun'].filter(commun => commun.valueCode === user["request"].demographicDetails.identity["commun"][0].value)[0].valueName;
+                        nameList.communSecondaryLang = this.secondaryRightToLeftLanguageDropDownLables['commun'].filter(commun => commun.valueCode === user["request"].demographicDetails.identity["commun"][0].value)[0].valueName;
                     });
                     nameList.adresseLine = user["request"].demographicDetails.identity["addressLine1"][0].value;
                     if (user["request"].demographicDetails.identity["addressLine1"][1])
                         nameList.adresseLineSecondaryLang = user["request"].demographicDetails.identity["addressLine1"][1].value;
-                    this.recoverDynamicFieldValues('placeOfBirth', this.primaryLangCode).then(() => {
-                        nameList.placeOfBirth = this.primarydropDownFields['placeOfBirth'].filter(placeOfBirth => placeOfBirth.valueCode === user["request"].demographicDetails.identity["placeOfBirth"][0].value)[0].valueName;
+                    this.recoverDynamicFieldValues('placeOfBirth', this.primaryLeftTorRightLanguage).then(() => {
+                        nameList.placeOfBirth = this.primaryLeftTorRightLanguageDropDownFields['placeOfBirth'].filter(placeOfBirth => placeOfBirth.valueCode === user["request"].demographicDetails.identity["placeOfBirth"][0].value)[0].valueName;
                     });
-                    this.recoverDynamicFieldValues('placeOfBirth', this.secondaryLang).then(() => {
-                        nameList.placeOfBirthSecondaryLang = this.secondaryDropDownLables['placeOfBirth'].filter(placeOfBirth => placeOfBirth.valueCode === user["request"].demographicDetails.identity["placeOfBirth"][1].value)[0].valueName;
+                    this.recoverDynamicFieldValues('placeOfBirth', this.secondaryRightToLeftLanguage).then(() => {
+                        nameList.placeOfBirthSecondaryLang = this.secondaryRightToLeftLanguageDropDownLables['placeOfBirth'].filter(placeOfBirth => placeOfBirth.valueCode === user["request"].demographicDetails.identity["placeOfBirth"][1].value)[0].valueName;
                     });
                     if (user["request"].demographicDetails.identity["parentOrGuardianfirstName"]) {
                         nameList.firstNameGuardian = user["request"].demographicDetails.identity["parentOrGuardianfirstName"][0].value;
@@ -241,11 +250,11 @@ export class AcknowledgementComponent implements OnInit, OnDestroy {
                             nameList.lastNameGuardianSecondaryLang = user["request"].demographicDetails.identity["parentOrGuardianlastName"][1].value;
                     }
                     if (user["request"].demographicDetails.identity["relationWithChild"]) {
-                        this.recoverDynamicFieldValues('relationWithChild', this.primaryLangCode).then(() => {
-                            nameList.relationWithChild = this.primarydropDownFields['relationWithChild'].filter(relationWithChild => relationWithChild.valueCode === user["request"].demographicDetails.identity["relationWithChild"][0].value)[0].valueName;
+                        this.recoverDynamicFieldValues('relationWithChild', this.primaryLeftTorRightLanguage).then(() => {
+                            nameList.relationWithChild = this.primaryLeftTorRightLanguageDropDownFields['relationWithChild'].filter(relationWithChild => relationWithChild.valueCode === user["request"].demographicDetails.identity["relationWithChild"][0].value)[0].valueName;
                         });
-                        this.recoverDynamicFieldValues('relationWithChild', this.secondaryLang).then(() => {
-                            nameList.relationWithChildSecondaryLang = this.secondaryDropDownLables['relationWithChild'].filter(relationWithChild => relationWithChild.valueCode === user["request"].demographicDetails.identity["relationWithChild"][1].value)[0].valueName;
+                        this.recoverDynamicFieldValues('relationWithChild', this.secondaryRightToLeftLanguage).then(() => {
+                            nameList.relationWithChildSecondaryLang = this.secondaryRightToLeftLanguageDropDownLables['relationWithChild'].filter(relationWithChild => relationWithChild.valueCode === user["request"].demographicDetails.identity["relationWithChild"][1].value)[0].valueName;
                         });
                     }
                     nameList.parentOrGuardianUIN = user["request"].demographicDetails.identity.parentOrGuardianUIN;
@@ -323,7 +332,7 @@ export class AcknowledgementComponent implements OnInit, OnDestroy {
     getRegCenterDetails() {
         return new Promise((resolve) => {
             this.dataStorageService
-                .getRegistrationCentersById(this.regCenterId, this.primaryLangCode)
+                .getRegistrationCentersById(this.regCenterId, this.primaryLeftTorRightLanguage)
                 .subscribe((response) => {
                     if (response[appConstants.RESPONSE]) {
                         for (let i = 0; i < this.usersInfo.length; i++) {
@@ -346,22 +355,22 @@ export class AcknowledgementComponent implements OnInit, OnDestroy {
                 );
                 await this.getRegistrationCenterInSecondaryLanguage(
                     this.usersInfo[0].regDto.registration_center_id,
-                    this.secondaryLang
+                    this.secondaryRightToLeftLanguage
                 );
             } else {
                 await this.getRegistrationCenterInSecondaryLanguage(
                     this.usersInfo[0].registrationCenter.id,
-                    this.secondaryLang
+                    this.secondaryRightToLeftLanguage
                 );
             }
             this.formatDateTime();
             await this.qrCodeForUser();
-            const factoryPrimaryLanguage = new LanguageFactory(this.primaryLangCode);
+            const factoryPrimaryLanguage = new LanguageFactory(this.primaryLeftTorRightLanguage);
             const responsePrimaryLanguage = factoryPrimaryLanguage.getCurrentlanguage();
-            this.primaryLanguagelabels = responsePrimaryLanguage["acknowledgement"];
-            let factorySecondaryLanguage = new LanguageFactory(this.secondaryLang);
+            this.primaryLeftToRightLanguageLabels = responsePrimaryLanguage["acknowledgement"];
+            let factorySecondaryLanguage = new LanguageFactory(this.secondaryRightToLeftLanguage);
             let responseSecondaryLanguage = factorySecondaryLanguage.getCurrentlanguage();
-            this.secondaryLanguageLabels = responseSecondaryLanguage["acknowledgement"];
+            this.secondaryRightToLeftLanguageLabels = responseSecondaryLanguage["acknowledgement"];
 
             await this.getTemplate();
             this.showSpinner = false;
@@ -431,7 +440,7 @@ export class AcknowledgementComponent implements OnInit, OnDestroy {
             const subs = this.dataStorageService
                 .getRegistrationCenterByIdAndLangCode(centerId, langCode)
                 .subscribe((response) => {
-                    this.secondaryLanguageRegistrationCenter =
+                    this.secondaryRightToLeftLanguageLanguageRegistrationCenter =
                         response["response"]["registrationCenters"][0];
                     resolve(true);
                 });
@@ -634,33 +643,33 @@ export class AcknowledgementComponent implements OnInit, OnDestroy {
         const ageOfApplicant = this.calculateAge(birthDay);
         if ("NFR" === user.residenceStatus) {
             if (ageOfApplicant >= 18) {
-                piecesJustificativesToBring.push(this.primaryLanguagelabels.proofOfCNIEMandatory);
-                piecesJustificativesToBring.push(this.primaryLanguagelabels.proofOfSignedPreRegForm);
-                piecesJustificativesToBring.push(this.primaryLanguagelabels.proofOfResident);
+                piecesJustificativesToBring.push(this.primaryLeftToRightLanguageLabels.proofOfCNIEMandatory);
+                piecesJustificativesToBring.push(this.primaryLeftToRightLanguageLabels.proofOfSignedPreRegForm);
+                piecesJustificativesToBring.push(this.primaryLeftToRightLanguageLabels.proofOfResident);
             } else if (ageOfApplicant >= 12 && user.referenceCNIENumber) {
-                piecesJustificativesToBring.push(this.primaryLanguagelabels.proofOfCNIE);
-                piecesJustificativesToBring.push(this.primaryLanguagelabels.proofOfSignedPreRegForm);
-                piecesJustificativesToBring.push(this.primaryLanguagelabels.proofOfResident);
+                piecesJustificativesToBring.push(this.primaryLeftToRightLanguageLabels.proofOfCNIE);
+                piecesJustificativesToBring.push(this.primaryLeftToRightLanguageLabels.proofOfSignedPreRegForm);
+                piecesJustificativesToBring.push(this.primaryLeftToRightLanguageLabels.proofOfResident);
             } else if (ageOfApplicant >= 12) {
-                piecesJustificativesToBring.push(this.primaryLanguagelabels.proofOfBirthCertificat);
-                piecesJustificativesToBring.push(this.primaryLanguagelabels.proofOfSignedPreRegForm);
-                piecesJustificativesToBring.push(this.primaryLanguagelabels.proofOfResident);
+                piecesJustificativesToBring.push(this.primaryLeftToRightLanguageLabels.proofOfBirthCertificat);
+                piecesJustificativesToBring.push(this.primaryLeftToRightLanguageLabels.proofOfSignedPreRegForm);
+                piecesJustificativesToBring.push(this.primaryLeftToRightLanguageLabels.proofOfResident);
             } else if (ageOfApplicant >= 5) {
-                piecesJustificativesToBring.push(this.primaryLanguagelabels.proofOfBirthCertificat);
-                piecesJustificativesToBring.push(this.primaryLanguagelabels.proofOfSignedPreRegForm);
-                piecesJustificativesToBring.push(this.primaryLanguagelabels.proofOfResident);
+                piecesJustificativesToBring.push(this.primaryLeftToRightLanguageLabels.proofOfBirthCertificat);
+                piecesJustificativesToBring.push(this.primaryLeftToRightLanguageLabels.proofOfSignedPreRegForm);
+                piecesJustificativesToBring.push(this.primaryLeftToRightLanguageLabels.proofOfResident);
             } else {
-                piecesJustificativesToBring.push(this.primaryLanguagelabels.proofOfBirthCertificat);
-                piecesJustificativesToBring.push(this.primaryLanguagelabels.proofOfSignedPreRegForm);
-                piecesJustificativesToBring.push(this.primaryLanguagelabels.proofOfResident);
+                piecesJustificativesToBring.push(this.primaryLeftToRightLanguageLabels.proofOfBirthCertificat);
+                piecesJustificativesToBring.push(this.primaryLeftToRightLanguageLabels.proofOfSignedPreRegForm);
+                piecesJustificativesToBring.push(this.primaryLeftToRightLanguageLabels.proofOfResident);
             }
         } else {
             if (ageOfApplicant >= 5) {
-                piecesJustificativesToBring.push(this.primaryLanguagelabels.proofOfResidencyCard);
-                piecesJustificativesToBring.push(this.primaryLanguagelabels.proofOfSignedPreRegForm);
+                piecesJustificativesToBring.push(this.primaryLeftToRightLanguageLabels.proofOfResidencyCard);
+                piecesJustificativesToBring.push(this.primaryLeftToRightLanguageLabels.proofOfSignedPreRegForm);
             } else {
-                piecesJustificativesToBring.push(this.primaryLanguagelabels.proofOfResidencyCard);
-                piecesJustificativesToBring.push(this.primaryLanguagelabels.proofOfSignedPreRegForm);
+                piecesJustificativesToBring.push(this.primaryLeftToRightLanguageLabels.proofOfResidencyCard);
+                piecesJustificativesToBring.push(this.primaryLeftToRightLanguageLabels.proofOfSignedPreRegForm);
             }
         }
         return piecesJustificativesToBring;
@@ -695,18 +704,22 @@ export class AcknowledgementComponent implements OnInit, OnDestroy {
     }
 
     returnToDashboard() {
-        this.router.navigate([`${this.primaryLangCode}/dashboard`]);
+        this.router.navigate([`${this.primaryLeftTorRightLanguage}/dashboard`]);
     }
 
 
     dropdownApiCall(locationCode, fieldId): Promise<void> {
         if (this.locationHeirarchy.includes(fieldId)) {
             return new Promise<void>((resolve, reject) => {
-                this.primarydropDownFields[fieldId] = [];
-                this.secondaryDropDownLables[fieldId] = [];
+                this.primaryLeftTorRightLanguageDropDownFields[fieldId] = [];
+                this.secondaryRightToLeftLanguageDropDownLables[fieldId] = [];
                 const loadLocationDataPromise = this.loadLocationData(locationCode, fieldId);
                 if (loadLocationDataPromise) {
-                    loadLocationDataPromise.then(values => { resolve(); }).catch(err => { reject(); });
+                    loadLocationDataPromise.then(values => {
+                        resolve();
+                    }).catch(err => {
+                        reject();
+                    });
                 } else {
                     reject();
                 }
@@ -721,7 +734,7 @@ export class AcknowledgementComponent implements OnInit, OnDestroy {
             return new Promise<void>((resolve, reject) => {
                 const getPrimaryLangCodeLocationImmediateHierearchyPromise = new Promise<void>((resolve1, reject1) => {
                     this.dataStorageService
-                        .getLocationImmediateHierearchy(this.primaryLangCode, locationCode)
+                        .getLocationImmediateHierearchy(this.primaryLeftTorRightLanguage, locationCode)
                         .subscribe(
                             (response) => {
                                 if (response[appConstants.RESPONSE]) {
@@ -731,9 +744,9 @@ export class AcknowledgementComponent implements OnInit, OnDestroy {
                                         let codeValueModal: CodeValueModal = {
                                             valueCode: element.code,
                                             valueName: element.name,
-                                            languageCode: this.primaryLangCode,
+                                            languageCode: this.primaryLeftTorRightLanguage,
                                         };
-                                        this.primarydropDownFields[`${fieldName}`].push(codeValueModal);
+                                        this.primaryLeftTorRightLanguageDropDownFields[`${fieldName}`].push(codeValueModal);
                                     });
                                 }
                                 resolve1();
@@ -745,9 +758,9 @@ export class AcknowledgementComponent implements OnInit, OnDestroy {
                         );
                 });
                 const getSecondaryLangCodeLocationImmediateHierearchyPromise = new Promise<void>((resolve2, reject2) => {
-                    if (this.primaryLangCode !== this.secondaryLang) {
+                    if (this.primaryLeftTorRightLanguage !== this.secondaryRightToLeftLanguage) {
                         this.dataStorageService
-                            .getLocationImmediateHierearchy(this.secondaryLang, locationCode)
+                            .getLocationImmediateHierearchy(this.secondaryRightToLeftLanguage, locationCode)
                             .subscribe(
                                 (response) => {
                                     if (response[appConstants.RESPONSE]) {
@@ -757,9 +770,9 @@ export class AcknowledgementComponent implements OnInit, OnDestroy {
                                             let codeValueModal: CodeValueModal = {
                                                 valueCode: element.code,
                                                 valueName: element.name,
-                                                languageCode: this.secondaryLang,
+                                                languageCode: this.secondaryRightToLeftLanguage,
                                             };
-                                            this.secondaryDropDownLables[`${fieldName}`].push(
+                                            this.secondaryRightToLeftLanguageDropDownLables[`${fieldName}`].push(
                                                 codeValueModal
                                             );
                                         });
@@ -797,21 +810,21 @@ export class AcknowledgementComponent implements OnInit, OnDestroy {
                     dynamicField.forEach((res) => {
                         if (
                             fieldId === res.name &&
-                            res.langCode === this.primaryLangCode
+                            res.langCode === this.primaryLeftTorRightLanguage
                         ) {
                             this.filterOnLangCode(
-                                this.primaryLangCode,
+                                this.primaryLeftTorRightLanguage,
                                 fieldId,
                                 res["fieldVal"]
                             );
                         }
-                        if (this.primaryLangCode !== this.secondaryLang) {
+                        if (this.primaryLeftTorRightLanguage !== this.secondaryRightToLeftLanguage) {
                             if (
                                 fieldId === res.name &&
-                                res.langCode === this.secondaryLang
+                                res.langCode === this.secondaryRightToLeftLanguage
                             ) {
                                 this.filterOnLangCode(
-                                    this.secondaryLang,
+                                    this.secondaryRightToLeftLanguage,
                                     fieldId,
                                     res["fieldVal"]
                                 );
@@ -827,8 +840,8 @@ export class AcknowledgementComponent implements OnInit, OnDestroy {
     private filterOnLangCode(langCode: string, field: string, entityArray: any) {
         return new Promise((resolve, reject) => {
             if (entityArray) {
-                this.primarydropDownFields[field] = [];
-                this.secondaryDropDownLables[field] = [];
+                this.primaryLeftTorRightLanguageDropDownFields[field] = [];
+                this.secondaryRightToLeftLanguageDropDownLables[field] = [];
                 entityArray.filter((element: any) => {
                     if (element.langCode === langCode) {
                         let codeValue: CodeValueModal;
@@ -851,10 +864,10 @@ export class AcknowledgementComponent implements OnInit, OnDestroy {
                                 languageCode: element.langCode,
                             };
                         }
-                        if (langCode === this.primaryLangCode) {
-                            this.primarydropDownFields[field].push(codeValue);
+                        if (langCode === this.primaryLeftTorRightLanguage) {
+                            this.primaryLeftTorRightLanguageDropDownFields[field].push(codeValue);
                         } else {
-                            this.secondaryDropDownLables[field].push(codeValue);
+                            this.secondaryRightToLeftLanguageDropDownLables[field].push(codeValue);
                         }
                         resolve(true);
                     }

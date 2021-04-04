@@ -13,18 +13,18 @@ export abstract class FormDeactivateGuardService extends UnloadDeactivateGuardSe
         super(dialoug);
     }
 
-    abstract get userForm(): FormGroup;
+    abstract get leftToRightUserForm(): FormGroup;
 
     abstract get canDeactivateFlag(): boolean;
 
     canDeactivate(): boolean {
         if (!this.canDeactivateFlag) {
             return true;
-        } else if (this.userForm) {
-            (<any>Object).values(this.userForm.controls).forEach((element: FormControl) => {
+        } else if (this.leftToRightUserForm) {
+            (<any>Object).values(this.leftToRightUserForm.controls).forEach((element: FormControl) => {
                 let tempFlag = element.value !== '' ? true : false;
                 if (tempFlag) {
-                    if (this.userForm.dirty) this.flag = true;
+                    if (this.leftToRightUserForm.dirty) this.flag = true;
                     else this.flag = false;
                 }
             });

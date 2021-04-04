@@ -5,7 +5,7 @@
         <mat-spinner></mat-spinner>
     </div>
     <div class="wrapper" *ngIf="!showSpinner">
-        <div class="acknowledgement-container">
+        <div class="acknowledgement-container ltr" dir="ltr">
             <div id="print-section">
                 <ng-container *ngFor="let user of usersInfo">
                     <mat-card class="acknowledgement-mat-card">
@@ -15,29 +15,37 @@
                                     <td class="top-page-header-table-line-img" colspan="2">
                                         <table style="margin: 0; padding: 0; width: 100%">
                                             <tr>
-                                                <td width="25%">
-                                                    <img width="40%" src="data:image/png;base64,{{user.qrCodeBlob}}" />
-                                                </td>
+                                                <td width="25%"></td>
                                                 <td>
                                                     <img width="15%" src="assets/img/armoiries-maroc.png"/>
                                                 </td>
-                                                <td width="25%"></td>
+                                                <td width="25%">
+                                                    <img width="40%" src="data:image/png;base64,{{user.qrCodeBlob}}"/>
+                                                </td>
                                             </tr>
                                         </table>
                                     </td>
                                 </tr>
-                                <tr class="top-page-header-table-line">
+                                <tr class="top-page-header-table-line rnp-title-bg-color">
                                     <td class="top-page-header-table-line-title" style="width: 50%;">
-                                        <h4><b>{{ 'acknowledgement.agenceTitle' | translate }}</b></h4>
+                                        <h4>
+                                            <b>{{primaryLeftToRightLanguageLabels.agenceTitle}}</b>
+                                        </h4>
                                     </td>
                                     <td class="top-page-header-table-line-title" style="width: 50%;direction: rtl;">
-                                        <h4 style="direction: rtl;"><b>{{secondaryLanguageLabels.agenceTitle}}</b></h4>
+                                        <h4 style="direction: rtl;">
+                                            <b>{{secondaryRightToLeftLanguageLabels.agenceTitle}}</b>
+                                        </h4>
                                     </td>
                                 </tr>
                             </table>
                             <div class="acknowledgement__body-content-title-centered">
-                                <h4><b>{{ 'acknowledgement.receiptPreRegTitle' | translate }}</b></h4>
-                                <h4 style="direction: rtl;"><b>{{secondaryLanguageLabels.receiptPreRegTitle}}</b></h4>
+                                <h4 style="direction: rtl;">
+                                    <b>{{secondaryRightToLeftLanguageLabels.receiptPreRegTitle}}</b>
+                                </h4>
+                                <h4>
+                                    <b>{{primaryLeftToRightLanguageLabels.receiptPreRegTitle}}</b>
+                                </h4>
                             </div>
                         </mat-card-header>
                         <mat-card-content class="acknowledgement-body-container">
@@ -45,20 +53,23 @@
                                 <table class="acknowledgement-content-table">
                                     <tr class="acknowledgement-content-line">
                                         <td style="direction: ltr;width: 35%;">Identifiant de Pré-inscription</td>
-                                        <td colspan="2" class="result-data"
-                                            style="text-align: center">{{user.preRegId}}</td>
+                                        <td colspan="2" class="result-data" style="text-align: center">
+                                            {{user.preRegId}}
+                                        </td>
                                         <td style="direction: rtl;width: 35%;">رقم التسجيل القبلي</td>
                                     </tr>
                                     <tr class="acknowledgement-content-line">
                                         <td style="direction: ltr;">Date du Rendez-vous</td>
-                                        <td colspan="2" class="result-data"
-                                            style="text-align: center">{{getAppointmentTime(user)}}</td>
+                                        <td colspan="2" class="result-data" style="text-align: center">
+                                            {{getAppointmentTime(user)}}
+                                        </td>
                                         <td style="direction: rtl;">تاريخ الموعد</td>
                                     </tr>
                                     <tr class="acknowledgement-content-line">
                                         <td style="direction: ltr;">Adresse du centre d'enrôlement</td>
-                                        <td colspan="2" class="result-data"
-                                            style="text-align: center">{{user.registrationCenter.addressLine1}}</td>
+                                        <td colspan="2" class="result-data" style="text-align: center">
+                                            {{user.registrationCenter.addressLine1}}
+                                        </td>
                                         <td style="direction: rtl;">عنوان مركز التسجيل</td>
                                     </tr>
                                     <tr class="acknowledgement-content-line">
@@ -137,12 +148,14 @@
                                 <table class="acknowledgement__body-content-title">
                                     <tr>
                                         <td>
-                                            <h5><b>Informations Personnelles du demandeur</b></h5>
+                                            <h5>
+                                                <b>Informations Personnelles du demandeur</b>
+                                            </h5>
                                         </td>
                                         <td style="direction: rtl;text-align: right">
-                                            <h5><b>
-                                                {{'المعلومات الشخصية لصاحب/ة الطلب'}}
-                                            </b></h5>
+                                            <h5>
+                                                <b>{{'المعلومات الشخصية لصاحب/ة الطلب'}}</b>
+                                            </h5>
                                         </td>
                                     </tr>
                                 </table>
@@ -217,8 +230,9 @@
                                     </tr>
                                     <tr class="acknowledgement-content-line">
                                         <td style="direction: ltr;width: 35%;">Date de naissance</td>
-                                        <td colspan="2" class="result-data"
-                                            style="text-align: center">{{getDateOfBirth(user)}}</td>
+                                        <td colspan="2" class="result-data" style="text-align: center">
+                                            {{getDateOfBirth(user)}}
+                                        </td>
                                         <td style="direction: rtl;width: 35%;">تاريخ الميلاد</td>
                                     </tr>
                                     <tr class="acknowledgement-content-line">
@@ -235,14 +249,16 @@
                                     </tr>
                                     <tr class="acknowledgement-content-line">
                                         <td style="direction: ltr;width: 35%">Numéro Acte de Naissance</td>
-                                        <td class="result-data" colspan="2"
-                                            style="text-align: center">{{user.birthCertificateNumber}}</td>
+                                        <td class="result-data" colspan="2" style="text-align: center">
+                                            {{user.birthCertificateNumber}}
+                                        </td>
                                         <td style="direction: rtl;width: 35%">رقم رسم الولادة</td>
                                     </tr>
                                     <tr class="acknowledgement-content-line">
                                         <td style="direction: ltr;width: 35%">N° Identification unique</td>
-                                        <td class="result-data" colspan="2"
-                                            style="text-align: center">{{user.civilRegistryNumber}}</td>
+                                        <td class="result-data" colspan="2" style="text-align: center">
+                                            {{user.civilRegistryNumber}}
+                                        </td>
                                         <td style="direction: rtl;width: 35%">رقم التعريفي الفريد</td>
                                     </tr>
                                     <tr class="acknowledgement-content-line">
@@ -253,6 +269,7 @@
                                     </tr>
                                     <tr class="acknowledgement-content-line">
                                         <td style="direction: ltr;width: 40%">Date d'expiration de la carte CNIE</td>
+                                        <!-- TODO @Youssef et @Khaled : à remplir ! -->
                                         <td class="result-data" colspan="2" style="text-align: center"></td>
                                         <td style="direction: rtl;width: 40%">تاريخ إنتهاء صلاحية البطاقة الوطنية</td>
                                     </tr>
@@ -272,41 +289,33 @@
                                             &#8626;
                                             &nbsp;&nbsp;
                                             <span class="result-data" style="font-size: 90%;">
-                                            {{user.adresseLineSecondaryLang}}
-                                        </span>
+                                                {{user.adresseLineSecondaryLang}}
+                                            </span>
                                         </td>
                                     </tr>
                                     <tr class="acknowledgement-content-line">
                                         <td colspan="2" style="width: 50%;">
                                             <p style="width: 100%; display: flex;flex-direction: row;font-size: 90%;margin-top: 0.2rem;margin-bottom: 0.2rem;">
-                                            <span style="justify-content: left;flex-grow: 1;">
-                                                E-mail
-                                            </span>
+                                                <span style="justify-content: left;flex-grow: 1;">E-mail</span>
                                                 <span class="result-data"
                                                       style="justify-content: center;flex-grow: 4;text-align: center">
-                                                &nbsp;
+                                                    &nbsp;
                                                     {{user.emailId}}
                                                     &nbsp;
-                                            </span>
-                                                <span style="direction: rtl;justify-content: right;flex-grow: 1;">
-                                                {{'البريد الإلكتروني'}}
-                                            </span>
+                                                </span>
+                                                <span style="direction: rtl;justify-content: right;flex-grow: 1;">{{'البريد الإلكتروني'}}</span>
                                             </p>
                                         </td>
                                         <td colspan="2" style="twidth: 50%;direction: rtl">
                                             <p style="width: 100%; display: flex;flex-direction: row;font-size: 90%;margin-top: 0.2rem;margin-bottom: 0.2rem;">
-                                            <span style="direction: rtl;justify-content: left;flex-grow: 1;">
-                                                {{'الهاتف'}}
-                                            </span>
+                                                <span style="direction: rtl;justify-content: left;flex-grow: 1;">{{'الهاتف'}}</span>
                                                 <span class="result-data"
                                                       style="justify-content: center;flex-grow: 4;text-align: center">
-                                                &nbsp;
+                                                    &nbsp;
                                                     {{user.phoneNumber}}
                                                     &nbsp;
-                                            </span>
-                                                <span style="justify-content: right;flex-grow: 1;">
-                                                Téléphone
-                                            </span>
+                                                </span>
+                                                <span style="justify-content: right;flex-grow: 1;">Téléphone</span>
                                             </p>
                                         </td>
                                     </tr>
@@ -328,7 +337,9 @@
                                             Ou <br/>
                                             N° Carte de Séjour
                                         </td>
-                                        <td colspan="2" style="text-align: center; width: 60%"></td>
+                                        <td colspan="2" class="result-data" style="text-align: center; width: 60%">
+                                            {{user.passportNumber}}
+                                        </td>
                                         <td style="direction: rtl;text-align: center; width: 20%; font-size: 85%">
                                             أرقم جواز سفر <br/>
                                             أو <br/>
@@ -342,7 +353,7 @@
                                             <h5><b>Informations sur le tuteur - En cas de mineurs -</b></h5>
                                         </td>
                                         <td style="direction: rtl;">
-                                            <h5><b>معلومات حول الوصي - للقاصرين بالنسبة -</b></h5>
+                                            <h5><b>معلومات حول الوصي - بالنسبة للقاصرين -</b></h5>
                                         </td>
                                     </tr>
                                 </table>
@@ -385,29 +396,39 @@
                                     </tr>
                                     <tr class="acknowledgement-content-line">
                                         <td style="direction: ltr;width: 43%">N° de la carte CNIE du tuteur</td>
-                                        <td class="result-data" colspan="2" style="text-align: center">&nbsp;&nbsp;</td>
+                                        <!-- TODO @Youssef et @Khaled : à confirmer ! -->
+                                        <td class="result-data" colspan="2" style="text-align: center">
+                                            {{user.parentOrGuardianCNIE}}
+                                        </td>
                                         <td style="direction: rtl;width: 43%">رقم البطاقة الوطنية لتعريف للوصي</td>
                                     </tr>
                                     <tr class="acknowledgement-content-line">
-                                        <td style="direction: ltr;width: 48%">Date d'expiration de la carte CNIE du
-                                            tuteur
+                                        <td style="direction: ltr;width: 48%">
+                                            Date d'expiration de la carte CNIE du tuteur
                                         </td>
+                                        <!-- TODO @Youssef et @Khaled : à remplir ! -->
                                         <td class="result-data" colspan="2" style="text-align: center">&nbsp;&nbsp;</td>
-                                        <td style="direction: rtl;width: 48%">تاريخ انتهاء صلاحية البطاقة الوطنية لتعريف
-                                            الوصي
+                                        <td style="direction: rtl;width: 48%">
+                                            تاريخ انتهاء صلاحية البطاقة الوطنية لتعريف الوصي
                                         </td>
                                     </tr>
                                     <tr class="acknowledgement-content-line">
-                                        <td style="direction: ltr;width: 43%">Identifiant Digital Civil et Social du
-                                            tuteur
+                                        <td style="direction: ltr;width: 43%">
+                                            Identifiant Digital Civil et Social du tuteur
                                         </td>
-                                        <td class="result-data" colspan="2"
-                                            style="text-align: center">{{user.parentOrGuardianUIN}}</td>
-                                        <td style="direction: rtl;width: 43%">المعرف الرقمي المدني والإجتماعي للوصي</td>
+                                        <td class="result-data" colspan="2" style="text-align: center">
+                                            {{user.parentOrGuardianUIN}}
+                                        </td>
+                                        <td style="direction: rtl;width: 43%">
+                                            المعرف الرقمي المدني والإجتماعي للوصي
+                                        </td>
                                     </tr>
                                     <tr class="acknowledgement-content-line">
                                         <td style="direction: ltr;width: 43%">Identifiant d'inscription au RNP</td>
-                                        <td class="result-data" colspan="2" style="text-align: center">&nbsp;&nbsp;</td>
+                                        <!-- TODO @Youssef et @Khaled : à confirmer ! -->
+                                        <td class="result-data" colspan="2" style="text-align: center">
+                                            {{user.parentOrGuardianRID}}
+                                        </td>
                                         <td style="direction: rtl;width: 43%">معرف التسجيل في السجل الوطني للسكان</td>
                                     </tr>
                                 </table>
@@ -453,29 +474,31 @@
                                     <td class="top-page-header-table-line-img" colspan="2">
                                         <table style="margin: 0; padding: 0; width: 100%">
                                             <tr>
-                                                <td width="25%">
-                                                    <img width="40%" src="data:image/png;base64,{{user.qrCodeBlob}}" />
-                                                </td>
+                                                <td width="25%"></td>
                                                 <td>
                                                     <img width="15%" src="assets/img/armoiries-maroc.png"/>
                                                 </td>
-                                                <td width="25%"></td>
+                                                <td width="25%">
+                                                    <img width="40%" src="data:image/png;base64,{{user.qrCodeBlob}}"/>
+                                                </td>
                                             </tr>
                                         </table>
                                     </td>
                                 </tr>
-                                <tr class="top-page-header-table-line">
+                                <tr class="top-page-header-table-line rnp-title-bg-color">
                                     <td class="top-page-header-table-line-title" style="width: 50%;">
-                                        <h4><b>{{ 'acknowledgement.agenceTitle' | translate }}</b></h4>
+                                        <h4><b>{{primaryLeftToRightLanguageLabels.agenceTitle}}</b></h4>
                                     </td>
                                     <td class="top-page-header-table-line-title" style="width: 50%;direction: rtl;">
-                                        <h4 style="direction: rtl;"><b>{{secondaryLanguageLabels.agenceTitle}}</b></h4>
+                                        <h4 style="direction: rtl;">
+                                            <b>{{secondaryRightToLeftLanguageLabels.agenceTitle}}</b></h4>
                                     </td>
                                 </tr>
                             </table>
                             <div class="acknowledgement__body-content-title-centered">
-                                <h4><b>{{ 'acknowledgement.receiptPreRegTitle' | translate }}</b></h4>
-                                <h4 style="direction: rtl;"><b>{{secondaryLanguageLabels.receiptPreRegTitle}}</b></h4>
+                                <h4 style="direction: rtl;">
+                                    <b>{{secondaryRightToLeftLanguageLabels.receiptPreRegTitle}}</b></h4>
+                                <h4><b>{{primaryLeftToRightLanguageLabels.receiptPreRegTitle}}</b></h4>
                             </div>
                         </mat-card-header>
                         <mat-card-content class="acknowledgement-body-container">
@@ -579,14 +602,14 @@
                                     <td colspan="4" style="direction: rtl; font-size: 75%; text-align: center">
                                         {{'يتوافق مضمون هذه االستمارة مع معطيات التسجيل القبلي على'}}
                                         <a href="http://www.rnp.ma/">www.rnp.ma</a>
-                                        {{replaceDateTemplateInFooterMessageWithExpiryDate('وسيتم إزالته تلقائيًا من صفحتكم الرئيسية إبتداء من YYYY/MM/DD')}}
+                                        {{replaceDateTemplateInFooterMessageWithExpiryDate('وسيتم إزالته تلقائيًا من صفحتكم الرئيسية إبتداء من DD/MM/YYYY', user.createdDateTime)}}
                                     </td>
                                 </tr>
                                 <tr class="acknowledgement-content-line">
                                     <td colspan="4" style="direction: ltr;  font-size: 70%; text-align: center">
                                         {{'Le contenu de ce formulaire correspond aux données de pré-inscription sur '}}
                                         <a href="http://www.rnp.ma/">www.rnp.ma</a>
-                                        {{replaceDateTemplateInFooterMessageWithExpiryDate('et sera automatiquement  supprimée de votre tableau de bords à partir du YYYY/MM/DD')}}
+                                        {{replaceDateTemplateInFooterMessageWithExpiryDate('et sera automatiquement  supprimée de votre tableau de bords à partir du DD/MM/YYYY', user.createdDateTime)}}
                                     </td>
                                 </tr>
                             </table>

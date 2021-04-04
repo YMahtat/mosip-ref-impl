@@ -471,10 +471,18 @@ mat-icon.mat-icon.name-delete-button.material-icons.mat-icon-no-color {
     text-decoration: none;
     display: inline-block;
     font-size: 14px;
-    margin-right: 52px;
+    /*margin-right: 52px;*/
     cursor: pointer;
     text-transform: uppercase;
     margin-bottom: 80px;
+}
+
+.rtl .user-back-btn {
+    right: 0;
+}
+
+.ltr .user-back-btn {
+    left: 0;
 }
 
 .user-book_later-btn {
@@ -487,7 +495,8 @@ mat-icon.mat-icon.name-delete-button.material-icons.mat-icon-no-color {
     text-decoration: none;
     display: inline-block;
     font-size: 14px;
-    margin-right: 20px;
+    margin-right: 1rem;
+    margin-left: 1rem;
     cursor: pointer;
     text-transform: uppercase;
     margin-bottom: 80px;

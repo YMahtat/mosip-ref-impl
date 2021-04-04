@@ -1,31 +1,32 @@
-<div *ngIf="!primaryuserForm && !hasError" class="spinner">
+<div *ngIf="!isPrimaryLeftToRightLanguageUserForm && !hasError" class="spinner">
     <mat-spinner></mat-spinner>
 </div>
 <div class="demographic-body">
     <app-heading-row [title]="'demographic.title' | translate"></app-heading-row>
     <div class="wrapper">
-        <div *ngIf="primaryuserForm" class="user">
-            <div *ngIf="primaryuserForm"
-                 [dir]="textDir"
-                 [ngClass]="{user__container: primaryLang !== secondaryLang, user_container_single_form: primaryLang === secondaryLang}">
+        <div *ngIf="isPrimaryLeftToRightLanguageUserForm" class="user" [dir]="getPrimaryDirection()">
+            <div *ngIf="isPrimaryLeftToRightLanguageUserForm"
+                 [dir]="getPrimaryDirection()"
+                 class="user__container"
+                 [ngClass]="(getPrimaryDirection() === 'rtl') ? 'float-right' : 'float-left'">
                 <div class="title-lang">
-                    {{ "demographic.language" | translate }}
+                    {{ demographicPrimaryLeftToRightLanguageLabels.language }}
                 </div>
                 <div class="fields-indication">
-                    {{ "demographic.fields_indication" | translate }}
+                    {{ demographicPrimaryLeftToRightLanguageLabels.fields_indication }}
                 </div>
-                <form [formGroup]="userForm" class="user__form">
+                <form [formGroup]="leftToRightUserForm" class="user__form">
                     <mat-accordion>
-                        <ng-container *ngFor="let group of uiFieldsGroups">
+                        <ng-container *ngFor="let group of uiFieldsGroups" [dir]="getPrimaryDirection()">
                             <ng-container *ngIf="getFieldsOfGroup(group).length > 0">
                                 <mat-expansion-panel
-                                        [ngClass]="uiFieldsGroupsErrorStatus[group] ? 'primary-mat-expansion-panel left-red-border' : 'primary-mat-expansion-panel'"
+                                        [ngClass]="uiFieldsGroupsErrorStatus[group] ? 'mat-expansion-panel red-border' : 'mat-expansion-panel'"
                                         (opened)="uiFieldsGroupsPanelsOpenStates[group] = true"
                                         (closed)="uiFieldsGroupsPanelsOpenStates[group] = false"
                                         [(expanded)]="uiFieldsGroupsPanelsOpenStates[group]">
                                     <mat-expansion-panel-header>
                                         <mat-panel-title>
-                                            <h3>{{ demographicLabels["fields_groups"][group] }}</h3>
+                                            <h3>{{ demographicPrimaryLeftToRightLanguageLabels["fields_groups"][group] }}</h3>
                                         </mat-panel-title>
                                     </mat-expansion-panel-header>
                                     <mat-card class="fields-group">
@@ -34,7 +35,7 @@
                                                 <ng-container *ngIf="field.controlType === 'textbox'">
                                                     <mat-form-field [ngClass]="'text-field'" appearance="outline">
                                                         <mat-label>
-                                                            {{ field.labelName[primaryLang] }}
+                                                            {{ field.labelName[primaryLeftToRightLanguage] }}
                                                             <span *ngIf="field.required"
                                                                   class="required-annotation">*</span>
                                                         </mat-label>
@@ -43,7 +44,8 @@
                                                                (input)="copyToSecondaryFormNonDropDown(field.id, $event)"
                                                                formControlName="{{ field.id }}"
                                                                matInput/>
-                                                        <mat-icon *ngIf="field.tooltip" matSuffix matTooltip="{{demographicLabels['tooltip'][field.id]}}">
+                                                        <mat-icon *ngIf="field.tooltip" matSuffix
+                                                                  matTooltip="{{demographicPrimaryLeftToRightLanguageLabels['tooltip'][field.id]}}">
                                                             help_outline
                                                         </mat-icon>
                                                     </mat-form-field>
@@ -52,21 +54,21 @@
                                                         *ngIf="field.controlType === 'dropdown' && field.subtype !== 'radio'">
                                                     <mat-form-field [ngClass]="'dropdown-field'" appearance="outline">
                                                         <mat-label>
-                                                            {{ field.labelName[primaryLang]}}
+                                                            {{ field.labelName[primaryLeftToRightLanguage]}}
                                                             <span *ngIf="field.required"
                                                                   class="required-annotation">*</span>
                                                         </mat-label>
                                                         <mat-select #dropdown
                                                                     (focus)="dropdownApiCall(field)"
-                                                                    (selectionChange)="copyDataToSecondaryForm(field.id, userForm.get(field.id).value)"
+                                                                    (selectionChange)="copyDataToSecondaryForm(field.id, leftToRightUserForm.get(field.id).value)"
                                                                     formControlName="{{ field.id }}">
                                                             <mat-option
-                                                                    *ngIf="!(primarydropDownFields[field.id]?.length > 0 && primarydropDownFields[field.id] !== null)">
+                                                                    *ngIf="!(primaryLeftToRightLanguagDropDownFields[field.id]?.length > 0 && primaryLeftToRightLanguagDropDownFields[field.id] !== null)">
                                                                 <mat-spinner [diameter]="20" style="margin-left: 43%">
                                                                 </mat-spinner>
                                                             </mat-option>
                                                             <mat-option
-                                                                    *ngFor="let dropdown of primarydropDownFields[field.id]"
+                                                                    *ngFor="let dropdown of primaryLeftToRightLanguagDropDownFields[field.id]"
                                                                     (click)="resetLocationFields(field.id)"
                                                                     [value]="dropdown.valueCode">
                                                                 {{ dropdown.valueName }}
@@ -79,17 +81,19 @@
                                                     <mat-radio-group formControlName="{{ field.id }}"
                                                                      (change)="onChangeRadioValue(field.id)">
                                                         <mat-label>
-                                                            {{ field.labelName[primaryLang]}}
-                                                            <span *ngIf="field.required" class="required-annotation">*</span>
+                                                            {{ field.labelName[primaryLeftToRightLanguage]}}
+                                                            <span *ngIf="field.required"
+                                                                  class="required-annotation">*</span>
                                                             &nbsp;
-                                                            <mat-icon *ngIf="field.tooltip" class="mat-tooltip-icon-btn" matTooltip="{{demographicLabels['tooltip'][field.id]}}">
+                                                            <mat-icon *ngIf="field.tooltip" class="mat-tooltip-icon-btn"
+                                                                      matTooltip="{{demographicPrimaryLeftToRightLanguageLabels['tooltip'][field.id]}}">
                                                                 help_outline
                                                             </mat-icon>
                                                             &nbsp;
                                                             :
                                                         </mat-label>
                                                         <mat-radio-button class="radio-button"
-                                                                          *ngFor="let dropdown of primarydropDownFields[field.id]"
+                                                                          *ngFor="let dropdown of primaryLeftToRightLanguagDropDownFields[field.id]"
                                                                           [value]="dropdown.valueCode">
                                                             {{ dropdown.valueName }}
                                                         </mat-radio-button>
@@ -97,11 +101,12 @@
                                                 </ng-container>
                                                 <ng-container *ngIf="field.controlType === 'date'">
                                                     <mat-label>
-                                                        {{ field.labelName[primaryLang] }}
+                                                        {{ field.labelName[primaryLeftToRightLanguage] }}
                                                         <span *ngIf="field.required"
                                                               class="required-annotation">*</span>
                                                         &nbsp;
-                                                        <mat-icon *ngIf="field.tooltip" class="mat-tooltip-icon-btn" matTooltip="{{demographicLabels['tooltip'][field.id]}}">
+                                                        <mat-icon *ngIf="field.tooltip" class="mat-tooltip-icon-btn"
+                                                                  matTooltip="{{demographicPrimaryLeftToRightLanguageLabels['tooltip'][field.id]}}">
                                                             help_outline
                                                         </mat-icon>
                                                     </mat-label>
@@ -109,7 +114,7 @@
                                                         <mat-form-field appearance="outline"
                                                                         class="user-birth-date-year-field">
                                                             <mat-label>
-                                                                {{ demographicLabels.date_yyyy }}
+                                                                {{ demographicPrimaryLeftToRightLanguageLabels.date_yyyy }}
                                                             </mat-label>
                                                             <mat-select formControlName="yearOfBirth" required>
                                                                 <mat-option
@@ -120,7 +125,7 @@
                                                         <mat-form-field appearance="outline"
                                                                         class="user-birth-date-month-field">
                                                             <mat-label>
-                                                                {{ demographicLabels.date_mm }}
+                                                                {{ demographicPrimaryLeftToRightLanguageLabels.date_mm }}
                                                             </mat-label>
                                                             <mat-select [disabled]="!year"
                                                                         formControlName="monthOfBirth">
@@ -132,7 +137,7 @@
                                                         <mat-form-field appearance="outline"
                                                                         class="user-birth-date-day-field">
                                                             <mat-label>
-                                                                {{ demographicLabels.date_dd }}
+                                                                {{ demographicPrimaryLeftToRightLanguageLabels.date_dd }}
                                                             </mat-label>
                                                             <mat-select
                                                                     [disabled]="!year || !month || !month.replace(' ', '')"
@@ -149,27 +154,27 @@
                                                         </div>
                                                         <mat-form-field class="user__age" appearance="outline">
                                                             <mat-label>
-                                                                {{ "demographic.text_years" | translate }}
+                                                                {{ demographicPrimaryLeftToRightLanguageLabels.text_years }}
                                                             </mat-label>
                                                             <input class="user__age-input" #age matInput disabled
-                                                                   [value]="(currentAge) ? currentAge : demographicLabels.label_age"
-                                                                   placeholder="{{ 'demographic.label_age' | translate }}"
+                                                                   [value]="(currentAge) ? currentAge : demographicPrimaryLeftToRightLanguageLabels.label_age"
+                                                                   placeholder="{{ demographicPrimaryLeftToRightLanguageLabels.label_age }}"
                                                                    tabindex="-1"/>
                                                         </mat-form-field>
                                                     </div>
                                                 </ng-container>
                                                 <mat-error class="primary-errors">
                                                     <p class="error-text"
-                                                       *ngIf="primaryuserForm && userForm.get(field.id).hasError('required') && userForm.get(field.id).touched">
-                                                        {{getRequiredErrorPrimaryLanguageMessage(field.labelName[primaryLang])}}
+                                                       *ngIf="isPrimaryLeftToRightLanguageUserForm && leftToRightUserForm.get(field.id).hasError('required') && leftToRightUserForm.get(field.id).touched">
+                                                        {{getRequiredErrorPrimaryLanguageMessage(field.labelName[primaryLeftToRightLanguage])}}
                                                     </p>
                                                     <p class="error-text"
-                                                       *ngIf="primaryuserForm && userForm.get(field.id).touched && userForm.get(field.id).dirty && !userForm.get(field.id).valid">
-                                                        {{getValidationErrorPrimaryLanguageMessage(field.labelName[primaryLang])}}
+                                                       *ngIf="isPrimaryLeftToRightLanguageUserForm && leftToRightUserForm.get(field.id).touched && leftToRightUserForm.get(field.id).dirty && !leftToRightUserForm.get(field.id).valid">
+                                                        {{getValidationErrorPrimaryLanguageMessage(field.labelName[primaryLeftToRightLanguage])}}
                                                     </p>
                                                     <p class="error-text"
-                                                       *ngIf="(field.id == 'civilRegistryNumber' || field.id == 'parentOrGuardianUIN') && (userForm.get('civilRegistryNumber').value && userForm.get('parentOrGuardianUIN').value) && (userForm.get('civilRegistryNumber').value == userForm.get('parentOrGuardianUIN').value)">
-                                                        {{'demographic.errorSameCivilRegistryNumberAsParentOrGuardianUIN' | translate}}
+                                                       *ngIf="(field.id == 'civilRegistryNumber' || field.id == 'parentOrGuardianUIN') && (leftToRightUserForm.get('civilRegistryNumber').value && leftToRightUserForm.get('parentOrGuardianUIN').value) && (leftToRightUserForm.get('civilRegistryNumber').value == leftToRightUserForm.get('parentOrGuardianUIN').value)">
+                                                        {{demographicPrimaryLeftToRightLanguageLabels.errorSameCivilRegistryNumberAsParentOrGuardianUIN}}
                                                     </p>
                                                 </mat-error>
                                             </ng-container>
@@ -181,27 +186,28 @@
                     </mat-accordion>
                 </form>
             </div>
-            <div [dir]="secTextDir"
-                 *ngIf="secondaryuserForm && !(primaryLang === secondaryLang)"
-                 [ngClass]="{user__container: primaryLang !== secondaryLang, user_container_single_form: primaryLang === secondaryLang}">
-                <div class="title-lang tab2">
-                    {{ secondaryLanguagelabels.language }}
+            <div [dir]="getSecondaryDirection()"
+                 *ngIf="isSecondaryRightToLeftLanguageUserForm && !(primaryLeftToRightLanguage === secondaryRightToLeftLanguage)"
+                 class="user__container"
+                 [ngClass]="(getSecondaryDirection() === 'rtl') ? 'float-right' : 'float-left'">
+                <div class="title-lang">
+                    {{ demographicSecondaryRightToLeftLanguagelabels.language }}
                 </div>
                 <div class="fields-indication">
-                    {{ secondaryLanguagelabels.fields_indication }}
+                    {{ demographicSecondaryRightToLeftLanguagelabels.fields_indication }}
                 </div>
-                <form [formGroup]="transUserForm" class="user__form">
+                <form [formGroup]="rightToLeftUserForm" class="user__form">
                     <mat-accordion>
-                        <ng-container *ngFor="let group of uiFieldsGroups">
+                        <ng-container *ngFor="let group of uiFieldsGroups" [dir]="getSecondaryDirection()">
                             <ng-container *ngIf="getFieldsOfGroup(group).length > 0">
                                 <mat-expansion-panel
-                                        [ngClass]="uiFieldsGroupsErrorStatus[group] ? 'secondary-mat-expansion-panel right-red-border' : 'secondary-mat-expansion-panel'"
+                                        [ngClass]="uiFieldsGroupsErrorStatus[group] ? 'mat-expansion-panel red-border' : 'mat-expansion-panel'"
                                         (opened)="uiFieldsGroupsPanelsOpenStates[group] = true"
                                         (closed)="uiFieldsGroupsPanelsOpenStates[group] = false"
                                         [(expanded)]="uiFieldsGroupsPanelsOpenStates[group]">
                                     <mat-expansion-panel-header>
                                         <mat-panel-title>
-                                            <h3>{{ secondaryLanguagelabels["fields_groups"][group] }}</h3>
+                                            <h3>{{ demographicSecondaryRightToLeftLanguagelabels["fields_groups"][group] }}</h3>
                                         </mat-panel-title>
                                     </mat-expansion-panel-header>
                                     <mat-card class="fields-group">
@@ -210,24 +216,25 @@
                                                 <ng-container *ngIf="field.controlType === 'textbox'">
                                                     <mat-form-field [ngClass]="'text-field'" appearance="outline">
                                                         <mat-label>
-                                                            {{ field.labelName[secondaryLang] }}
+                                                            {{ field.labelName[secondaryRightToLeftLanguage] }}
                                                             <span *ngIf="field.required"
                                                                   class="required-annotation">*</span>
                                                         </mat-label>
-                                                        <input *ngIf="secondaryLang === 'ara' && !getReadOnlyfields(field.id)"
+                                                        <input *ngIf="secondaryRightToLeftLanguage === 'ara' && !getReadOnlyfields(field.id)"
                                                                matInput
                                                                [matKeyboard]="'ar'"
                                                                [readonly]="getReadOnlyfields(field.id)"
                                                                formControlName="{{ field.id }}"/>
-                                                        <input *ngIf="secondaryLang === 'ara' && getReadOnlyfields(field.id)"
+                                                        <input *ngIf="secondaryRightToLeftLanguage === 'ara' && getReadOnlyfields(field.id)"
                                                                matInput
                                                                [readonly]="getReadOnlyfields(field.id)"
                                                                formControlName="{{ field.id }}"/>
-                                                        <input *ngIf="secondaryLang !== 'ara'"
+                                                        <input *ngIf="secondaryRightToLeftLanguage !== 'ara'"
                                                                matInput
                                                                [readonly]="getReadOnlyfields(field.id)"
                                                                formControlName="{{ field.id }}"/>
-                                                        <mat-icon *ngIf="field.tooltip" matSuffix matTooltip="{{secondaryLanguagelabels['tooltip'][field.id]}}">
+                                                        <mat-icon *ngIf="field.tooltip" matSuffix
+                                                                  matTooltip="{{demographicSecondaryRightToLeftLanguagelabels['tooltip'][field.id]}}">
                                                             help_outline
                                                         </mat-icon>
                                                     </mat-form-field>
@@ -236,19 +243,19 @@
                                                         *ngIf="field.controlType === 'dropdown' && field.subtype !== 'radio'">
                                                     <mat-form-field [ngClass]="'dropdown-field'" appearance="outline">
                                                         <mat-label>
-                                                            {{ field.labelName[secondaryLang] }}
+                                                            {{ field.labelName[secondaryRightToLeftLanguage] }}
                                                             <span *ngIf="field.required"
                                                                   class="required-annotation">*</span>
                                                         </mat-label>
                                                         <mat-select #dropdown [disabled]="true"
                                                                     formControlName="{{ field.id }}">
                                                             <mat-option
-                                                                    *ngIf="secondaryDropDownLables[field.id]?.length === 0">
+                                                                    *ngIf="secondaryRightToLeftLanguageDropDownLabels[field.id]?.length === 0">
                                                                 <mat-spinner [diameter]="20"
                                                                              style="margin-left: 43%"></mat-spinner>
                                                             </mat-option>
                                                             <mat-option
-                                                                    *ngFor="let dropdown of secondaryDropDownLables[field.id]"
+                                                                    *ngFor="let dropdown of secondaryRightToLeftLanguageDropDownLabels[field.id]"
                                                                     (click)="resetLocationFields(field.id)"
                                                                     [value]="dropdown.valueCode">
                                                                 {{ dropdown.valueName }}
@@ -260,18 +267,19 @@
                                                         *ngIf="field.controlType === 'dropdown' && field.subtype === 'radio'">
                                                     <mat-radio-group formControlName="{{ field.id }}" disabled>
                                                         <mat-label>
-                                                            {{ field.labelName[secondaryLang] }}
+                                                            {{ field.labelName[secondaryRightToLeftLanguage] }}
                                                             <span *ngIf="field.required"
                                                                   class="required-annotation">*</span>
                                                             &nbsp;
-                                                            <mat-icon *ngIf="field.tooltip" class="mat-tooltip-icon-btn" matTooltip="{{secondaryLanguagelabels['tooltip'][field.id]}}">
+                                                            <mat-icon *ngIf="field.tooltip" class="mat-tooltip-icon-btn"
+                                                                      matTooltip="{{demographicSecondaryRightToLeftLanguagelabels['tooltip'][field.id]}}">
                                                                 help_outline
                                                             </mat-icon>
                                                             &nbsp;
                                                             :
                                                         </mat-label>
                                                         <mat-radio-button class="radio-button"
-                                                                          *ngFor="let dropdown of secondaryDropDownLables[field.id]"
+                                                                          *ngFor="let dropdown of secondaryRightToLeftLanguageDropDownLabels[field.id]"
                                                                           [value]="dropdown.valueCode">
                                                             {{ dropdown.valueName }}
                                                         </mat-radio-button>
@@ -279,11 +287,12 @@
                                                 </ng-container>
                                                 <ng-container *ngIf="field.controlType === 'date'">
                                                     <mat-label>
-                                                        {{ field.labelName[secondaryLang]}}
+                                                        {{ field.labelName[secondaryRightToLeftLanguage]}}
                                                         <span *ngIf="field.required"
                                                               class="required-annotation">*</span>
                                                         &nbsp;
-                                                        <mat-icon *ngIf="field.tooltip" class="mat-tooltip-icon-btn" matTooltip="{{secondaryLanguagelabels['tooltip'][field.id]}}">
+                                                        <mat-icon *ngIf="field.tooltip" class="mat-tooltip-icon-btn"
+                                                                  matTooltip="{{demographicSecondaryRightToLeftLanguagelabels['tooltip'][field.id]}}">
                                                             help_outline
                                                         </mat-icon>
                                                     </mat-label>
@@ -291,7 +300,7 @@
                                                         <mat-form-field appearance="outline"
                                                                         class="user-birth-date-year-field-ara">
                                                             <mat-label>
-                                                                {{ secondaryLanguagelabels.date_yyyy }}
+                                                                {{ demographicSecondaryRightToLeftLanguagelabels.date_yyyy }}
                                                             </mat-label>
                                                             <mat-select formControlName="yearOfBirth" disabled>
                                                                 <mat-option
@@ -302,7 +311,7 @@
                                                         <mat-form-field appearance="outline"
                                                                         class="user-birth-date-month-field-ara">
                                                             <mat-label>
-                                                                {{ secondaryLanguagelabels.date_mm }}
+                                                                {{ demographicSecondaryRightToLeftLanguagelabels.date_mm }}
                                                             </mat-label>
                                                             <mat-select formControlName="monthOfBirth" disabled>
                                                                 <mat-option
@@ -313,7 +322,7 @@
                                                         <mat-form-field appearance="outline"
                                                                         class="user-birth-date-day-field-ara">
                                                             <mat-label>
-                                                                {{ secondaryLanguagelabels.date_dd }}
+                                                                {{ demographicSecondaryRightToLeftLanguagelabels.date_dd }}
                                                             </mat-label>
                                                             <mat-select formControlName="dayOfBirth" disabled>
                                                                 <mat-option
@@ -328,27 +337,27 @@
                                                         </div>
                                                         <mat-form-field class="user__age" appearance="outline">
                                                             <mat-label>
-                                                                {{ secondaryLanguagelabels.text_years }}
+                                                                {{ demographicSecondaryRightToLeftLanguagelabels.text_years }}
                                                             </mat-label>
                                                             <input class="user__age-input" #age matInput disabled
-                                                                   [value]="(currentAge) ? currentAge : secondaryLanguagelabels.label_age"
-                                                                   placeholder="{{ secondaryLanguagelabels.label_age }}"
+                                                                   [value]="(currentAge) ? currentAge : demographicSecondaryRightToLeftLanguagelabels.label_age"
+                                                                   placeholder="{{ demographicSecondaryRightToLeftLanguagelabels.label_age }}"
                                                                    tabindex="-1"/>
                                                         </mat-form-field>
                                                     </div>
                                                 </ng-container>
                                                 <mat-error class="primary-errors">
                                                     <p class="error-text"
-                                                       *ngIf="secondaryuserForm && transUserForm.get(field.id).touched && transUserForm.get(field.id).hasError('required')">
-                                                        {{ getRequiredErrorSecondaryLanguageMessage(field.labelName[secondaryLang]) }}
+                                                       *ngIf="isSecondaryRightToLeftLanguageUserForm && rightToLeftUserForm.get(field.id).touched && rightToLeftUserForm.get(field.id).hasError('required')">
+                                                        {{ getRequiredErrorSecondaryLanguageMessage(field.labelName[secondaryRightToLeftLanguage]) }}
                                                     </p>
                                                     <p class="error-text"
-                                                       *ngIf="transUserForm.get(field.id).value && !transUserForm.get(field.id).valid">
-                                                        {{ getValidationErrorSecondaryLanguageMessage(field.labelName[secondaryLang]) }}
+                                                       *ngIf="rightToLeftUserForm.get(field.id).value && !rightToLeftUserForm.get(field.id).valid">
+                                                        {{ getValidationErrorSecondaryLanguageMessage(field.labelName[secondaryRightToLeftLanguage]) }}
                                                     </p>
                                                     <p class="error-text"
-                                                       *ngIf="(field.id == 'civilRegistryNumber' || field.id == 'parentOrGuardianUIN') && (transUserForm.get('civilRegistryNumber').value && transUserForm.get('parentOrGuardianUIN').value) && (transUserForm.get('civilRegistryNumber').value == transUserForm.get('parentOrGuardianUIN').value)">
-                                                        {{secondaryLanguagelabels.errorSameCivilRegistryNumberAsParentOrGuardianUIN}}
+                                                       *ngIf="(field.id == 'civilRegistryNumber' || field.id == 'parentOrGuardianUIN') && (rightToLeftUserForm.get('civilRegistryNumber').value && rightToLeftUserForm.get('parentOrGuardianUIN').value) && (rightToLeftUserForm.get('civilRegistryNumber').value == rightToLeftUserForm.get('parentOrGuardianUIN').value)">
+                                                        {{demographicSecondaryRightToLeftLanguagelabels.errorSameCivilRegistryNumberAsParentOrGuardianUIN}}
                                                     </p>
                                                 </mat-error>
                                             </ng-container>

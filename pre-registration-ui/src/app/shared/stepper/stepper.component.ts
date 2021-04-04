@@ -6,6 +6,7 @@ import {Component, Input, OnChanges, OnInit} from '@angular/core';
     styleUrls: ['./stepper.component.css']
 })
 export class StepperComponent implements OnInit, OnChanges {
+
     @Input() componentName: string;
 
     classes = {
@@ -87,4 +88,5 @@ export class StepperComponent implements OnInit, OnChanges {
             this.classes.step4.icon = ['inline-icon', 'inline-icon-background-complete'];
         }
     }
+
 }

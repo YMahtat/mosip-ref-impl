@@ -9,7 +9,7 @@ import * as appConstants from "../../../app.constants";
 import LanguageFactory from "src/assets/i18n";
 import {ConfigService} from "src/app/core/services/config.service";
 import {CodeValueModal} from "src/app/shared/models/demographic-model/code.value.modal";
-import {CONFIG_KEYS} from "../../../app.constants";
+import {CONFIG_KEYS, DEFAULT_LTR_LANGUAGE_CODE, DEFAULT_RTL_LANGUAGE_CODE} from "../../../app.constants";
 
 @Component({
     selector: "app-preview",
@@ -17,12 +17,19 @@ import {CONFIG_KEYS} from "../../../app.constants";
     styleUrls: ["./preview.component.css"],
 })
 export class PreviewComponent implements OnInit {
+
+    primaryLanguage: string;
+    primaryLeftTorRightLanguage = DEFAULT_LTR_LANGUAGE_CODE;
+    secondaryLanguage: string;
+    secondaryRightToLeftLanguage = DEFAULT_RTL_LANGUAGE_CODE;
+
     previewData: any;
-    demographiclabels: any;
-    secondaryLanguageDemographiclabels: any;
-    secondaryLanguagelabels: any;
-    primaryLanguage;
-    secondaryLanguage;
+
+    primaryLeftToRightLanguageLabels: any;
+    secondaryRightToLeftLanguageLabels: any;
+    demographicPrimaryLeftToRightLanguageLabels: any;
+    demographicSecondaryRightToLeftLanguageLabels: any;
+
     dateOfBirthPrimary: string = "";
     dateOfBirthSecondary: string = "";
     user: UserModel;
@@ -35,8 +42,10 @@ export class PreviewComponent implements OnInit {
         primary: {},
         secondary: {},
     };
-    primaryLocations;
-    secondaryLocations;
+
+    // primaryLocations;
+    // secondaryLocations;
+
     residenceStatus: any;
     genders: any;
 
@@ -118,7 +127,7 @@ export class PreviewComponent implements OnInit {
         this.uiFields.forEach((control) => {
             if (control.controlType === "dropdown") {
                 this.primarydropDownFields[control.id] = [];
-                if (this.primaryLanguage != this.secondaryLanguage) {
+                if (this.primaryLeftTorRightLanguage != this.secondaryRightToLeftLanguage) {
                     this.secondaryDropDownFields[control.id] = [];
                 }
             }
@@ -135,21 +144,21 @@ export class PreviewComponent implements OnInit {
                         dynamicField.forEach((res) => {
                             if (
                                 field.id === res.name &&
-                                res.langCode === this.primaryLanguage
+                                res.langCode === this.primaryLeftTorRightLanguage
                             ) {
                                 this.filterOnLangCode(
-                                    this.primaryLanguage,
+                                    this.primaryLeftTorRightLanguage,
                                     res.name,
                                     res["fieldVal"]
                                 );
                             }
-                            if (this.primaryLanguage !== this.secondaryLanguage) {
+                            if (this.primaryLeftTorRightLanguage !== this.secondaryRightToLeftLanguage) {
                                 if (
                                     field.id === res.name &&
-                                    res.langCode === this.secondaryLanguage
+                                    res.langCode === this.secondaryRightToLeftLanguage
                                 ) {
                                     this.filterOnLangCode(
-                                        this.secondaryLanguage,
+                                        this.secondaryRightToLeftLanguage,
                                         res.name,
                                         res["fieldVal"]
                                     );
@@ -300,18 +309,19 @@ export class PreviewComponent implements OnInit {
 
 
     private getPrimaryLanguageLabels() {
-        let factory = new LanguageFactory(this.primaryLanguage);
+        let factory = new LanguageFactory(this.primaryLeftTorRightLanguage);
         let response = factory.getCurrentlanguage();
-        this.demographiclabels = response["demographic"];
+        this.primaryLeftToRightLanguageLabels = response["preview"];
+        this.demographicPrimaryLeftToRightLanguageLabels = response["demographic"];
     }
 
     getSecondaryLanguageLabels() {
         let factory = new LanguageFactory(
-            localStorage.getItem("secondaryLangCode")
+            this.secondaryRightToLeftLanguage
         );
         let response = factory.getCurrentlanguage();
-        this.secondaryLanguagelabels = response["preview"];
-        this.secondaryLanguageDemographiclabels = response["demographic"];
+        this.secondaryRightToLeftLanguageLabels = response["preview"];
+        this.demographicSecondaryRightToLeftLanguageLabels = response["demographic"];
         this.residentTypeMapping.secondary = response["residentTypesMapping"];
     }
 
@@ -380,7 +390,7 @@ export class PreviewComponent implements OnInit {
         localStorage.setItem("modifyUser", "false");
         localStorage.setItem("addingUserFromPreview", "true");
         this.router.navigate([
-            `${this.primaryLanguage}/pre-registration/demographic/new`,
+            `${this.primaryLeftTorRightLanguage}/pre-registration/demographic/new`,
         ]);
     }
 
@@ -405,9 +415,9 @@ export class PreviewComponent implements OnInit {
     // }
 
     private async setDynamicFieldValues() {
-        await this.getDynamicFieldValues(this.primaryLanguage);
-        if (this.primaryLanguage !== this.secondaryLanguage) {
-            await this.getDynamicFieldValues(this.secondaryLanguage);
+        await this.getDynamicFieldValues(this.primaryLeftTorRightLanguage);
+        if (this.primaryLeftTorRightLanguage !== this.secondaryRightToLeftLanguage) {
+            await this.getDynamicFieldValues(this.secondaryRightToLeftLanguage);
         }
     }
 
@@ -436,7 +446,7 @@ export class PreviewComponent implements OnInit {
                                 languageCode: element.langCode,
                             };
                         }
-                        if (langCode === this.primaryLanguage) {
+                        if (langCode === this.primaryLeftTorRightLanguage) {
                             this.primarydropDownFields[field].push(codeValue);
                         } else {
                             this.secondaryDropDownFields[field].push(codeValue);
@@ -548,10 +558,10 @@ export class PreviewComponent implements OnInit {
             if (optionValue) {
                 return optionValue.valueName;
             } else if (fieldCode === 'gender') {
-                const gender = this.genders.filter(gender => gender.langCode === this.primaryLanguage && valueCode === gender.code)[0];
+                const gender = this.genders.filter(gender => gender.langCode === this.primaryLeftTorRightLanguage && valueCode === gender.code)[0];
                 return gender.genderName;
             } else if (fieldCode === 'residenceStatus') {
-                const residentType = this.residenceStatus.filter(residentType => residentType.langCode === this.primaryLanguage && valueCode === residentType.code)[0];
+                const residentType = this.residenceStatus.filter(residentType => residentType.langCode === this.primaryLeftTorRightLanguage && valueCode === residentType.code)[0];
                 return residentType.name;
             } else {
                 return '';
@@ -567,10 +577,10 @@ export class PreviewComponent implements OnInit {
             if (optionValue) {
                 return optionValue.valueName;
             } else if (fieldCode === 'gender') {
-                const gender = this.genders.filter(gender => gender.langCode === this.secondaryLanguage && valueCode === gender.code)[0];
+                const gender = this.genders.filter(gender => gender.langCode === this.secondaryRightToLeftLanguage && valueCode === gender.code)[0];
                 return gender.genderName;
             } else if (fieldCode === 'residenceStatus') {
-                const residentType = this.residenceStatus.filter(residentType => residentType.langCode === this.secondaryLanguage && valueCode === residentType.code)[0];
+                const residentType = this.residenceStatus.filter(residentType => residentType.langCode === this.secondaryRightToLeftLanguage && valueCode === residentType.code)[0];
                 return residentType.name;
             } else {
                 return '';
@@ -613,7 +623,7 @@ export class PreviewComponent implements OnInit {
     loadLocationData(locationCode: string, fieldName: string) {
         if (fieldName && fieldName.length > 0) {
             this.dataStorageService
-                .getLocationImmediateHierearchy(this.primaryLanguage, locationCode)
+                .getLocationImmediateHierearchy(this.primaryLeftTorRightLanguage, locationCode)
                 .subscribe(
                     (response) => {
                         if (response[appConstants.RESPONSE]) {
@@ -623,7 +633,7 @@ export class PreviewComponent implements OnInit {
                                 let codeValueModal: CodeValueModal = {
                                     valueCode: element.code,
                                     valueName: element.name,
-                                    languageCode: this.primaryLanguage,
+                                    languageCode: this.primaryLeftTorRightLanguage,
                                 };
                                 this.primarydropDownFields[`${fieldName}`].push(codeValueModal);
                             });
@@ -633,9 +643,9 @@ export class PreviewComponent implements OnInit {
                         console.log(error);
                     }
                 );
-            if (this.primaryLanguage !== this.secondaryLanguage) {
+            if (this.primaryLeftTorRightLanguage !== this.secondaryRightToLeftLanguage) {
                 this.dataStorageService
-                    .getLocationImmediateHierearchy(this.secondaryLanguage, locationCode)
+                    .getLocationImmediateHierearchy(this.secondaryRightToLeftLanguage, locationCode)
                     .subscribe(
                         (response) => {
                             if (response[appConstants.RESPONSE]) {
@@ -645,7 +655,7 @@ export class PreviewComponent implements OnInit {
                                     let codeValueModal: CodeValueModal = {
                                         valueCode: element.code,
                                         valueName: element.name,
-                                        languageCode: this.secondaryLanguage,
+                                        languageCode: this.secondaryRightToLeftLanguage,
                                     };
                                     this.secondaryDropDownFields[`${fieldName}`].push(codeValueModal);
                                 });
@@ -662,6 +672,18 @@ export class PreviewComponent implements OnInit {
     getDateOfBirth() {
         const data = this.previewData;
         return (!data.monthOfBirth) ? data.yearOfBirth : (!data.dayOfBirth) ? `${data.monthOfBirth}/${data.yearOfBirth}` : `${data.dayOfBirth}/${data.monthOfBirth}/${data.yearOfBirth}`;
+    }
+
+    getOriginalPrimaryDirection() {
+        return (this.primaryLanguage === 'ara') ? 'rtl' : 'ltr';
+    }
+
+    getPrimaryDirection() {
+        return (this.primaryLeftTorRightLanguage === 'ara') ? 'rtl' : 'ltr';
+    }
+
+    getSecondaryDirection() {
+        return (this.primaryLeftTorRightLanguage === 'ara') ? 'ltr' : 'rtl';
     }
 
 }

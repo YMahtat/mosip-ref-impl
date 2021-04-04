@@ -40,6 +40,7 @@ import {IDS} from "../../../app.constants";
     styleUrls: ["./dashboard.component.css"],
 })
 export class DashBoardComponent implements OnInit, OnDestroy {
+
     userFile: FileModel[] = [];
     file: FileModel = new FileModel();
     userFiles: FilesModel = new FilesModel(this.userFile);

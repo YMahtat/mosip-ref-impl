@@ -9,7 +9,7 @@
 .acknowledgement-container {
     margin: auto auto;
     margin-top: 12rem !important;
-    padding-top: 1rem !important;
+    /*padding-top: 1rem !important;*/
     background-color: #ffffff;
     width: fit-content;
     display: block;
@@ -20,10 +20,13 @@
 
 .acknowledgement-mat-card {
     margin: auto auto;
-    background-color: #ffffff;
+    background-image: url('src/assets/img/acknowledgement-background.png');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100% 100%;
     display: block;
     box-shadow: none;
-    width: 21cm;
+    width: 21.7cm;
     height: 27.4cm;
     padding-top: 0px;
     font-size: 85%;
@@ -43,7 +46,7 @@
     width: 95.73%!important;
     margin: auto auto;
     position: absolute;
-    bottom: 0;
+    bottom: 5rem;
 }
 
 /*.acknowledgement__body-content-div {*/
@@ -135,11 +138,17 @@
 .top-page-header-table {
     width: 100%;
     margin: auto auto;
+    border-spacing: 0px !important;
 }
 
 .top-page-header-table-line {
     width: 100% !important;
     line-height: 1;
+}
+
+.rnp-title-bg-color {
+    background-color: #BEC4CF;
+    z-index: 99999;
 }
 
 .top-page-header-table-line h4 {
@@ -150,13 +159,15 @@
 
 .top-page-header-table-line-title {
     width: 100%;
+    padding: 0.5rem;
 }
 
 
 .top-page-header-table-line-title h4 {
-    font-size: 1.2rem;
+    font-size: 1rem;
     font-weight: bold;
     margin: 0.1rem 0.1rem;
+    borde: 0px;
 }
 
 .top-page-header-table-line-title h4 b {
@@ -172,7 +183,7 @@
     width: 100% !important;
     margin: auto auto;
     margin-top: 0.5rem !important;
-    background-color: #D1D0D0;
+    background-color: #E0E8F3;
     text-align: center;
 }
 
@@ -247,9 +258,5 @@
 
 
 .mat-card-content, .mat-card-subtitle {
-    font-size: 0.7rem !important;
-}
-
-.mat-card-content, .mat-card-subtitle {
-    font-size: 0.7rem !important;
+    font-size: 0.67rem !important;
 }

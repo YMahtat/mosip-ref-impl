@@ -44,4 +44,7 @@ export interface NameList {
     commun?: string;
     communSecondaryLang?: string;
     createdDateTime?: string;
+    passportNumber?: string;
+    parentOrGuardianCNIE?: string;
+    parentOrGuardianRID?: string;
 }

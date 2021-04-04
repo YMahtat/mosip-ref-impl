@@ -400,7 +400,8 @@ export class CenterSelectionComponent
         return new Promise((resolve) => {
             this.REGISTRATION_CENTRES.forEach((center) => {
                 this.dataService
-                    .getWorkingDays(center.id, this.primaryLang)
+                    // .getWorkingDays(center.id, this.primaryLang) // TODO @Youssef : à retablir
+                    .getWorkingDays(center.id, 'eng')  // TODO @Youssef : à enlever
                     .subscribe((response) => {
                         center.workingDays = "";
                         response[appConstants.RESPONSE]["workingdays"].forEach((day) => {

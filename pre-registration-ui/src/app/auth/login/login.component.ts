@@ -1,4 +1,4 @@
-import {Component, OnInit} from "@angular/core";
+import {AfterViewChecked, ChangeDetectorRef, Component, OnInit} from "@angular/core";
 import {Router} from "@angular/router";
 import {TranslateService} from "@ngx-translate/core";
 import {DialougComponent} from "src/app/shared/dialoug/dialoug.component";
@@ -15,7 +15,8 @@ import LanguageFactory from "../../../assets/i18n";
     templateUrl: "./login.component.html",
     styleUrls: ["./login.component.css"],
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, AfterViewChecked {
+
     languages: string[] = [];
     inputPlaceholderContact = "Email ID or Phone Number";
     inputPlaceholderOTP = "Enter OTP";
@@ -62,7 +63,8 @@ export class LoginComponent implements OnInit {
         private dialog: MatDialog,
         private dataService: DataStorageService,
         private regService: RegistrationService,
-        private configService: ConfigService
+        private configService: ConfigService,
+        private cdr: ChangeDetectorRef
     ) {
         translate.setDefaultLang("fra");
         localStorage.clear();
@@ -75,6 +77,11 @@ export class LoginComponent implements OnInit {
         if (this.authService.isAuthenticated()) {
             this.authService.onLogout();
         }
+    }
+
+    ngAfterViewChecked(): void {
+
+        this.cdr.detectChanges();
     }
 
     loadValidationMessages() {
@@ -452,4 +459,13 @@ export class LoginComponent implements OnInit {
             this.errorLoginInput = false;
         }
     }
+
+    isRtlLanguage(): boolean {
+        return this.primaryLang === 'ara';
+    }
+
+    getPrimaryDirection() {
+        return (this.primaryLang === 'ara') ? 'rtl' : 'ltr';
+    }
+
 }

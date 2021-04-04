@@ -340,10 +340,10 @@
         "invalidFormPopupTitle": "Demande Invalide",
         "invalidFormPopupMessage": "Merci de bien remplir la demande avec des valeurs valides !",
         "tooltip" : {
-            "civilRegistryNumber" : "tooltip ENG civilRegistryNumber",
-            "referenceResidencyNumber": "tooltip ENG referenceResidencyNumber",
-            "flagidcs": "tooltip ENG flagidcs",
-            "parentOrGuardianUIN": "tooltip ENG parentOrGuardianUIN"
+            "civilRegistryNumber" : "Correspond au Numéro d'identification unique (10 chiffres) qui existe dans l'extrait d'acte de naissance ou la copie intégrale informatisés",
+            "referenceResidencyNumber": "C'est le numéro de la carte de séjour ou le cas échéant celui du passeport",
+            "flagidcs": "Numéro de 10 chiffres attribué suite à l’inscription au système RNP",
+            "parentOrGuardianUIN": "Numéro de 10 chiffres attribué au tuteur suite à son inscription au système RNP"
         }
     },
     "documents": {
@@ -534,8 +534,8 @@
     },
     "dialog": {
         "title_applicant": "Envoyer une confirmation de RDV",
-        "content_applicant": "Email / Numéro de téléphone",
-        "text_email": "Entrer l'adresse e-mail",
+        "content_applicant": "Recevez la confirmation de votre pré-inscription",
+        "text_email": "Recevez la confirmation de votre pré-inscription",
         "text_mobile": "Entrez le numéro de téléphone mobile",
         "invalidApplicantNumber": "Numéro de téléphone mobile invalide",
         "invalidApplicantEmailId": "Adresse e-mail invalide",
@@ -557,6 +557,8 @@
         "display_recommended": "Centres recommandés",
         "text_found": "Trouvé",
         "text_centers": "Centres",
+        "centerWithRDV": "Centre Avec RDV",
+        "centerWithoutRDV": "Centre sans RDV",
         "text_timing": "Horaire d'ouverture",
         "text_lunch": "Pause déjeuner",
         "text_open": "Ouvrir",

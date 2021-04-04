@@ -1,18 +1,19 @@
 <div class="preview-body">
     <app-heading-row [title]="'preview.title_preview' | translate"></app-heading-row>
     <div class="wrapper">
-        <div *ngIf="previewData !== undefined && secondaryLanguagelabels !== undefined" class="preview__container">
+        <div *ngIf="previewData !== undefined && secondaryRightToLeftLanguageLabels !== undefined"
+             class="preview__container" [dir]="getPrimaryDirection()">
             <mat-card class="preview__header-container card-padding">
                 <mat-card-content>
                     <div class="preview__body-content-container">
-                        <div [ngClass]="primaryLanguage === 'ara' ? 'preview__body-content-div right spacing' : 'preview__body-content-div left'">
-                            <!-- <h3>{{ 'preview.language' | translate }}</h3> -->
+                        <div [ngClass]="(getPrimaryDirection() === 'rtl') ? 'preview__body-content-div float-right spacing' : 'preview__body-content-div float-left'"
+                             [dir]="getPrimaryDirection()">
                             <div class="title-lang">
-                                {{ "preview.language" | translate }}
+                                {{ primaryLeftToRightLanguageLabels.language }}
                             </div>
                             <ng-container *ngFor="let group of uiFieldsGroups">
                                 <ng-container *ngIf="getFieldsOfGroup(group).length > 0">
-                                    <h4>{{ demographiclabels["fields_groups"][group] }} :</h4>
+                                    <h4>{{ demographicPrimaryLeftToRightLanguageLabels["fields_groups"][group] }} :</h4>
                                     <mat-card class="fields-group">
                                         <!-- <mat-card-header> -->
                                         <!--     <mat-card-title class="fields-group-title"> -->
@@ -23,7 +24,7 @@
                                             <table>
                                                 <tr *ngFor="let field of getFieldsOfGroup(group)">
                                                     <ng-container *ngIf="field.preview && previewData[field.id]">
-                                                        <div> {{ field.labelName[primaryLanguage] }} </div>
+                                                        <div> {{ field.labelName[primaryLeftTorRightLanguage] }} </div>
                                                         <div *ngIf="field.controlType">
                                                             <div *ngIf="previewData[field.id].length > 2 && field.controlType != 'date'">
                                                                 {{ previewData[field.id] }}
@@ -53,14 +54,16 @@
                                 {{ 'preview.action_modify' | translate }}
                             </span>
                         </div>
-                        <div [ngClass]="secondaryLanguage === 'ara' ? 'preview__body-content-div right ' : 'preview__body-content-div'">
+                        <div [ngClass]="(getSecondaryDirection() === 'rtl') ? 'preview__body-content-div float-right' : 'preview__body-content-div float-left'"
+                             [dir]="getSecondaryDirection()">
                             <!-- <h3>{{ secondaryLanguagelabels.language }}</h3> -->
-                            <div class="title-lang ara">
-                                {{ secondaryLanguagelabels.language }}
+                            <div class="title-lang">
+                                {{ secondaryRightToLeftLanguageLabels.language }}
                             </div>
                             <ng-container *ngFor="let group of uiFieldsGroups">
                                 <ng-container *ngIf="getFieldsOfGroup(group).length > 0">
-                                    <h4>{{ secondaryLanguageDemographiclabels["fields_groups"][group] }} :</h4>
+                                    <h4>{{ demographicSecondaryRightToLeftLanguageLabels["fields_groups"][group] }}
+                                        :</h4>
                                     <mat-card class="fields-group">
                                         <!-- <mat-card-header> -->
                                         <!--     <mat-card-title class="fields-group-title"> -->
@@ -71,7 +74,7 @@
                                             <table>
                                                 <tr *ngFor="let field of getFieldsOfGroup(group)">
                                                     <ng-container *ngIf="field.preview && previewData[field.id]">
-                                                        <div>{{ field.labelName[secondaryLanguage] }}</div>
+                                                        <div>{{ field.labelName[secondaryRightToLeftLanguage] }}</div>
                                                         <div *ngIf="field.controlType">
                                                             <div *ngIf="previewData[field.id].length > 2 && field.controlType != 'date'">
                                                                 {{ previewData[field.id] }}
@@ -97,20 +100,20 @@
                     </div>
                 </mat-card-content>
                 <div class="preview__footer-header">
-                    <h3 class="left">{{ 'preview.title_document' | translate }}</h3>
+                    <h3 class="left" [dir]="getPrimaryDirection()">{{ primaryLeftToRightLanguageLabels.title_document }}</h3>
                     <span (click)="modifyDocument()"
                           class="preview__modify-file"
                           matTooltip="{{ 'helpText.modify_at_DocumentPreview' | translate }}">
                         {{ 'preview.action_modify' | translate }}
                     </span>
-                    <h3 class="right">{{ secondaryLanguagelabels.title_document }}</h3>
+                    <h3 class="right" [dir]="getSecondaryDirection()">{{ secondaryRightToLeftLanguageLabels.title_document }}</h3>
                 </div>
                 <mat-card-footer class="preview__footer-container">
                     <div class="preview__footer">
                         <div class="preview__file-container">
                             <table style="width:100%" *ngIf="documentMapObject">
                                 <tr class="preview__file__table__header">
-                                    <td *ngFor="let object of documentMapObject">{{ object.name }}</td>
+                                    <td *ngFor="let object of documentMapObject"><b>{{ object.name }}</b></td>
                                 </tr>
                                 <tr class="preview__file__table__data">
                                     <td *ngFor="let object of documentMapObject">
@@ -124,7 +127,7 @@
                     </div>
                 </mat-card-footer>
             </mat-card>
-            <mat-card class="center-selection__button-container">
+            <mat-card class="center-selection__button-container" [dir]="getOriginalPrimaryDirection()">
                 <button (click)="navigateBack()" class="user-back-btn">{{ 'preview.action_back' | translate }}</button>
                 <div class="rightB">
                     <button matTooltip="{{ 'helpText.add_applicant' | translate }}"

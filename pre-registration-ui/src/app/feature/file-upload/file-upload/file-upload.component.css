@@ -21,6 +21,7 @@
     background: #007e42;
     border-radius: 2px;
     padding: 1rem 1rem;
+    margin: 0 0.3rem;
     color: #FFF;
     border: none;
     font-family: Lato;
@@ -29,9 +30,10 @@
     letter-spacing: 0;
     line-height: 1.125;
     bottom: 0.4rem;
-    width: 33%;
+    width: 30%;
     text-align: center;
 }
+
 
 .file-upload__body__document-type {
     position: relative;
@@ -244,16 +246,7 @@ span.file-uplaoad__body__document-name__view span {
 }
 
 .file-upload-body.ara .file-upload__message {
-
     text-align: right;
-}
-
-.file-upload-body.ara .mat-select-value-text {
-
-}
-
-.file-upload-body.ara input.browseInput {
-
 }
 
 .file-upload-body.ara .file-upload__body__document-name div div {

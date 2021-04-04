@@ -39,12 +39,12 @@
     margin-bottom: 1rem !important;
 }
 
-.primary-mat-expansion-panel {
+.float-left .mat-expansion-panel {
     border-bottom-left-radius: 0.5rem !important;
     border-top-left-radius: 0.5rem !important;
 }
 
-.secondary-mat-expansion-panel {
+.float-right .mat-expansion-panel {
     border-bottom-right-radius: 0.5rem !important;
     border-top-right-radius: 0.5rem !important;
 }
@@ -54,12 +54,12 @@
     padding: 0 24px !important;
 }
 
-.left-red-border {
+.float-left .red-border {
     border: 1px solid #c1272d;
     border-right: 0px;
 }
 
-.right-red-border {
+.float-right .red-border {
     border: 1px solid #c1272d;
     border-left: 0px;
 }
@@ -98,6 +98,8 @@ mat-panel-title > h3 {
     width: 50%;
     float: left;
 }
+
+
 
 .user_container_single_form {
     font-size: 0.8rem;
@@ -164,26 +166,20 @@ mat-panel-title > h3 {
     padding-top: 57px;
 }
 
-.user__container .title-lang.tab2 {
-
-}
-
-.user__container .title-lang.tab2.ara {
-    font-family: 'Montserrat';
-}
-
-.user__container .title-lang.tab2::after {
-    right: 0;
-}
-
-.user__container .title-lang.tab2.ara:after {
-    left: 0;
-}
-
-.demographic-body.ara button.user__btn {
-
+.demographic-body .float-right button.user__btn {
     line-height: 16px;
 }
+
+.float-right .mat-form-field {
+    text-align: right;
+}
+
+.float-left .mat-form-field {
+    text-align: left;
+    direction: ltr;
+}
+
+
 
 .demographic-body.ara .user__buttons {
     margin-top: -10px;
@@ -582,7 +578,6 @@ form.user__form.ara .user__age--years {
     width: 30px;
     background-color: #c1272d;
     position: absolute;
-    left: 0;
     bottom: -8px;
 }
 
@@ -591,10 +586,17 @@ form.user__form {
     /*background-color: #FFFFFF;*/
 }
 
-.user__container .title-lang.ara::after {
-    left: auto;
-    bottom: -8px;
-    right: 0;
+.user__container.float-left .title-lang::after {
+    left: 0 !important;
+    right: auto !important;
+    text-align: left;
+}
+
+
+.user__container.float-right .title-lang::after {
+    left: auto !important;
+    right: 0 !important;
+    text-align: right;
 }
 
 /*form.user__form label.labelform {*/

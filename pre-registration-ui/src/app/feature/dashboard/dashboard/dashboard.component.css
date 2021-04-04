@@ -333,7 +333,7 @@ mat-checkbox-inner-container:dir('rtl') {
 .dashboard-body .btn_axn-pri.page_btn:disabled,
 .dashboard-body .btn_axn-sec.page_btn:disabled {
     border: 1px solid #007e42;
-    background-color: transparent;
+    background-color: #FFFFFF;
     color: #007e42;
 }
 

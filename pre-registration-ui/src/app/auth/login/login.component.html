@@ -1,7 +1,7 @@
 <div *ngIf="showSpinner" class="wrapper spacing">
     <mat-spinner></mat-spinner>
 </div>
-<div *ngIf="!showSpinner" class="wrapper auth-form">
+<div *ngIf="!showSpinner" class="wrapper auth-form" [ngClass]="isRtlLanguage() ? ' rtl' : 'ltr'">
     <div class="form_wrapper">
         <div class="heading">
             <span class="line">{{ "login.text" | translate }}</span>
@@ -11,7 +11,7 @@
             <span> {{ "login.sub_text_UID" | translate }} </span>
         </div>
         <div [ngClass]="selectedLanguage !== 'Arabic' ? 'form_fields_wrapper form_fields_padding' : 'form_fields_wrapper'">
-            <div>
+            <div [dir]="getPrimaryDirection()">
                 <mat-form-field appearance="outline">
                     <mat-select (selectionChange)="changeLanguage()"
                                 [(ngModel)]="selectedLanguage"
@@ -23,7 +23,7 @@
                 </mat-form-field>
             </div>
             <div *ngIf="showContactDetails">
-                <div [dir]="textDir">
+                <div [dir]="getPrimaryDirection()">
                     <mat-form-field appearance="outline">
                         <input (input)="verifyInputFieldContact()"
                                [(ngModel)]="inputContactDetails"
@@ -43,7 +43,7 @@
             <div *ngIf="captchaError" class="error" style="margin-left: 55px">
                 {{ "recaptcha.errorMessage" | translate }}
             </div>
-            <div *ngIf="showOTP">
+            <div *ngIf="showOTP" [dir]="getPrimaryDirection()">
                 <mat-form-field appearance="outline">
                     <input (input)="showVerifyBtn()"
                            [(ngModel)]="inputOTP"

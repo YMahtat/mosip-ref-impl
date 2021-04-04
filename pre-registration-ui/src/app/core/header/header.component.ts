@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {AfterViewChecked, ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
 import {AuthService} from '../../auth/auth.service';
 import {NavigationEnd, Router} from '@angular/router';
 import {TranslateService} from '@ngx-translate/core';
@@ -13,7 +13,7 @@ import {AutoLogoutService} from "../services/auto-logout.service";
     templateUrl: './header.component.html',
     styleUrls: ['./header.component.css']
 })
-export class HeaderComponent implements OnInit, OnDestroy {
+export class HeaderComponent implements OnInit, AfterViewChecked, OnDestroy {
 
     flag = false;
     subscription: Subscription;
@@ -29,13 +29,13 @@ export class HeaderComponent implements OnInit, OnDestroy {
         private translate: TranslateService,
         private autoLogout: AutoLogoutService,
         private router: Router,
-        private dialog: MatDialog
+        private dialog: MatDialog,
+        private cdr: ChangeDetectorRef
     ) {
         this.translate.use(localStorage.getItem('langCode'));
     }
 
     ngOnInit() {
-        this.primaryLang = localStorage.getItem('langCode');
         const subs = this.autoLogout.currentMessageAutoLogout.subscribe(
             (message) => (this.message = message)
         );
@@ -54,6 +54,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
             }
         });
     }
+
+    ngAfterViewChecked(): void {
+        this.primaryLang = localStorage.getItem('langCode');
+        this.cdr.detectChanges();
+    }
+
 
     onLogoClick() {
         if (this.authService.isAuthenticated()) {
@@ -98,6 +104,14 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
     ngOnDestroy() {
         this.subscription.unsubscribe();
+    }
+
+    isRtlLanguage(): boolean {
+        return this.primaryLang === 'ara';
+    }
+
+    getPrimaryDirection() {
+        return (this.primaryLang === 'ara') ? 'rtl' : 'ltr';
     }
 
 }

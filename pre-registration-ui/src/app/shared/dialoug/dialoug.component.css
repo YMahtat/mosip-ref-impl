@@ -89,7 +89,6 @@ table.table-container {
 .consent-popup-cross {
     position: absolute;
     top: 0;
-    right: 0;
     width: 17px;
     height: 16px;
     background: transparent;
@@ -234,6 +233,25 @@ table.table-container {
     width: 30px;
     background-color: #007e42;
     position: absolute;
-    left: 0;
     bottom: -8px;
+}
+
+
+::ng-deep [dir="ltr"]  .title-lang::after{
+    left: 0;
+    text-align: left;
+}
+
+::ng-deep [dir="rtl"] .title-lang::after {
+    right: 0;
+    text-align: right;
+}
+
+
+::ng-deep [dir="ltr"] .consent-popup-cross {
+    right: 0 !important;
+}
+
+::ng-deep [dir="rtl"] .consent-popup-cross {
+    left: 0 !important;
 }

@@ -5,7 +5,7 @@
         <div class="spinner" *ngIf="!users[0] && LOD.length > 0">
             <mat-spinner></mat-spinner>
         </div>
-        <div class="file-upload" *ngIf="users[0]">
+        <div class="file-upload" *ngIf="users[0]" [dir]="getPrimaryDirection()">
             <div class="file-upload__message">
                 {{ 'documents.text_filetype' | translate }} : {{ allowedFilesHtml }}
                 &nbsp;{{'documents.text_filesize' | translate}} : {{ allowedFileSize }}

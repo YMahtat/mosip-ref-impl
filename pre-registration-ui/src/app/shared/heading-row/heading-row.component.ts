@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {AfterViewChecked, ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
 import {Router} from "@angular/router";
 import LanguageFactory from "../../../assets/i18n";
 import {DialougComponent} from "../dialoug/dialoug.component";
@@ -10,26 +10,35 @@ import {MatDialog} from "@angular/material";
     templateUrl: './heading-row.component.html',
     styleUrls: ['./heading-row.component.css']
 })
-export class HeadingRowComponent implements OnInit {
+export class HeadingRowComponent implements OnInit, AfterViewChecked {
 
     @Input() title: string;
     @Input() extraTitle: string;
 
+    primaryLanguage: string;
+
     constructor(
         private authService: AuthService,
         private dialog: MatDialog,
-        private router: Router
+        private router: Router,
+        private cdr: ChangeDetectorRef
     ) {
     }
 
     ngOnInit() {
+        this.primaryLanguage = localStorage.getItem('langCode');
         if (!this.title) {
             this.title = " ";
         }
     }
 
+    ngAfterViewChecked(): void {
+        this.primaryLanguage = localStorage.getItem('langCode');
+        this.cdr.detectChanges();
+    }
+
     onClickHomeBtnHandler() {
-        this.router.navigate([localStorage.getItem('langCode'), "dashboard"]);
+        this.router.navigate([this.primaryLanguage, "dashboard"]);
     }
 
     async onClickLogoutBtnHandler() {
@@ -57,5 +66,10 @@ export class HeadingRowComponent implements OnInit {
             }
         );
     }
+
+    getPrimaryDirection() {
+        return (this.primaryLanguage === 'ara') ? 'rtl' : 'ltr';
+    }
+
 
 }

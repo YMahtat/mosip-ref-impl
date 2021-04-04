@@ -62,7 +62,7 @@
                                             {{ user.appointmentTime }} {{ user.appointmentDate }}
                                         </td>
                                     </tr>
-                                    <tr *ngIf="!user.appointmentDate || user.appointmentDate.toString().indexOf('9999') >= 0 && user.request && user.request.createdDateTime">
+                                    <tr *ngIf="user && user.request && user.request.createdDateTime && (!user.appointmentDate || (user.appointmentDate.toString().indexOf('9999') >= 0))">
                                         <td>{{ 'dashboard.card.text_expiry_date' | translate }}</td>
                                         <td class="application-value">
                                             {{getExpiryDateStringValueFromCreationDate(user.request.createdDateTime)}}

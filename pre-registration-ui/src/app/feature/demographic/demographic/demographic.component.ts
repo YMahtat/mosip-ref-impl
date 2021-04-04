@@ -30,6 +30,7 @@ import {LogService} from "src/app/shared/logger/log.service";
 import LanguageFactory from "src/assets/i18n";
 import {FormDeactivateGuardService} from "src/app/shared/can-deactivate-guard/form-guard/form-deactivate-guard.service";
 import {Subscription} from "rxjs";
+import {DEFAULT_LTR_LANGUAGE_CODE, DEFAULT_RTL_LANGUAGE_CODE} from "../../../app.constants";
 
 /**
  * @description This component takes care of the demographic page.
@@ -46,18 +47,23 @@ import {Subscription} from "rxjs";
     styleUrls: ["./demographic.component.css"],
 })
 export class DemographicComponent extends FormDeactivateGuardService implements OnInit, AfterViewChecked, OnDestroy {
-    textDir = localStorage.getItem("dir");
-    secTextDir = localStorage.getItem("secondaryDir");
-    primaryLang = localStorage.getItem("langCode");
-    secondaryLang = localStorage.getItem("secondaryLangCode");
-    languages = [this.primaryLang, this.secondaryLang];
+
+    // textDir = localStorage.getItem("dir");
+    // secTextDir = localStorage.getItem("secondaryDir");
+
+    primaryLanguage = localStorage.getItem("langCode");
+    primaryLeftToRightLanguage = DEFAULT_LTR_LANGUAGE_CODE;
+    secondaryLanguage = localStorage.getItem("secondaryLangCode");
+    secondaryRightToLeftLanguage = DEFAULT_RTL_LANGUAGE_CODE;
+    languages = [this.primaryLeftToRightLanguage, this.secondaryRightToLeftLanguage];
+
     files: FilesModel;
     DOB_PATTERN: string;
     date: string = "";
     month: string = "";
     year: string = "";
     dayOfBirth = "";
-    dayOfBirthForsecondaryForm = "";
+    dayOfBirthForSecondaryRightToLeftForm = "";
     currentAge: string = "";
     isNewApplicant = false;
     checked = true;
@@ -70,13 +76,13 @@ export class DemographicComponent extends FormDeactivateGuardService implements 
     isReadOnly = false;
     id: number;
     oldKeyBoardIndex: number;
-    userForm = new FormGroup({});
-    transUserForm = new FormGroup({});
+    leftToRightUserForm = new FormGroup({});
+    rightToLeftUserForm = new FormGroup({});
     preRegId = "";
     loginId = "";
     user: UserModel = new UserModel();
-    secondaryLanguagelabels: any;
-    demographicLabels: any;
+    demographicPrimaryLeftToRightLanguageLabels: any;
+    demographicSecondaryRightToLeftLanguagelabels: any;
     errorlabels: any;
     uppermostLocationHierarchy: any;
     genders: any;
@@ -88,29 +94,29 @@ export class DemographicComponent extends FormDeactivateGuardService implements 
     yesterdayDate: string;
 
     @ViewChild("age") age: ElementRef;
-    regions_in_primary_lang: CodeValueModal[] = [];
-    regions_in_secondary_lang: CodeValueModal[] = [];
+    regionsInPrimaryLeftToRightLanguage: CodeValueModal[] = [];
+    regionsInSecondaryRightToLeftLanguage: CodeValueModal[] = [];
     regions: CodeValueModal[][] = [
-        this.regions_in_primary_lang,
-        this.regions_in_secondary_lang,
+        this.regionsInPrimaryLeftToRightLanguage,
+        this.regionsInSecondaryRightToLeftLanguage,
     ];
-    provinces_in_primary_lang: CodeValueModal[] = [];
-    provinces_in_secondary_lang: CodeValueModal[] = [];
+    provincesInPrimaryLeftToRightLanguage: CodeValueModal[] = [];
+    provincesInSecondaryRightToLeftLanguage: CodeValueModal[] = [];
     provinces: CodeValueModal[][] = [
-        this.provinces_in_primary_lang,
-        this.provinces_in_secondary_lang,
+        this.provincesInPrimaryLeftToRightLanguage,
+        this.provincesInSecondaryRightToLeftLanguage,
     ];
-    cities_in_primary_lang: CodeValueModal[] = [];
-    cities_in_secondary_lang: CodeValueModal[] = [];
+    citiesInPrimaryLeftToRightLanguage: CodeValueModal[] = [];
+    citiesInSecondaryRightToLeftLanguage: CodeValueModal[] = [];
     cities: CodeValueModal[][] = [
-        this.cities_in_primary_lang,
-        this.cities_in_secondary_lang,
+        this.citiesInPrimaryLeftToRightLanguage,
+        this.citiesInSecondaryRightToLeftLanguage,
     ];
-    zones_in_primary_lang: CodeValueModal[] = [];
-    zones_in_secondary_lang: CodeValueModal[] = [];
+    zonesInPrimaryLeftToRightLanguage: CodeValueModal[] = [];
+    zonesInSecondaryRightToLeftLanguage: CodeValueModal[] = [];
     zones: CodeValueModal[][] = [
-        this.zones_in_primary_lang,
-        this.zones_in_secondary_lang,
+        this.zonesInPrimaryLeftToRightLanguage,
+        this.zonesInSecondaryRightToLeftLanguage,
     ];
     locations = [this.regions, this.provinces, this.cities, this.zones];
     codeValue: CodeValueModal[] = [];
@@ -121,10 +127,10 @@ export class DemographicComponent extends FormDeactivateGuardService implements 
     uiFieldsGroupsErrorStatus = [];
     invalidFields = [];
     uiFieldsGroupsPanelsOpenStates = {};
-    primaryuserForm = false;
-    primarydropDownFields = {};
-    secondaryDropDownLables = {};
-    secondaryuserForm = false;
+    isPrimaryLeftToRightLanguageUserForm = false;
+    isSecondaryRightToLeftLanguageUserForm = false;
+    primaryLeftToRightLanguagDropDownFields = {};
+    secondaryRightToLeftLanguageDropDownLabels = {};
     locationHeirarchy = [];
     civilRegistryNumbersConditionsToShow = [];
     citizenConditionsToShow = [];
@@ -200,12 +206,12 @@ export class DemographicComponent extends FormDeactivateGuardService implements 
         this.initialization();
         await this.getIdentityJsonFormat();
         this.config = this.configService.getConfig();
-        this.getPrimaryLabels();
+        this.getPrimaryLeftToRightLabels();
         await this.getConsentMessage();
         this.validationMessage = appConstants.errorMessages;
-        let factory = new LanguageFactory(this.secondaryLang);
+        let factory = new LanguageFactory(this.secondaryRightToLeftLanguage);
         let response = factory.getCurrentlanguage();
-        this.secondaryLanguagelabels = response["demographic"];
+        this.demographicSecondaryRightToLeftLanguagelabels = response["demographic"];
         this.initForm();
         await this.setFormControlValues();
         if (!this.dataModification) {
@@ -215,23 +221,23 @@ export class DemographicComponent extends FormDeactivateGuardService implements 
          * @description HighMinarets : added for feature Custom Demographics-Details Visibility & Requiredness Rules.
          */
         this.initAttributsOfOldValuesInFormForImplementCustomVisibilityRequirednessRulesToNull();
-        this.userForm.get('civilRegistryNumber').valueChanges.subscribe((value) => {
-            if (this.userForm.get('civilRegistryNumber').value && this.userForm.get('parentOrGuardianUIN').value) {
-                const isNotSameCivilRegistryNumberAsParentOrGuardianUIN = (this.userForm.get('civilRegistryNumber').value !== this.userForm.get('parentOrGuardianUIN').value);
-                if ((isNotSameCivilRegistryNumberAsParentOrGuardianUIN && !this.userForm.get('parentOrGuardianUIN').valid) || (!isNotSameCivilRegistryNumberAsParentOrGuardianUIN && this.userForm.get('parentOrGuardianUIN').valid)) {
-                    this.userForm.get('parentOrGuardianUIN').updateValueAndValidity();
-                    this.transUserForm.get('parentOrGuardianUIN').updateValueAndValidity();
-                    this.transUserForm.get('civilRegistryNumber').updateValueAndValidity();
+        this.leftToRightUserForm.get('civilRegistryNumber').valueChanges.subscribe((value) => {
+            if (this.leftToRightUserForm.get('civilRegistryNumber').value && this.leftToRightUserForm.get('parentOrGuardianUIN').value) {
+                const isNotSameCivilRegistryNumberAsParentOrGuardianUIN = (this.leftToRightUserForm.get('civilRegistryNumber').value !== this.leftToRightUserForm.get('parentOrGuardianUIN').value);
+                if ((isNotSameCivilRegistryNumberAsParentOrGuardianUIN && !this.leftToRightUserForm.get('parentOrGuardianUIN').valid) || (!isNotSameCivilRegistryNumberAsParentOrGuardianUIN && this.leftToRightUserForm.get('parentOrGuardianUIN').valid)) {
+                    this.leftToRightUserForm.get('parentOrGuardianUIN').updateValueAndValidity();
+                    this.rightToLeftUserForm.get('parentOrGuardianUIN').updateValueAndValidity();
+                    this.rightToLeftUserForm.get('civilRegistryNumber').updateValueAndValidity();
                 }
             }
         });
-        this.userForm.get('parentOrGuardianUIN').valueChanges.subscribe((value) => {
-            if (this.userForm.get('civilRegistryNumber').value && this.userForm.get('parentOrGuardianUIN').value) {
-                const isNotSameCivilRegistryNumberAsParentOrGuardianUIN = (this.userForm.get('civilRegistryNumber').value !== this.userForm.get('parentOrGuardianUIN').value);
-                if ((isNotSameCivilRegistryNumberAsParentOrGuardianUIN && !this.userForm.get('civilRegistryNumber').valid) || (!isNotSameCivilRegistryNumberAsParentOrGuardianUIN && this.userForm.get('civilRegistryNumber').valid)) {
-                    this.userForm.get('civilRegistryNumber').updateValueAndValidity();
-                    this.transUserForm.get('civilRegistryNumber').updateValueAndValidity();
-                    this.transUserForm.get('parentOrGuardianUIN').updateValueAndValidity();
+        this.leftToRightUserForm.get('parentOrGuardianUIN').valueChanges.subscribe((value) => {
+            if (this.leftToRightUserForm.get('civilRegistryNumber').value && this.leftToRightUserForm.get('parentOrGuardianUIN').value) {
+                const isNotSameCivilRegistryNumberAsParentOrGuardianUIN = (this.leftToRightUserForm.get('civilRegistryNumber').value !== this.leftToRightUserForm.get('parentOrGuardianUIN').value);
+                if ((isNotSameCivilRegistryNumberAsParentOrGuardianUIN && !this.leftToRightUserForm.get('civilRegistryNumber').valid) || (!isNotSameCivilRegistryNumberAsParentOrGuardianUIN && this.leftToRightUserForm.get('civilRegistryNumber').valid)) {
+                    this.leftToRightUserForm.get('civilRegistryNumber').updateValueAndValidity();
+                    this.rightToLeftUserForm.get('civilRegistryNumber').updateValueAndValidity();
+                    this.rightToLeftUserForm.get('parentOrGuardianUIN').updateValueAndValidity();
                 }
             }
         });
@@ -331,35 +337,35 @@ export class DemographicComponent extends FormDeactivateGuardService implements 
      */
     async initForm() {
         this.uiFields.forEach((control, index) => {
-            this.userForm.addControl(control.id, new FormControl(""));
-            if (this.primaryLang !== this.secondaryLang) {
-                this.transUserForm.addControl(control.id, new FormControl(""));
+            this.leftToRightUserForm.addControl(control.id, new FormControl(""));
+            if (this.primaryLeftToRightLanguage !== this.secondaryRightToLeftLanguage) {
+                this.rightToLeftUserForm.addControl(control.id, new FormControl(""));
             }
             if (control.required) {
-                this.userForm.controls[`${control.id}`].setValidators(
+                this.leftToRightUserForm.controls[`${control.id}`].setValidators(
                     Validators.required
                 );
-                if (this.primaryLang !== this.secondaryLang) {
-                    this.transUserForm.controls[`${control.id}`].setValidators(
+                if (this.primaryLeftToRightLanguage !== this.secondaryRightToLeftLanguage) {
+                    this.rightToLeftUserForm.controls[`${control.id}`].setValidators(
                         Validators.required
                     );
                 }
             }
             if (control.validators !== null && control.validators.length > 0) {
-                this.userForm.controls[`${control.id}`].setValidators([
+                this.leftToRightUserForm.controls[`${control.id}`].setValidators([
                     Validators.pattern(control.validators[0].validator),
                 ]);
-                if (this.primaryLang !== this.secondaryLang) {
-                    this.transUserForm.controls[`${control.id}`].setValidators([
+                if (this.primaryLeftToRightLanguage !== this.secondaryRightToLeftLanguage) {
+                    this.rightToLeftUserForm.controls[`${control.id}`].setValidators([
                         Validators.pattern(control.validators[0].validator),
                     ]);
                 }
             }
             // TODO @Youssef : à rectifier la condition !!!
             if (control.checksum) {
-                this.userForm.controls[`${control.id}`].setValidators([this.validateVerhoeffChecksumValidatorFn()]);
-                if (this.primaryLang !== this.secondaryLang) {
-                    this.transUserForm.controls[`${control.id}`].setValidators([this.validateVerhoeffChecksumValidatorFn()]);
+                this.leftToRightUserForm.controls[`${control.id}`].setValidators([this.validateVerhoeffChecksumValidatorFn()]);
+                if (this.primaryLeftToRightLanguage !== this.secondaryRightToLeftLanguage) {
+                    this.rightToLeftUserForm.controls[`${control.id}`].setValidators([this.validateVerhoeffChecksumValidatorFn()]);
                 }
             }
             if (control.required &&
@@ -367,11 +373,11 @@ export class DemographicComponent extends FormDeactivateGuardService implements 
                 control.validators.length > 0 &&
                 control.controlType === 'date'
             ) {
-                this.userForm.controls[`${control.id}`].setValidators([
+                this.leftToRightUserForm.controls[`${control.id}`].setValidators([
                     Validators.required,
                 ]);
-                if (this.primaryLang !== this.secondaryLang) {
-                    this.transUserForm.controls[`${control.id}`].setValidators([
+                if (this.primaryLeftToRightLanguage !== this.secondaryRightToLeftLanguage) {
+                    this.rightToLeftUserForm.controls[`${control.id}`].setValidators([
                         Validators.required,
                     ]);
                 }
@@ -380,49 +386,49 @@ export class DemographicComponent extends FormDeactivateGuardService implements 
                 control.validators !== null &&
                 control.validators.length > 0
             ) {
-                this.userForm.controls[`${control.id}`].setValidators([
+                this.leftToRightUserForm.controls[`${control.id}`].setValidators([
                     Validators.required,
                     Validators.pattern(control.validators[0].validator),
                 ]);
-                if (this.primaryLang !== this.secondaryLang) {
-                    this.transUserForm.controls[`${control.id}`].setValidators([
+                if (this.primaryLeftToRightLanguage !== this.secondaryRightToLeftLanguage) {
+                    this.rightToLeftUserForm.controls[`${control.id}`].setValidators([
                         Validators.required,
                         Validators.pattern(control.validators[0].validator),
                     ]);
                 }
             }
             if (this.uiFields.length === index + 1) {
-                this.primaryuserForm = true;
-                if (this.primaryLang !== this.secondaryLang) {
-                    this.secondaryuserForm = true;
+                this.isPrimaryLeftToRightLanguageUserForm = true;
+                if (this.primaryLeftToRightLanguage !== this.secondaryRightToLeftLanguage) {
+                    this.isSecondaryRightToLeftLanguageUserForm = true;
                 }
             }
             if (control.controlType === 'date') {
-                this.userForm.addControl('dayOfBirth', new FormControl(""));
-                this.userForm.controls['dayOfBirth'].setValidators(null);
-                if (this.primaryLang !== this.secondaryLang) {
-                    this.transUserForm.addControl('dayOfBirth', new FormControl(""));
-                    this.transUserForm.controls['dayOfBirth'].setValidators(null);
+                this.leftToRightUserForm.addControl('dayOfBirth', new FormControl(""));
+                this.leftToRightUserForm.controls['dayOfBirth'].setValidators(null);
+                if (this.primaryLeftToRightLanguage !== this.secondaryRightToLeftLanguage) {
+                    this.rightToLeftUserForm.addControl('dayOfBirth', new FormControl(""));
+                    this.rightToLeftUserForm.controls['dayOfBirth'].setValidators(null);
                 }
-                this.userForm.addControl('monthOfBirth', new FormControl(""));
-                this.userForm.controls['monthOfBirth'].setValidators(null);
-                if (this.primaryLang !== this.secondaryLang) {
-                    this.transUserForm.addControl('monthOfBirth', new FormControl(""));
-                    this.transUserForm.controls['monthOfBirth'].setValidators(null);
+                this.leftToRightUserForm.addControl('monthOfBirth', new FormControl(""));
+                this.leftToRightUserForm.controls['monthOfBirth'].setValidators(null);
+                if (this.primaryLeftToRightLanguage !== this.secondaryRightToLeftLanguage) {
+                    this.rightToLeftUserForm.addControl('monthOfBirth', new FormControl(""));
+                    this.rightToLeftUserForm.controls['monthOfBirth'].setValidators(null);
                 }
-                this.userForm.addControl('yearOfBirth', new FormControl(""));
-                this.userForm.controls['yearOfBirth'].setValidators(
+                this.leftToRightUserForm.addControl('yearOfBirth', new FormControl(""));
+                this.leftToRightUserForm.controls['yearOfBirth'].setValidators(
                     Validators.required
                 );
-                if (this.primaryLang !== this.secondaryLang) {
-                    this.transUserForm.addControl('yearOfBirth', new FormControl(""));
-                    this.transUserForm.controls['yearOfBirth'].setValidators(
+                if (this.primaryLeftToRightLanguage !== this.secondaryRightToLeftLanguage) {
+                    this.rightToLeftUserForm.addControl('yearOfBirth', new FormControl(""));
+                    this.rightToLeftUserForm.controls['yearOfBirth'].setValidators(
                         Validators.required
                     );
                 }
-                this.userForm.controls['dateOfBirth'].setValidators(null);
-                if (this.primaryLang !== this.secondaryLang) {
-                    this.transUserForm.controls['dateOfBirth'].setValidators(null);
+                this.leftToRightUserForm.controls['dateOfBirth'].setValidators(null);
+                if (this.primaryLeftToRightLanguage !== this.secondaryRightToLeftLanguage) {
+                    this.rightToLeftUserForm.controls['dateOfBirth'].setValidators(null);
                 }
             }
         });
@@ -442,9 +448,9 @@ export class DemographicComponent extends FormDeactivateGuardService implements 
     getIntialDropDownArrays() {
         this.uiFields.forEach((control) => {
             if (control.controlType === "dropdown") {
-                this.primarydropDownFields[control.id] = [];
-                if (this.primaryLang !== this.secondaryLang) {
-                    this.secondaryDropDownLables[control.id] = [];
+                this.primaryLeftToRightLanguagDropDownFields[control.id] = [];
+                if (this.primaryLeftToRightLanguage !== this.secondaryRightToLeftLanguage) {
+                    this.secondaryRightToLeftLanguageDropDownLabels[control.id] = [];
                 }
             }
         });
@@ -461,13 +467,13 @@ export class DemographicComponent extends FormDeactivateGuardService implements 
     dropdownApiCall(controlObject: any) {
         if (this.locationHeirarchy.includes(controlObject.id)) {
             if (this.locationHeirarchy.indexOf(controlObject.id) !== 0) {
-                this.primarydropDownFields[controlObject.id] = [];
+                this.primaryLeftToRightLanguagDropDownFields[controlObject.id] = [];
                 const location = this.locationHeirarchy.indexOf(controlObject.id);
                 let parentLocation = this.locationHeirarchy[location - 1];
-                let locationCode = this.userForm.get(`${parentLocation}`).value;
+                let locationCode = this.leftToRightUserForm.get(`${parentLocation}`).value;
                 if (controlObject.id === 'commun') {
                     parentLocation = 'province';
-                    locationCode = `COM${this.userForm.get(parentLocation).value}`;
+                    locationCode = `COM${this.leftToRightUserForm.get(parentLocation).value}`;
                 }
                 this.loadLocationData(locationCode, controlObject.id);
             }
@@ -482,10 +488,10 @@ export class DemographicComponent extends FormDeactivateGuardService implements 
      * @param fieldValue input field value
      */
     copyDataToSecondaryForm(fieldName: string, fieldValue: string) {
-        if (this.primaryLang !== this.secondaryLang) {
-            this.secondaryDropDownLables[fieldName].forEach((element) => {
+        if (this.primaryLeftToRightLanguage !== this.secondaryRightToLeftLanguage) {
+            this.secondaryRightToLeftLanguageDropDownLabels[fieldName].forEach((element) => {
                 if (element.valueCode === fieldValue) {
-                    this.transUserForm.controls[fieldName].setValue(fieldValue);
+                    this.rightToLeftUserForm.controls[fieldName].setValue(fieldValue);
                 }
             });
         }
@@ -501,14 +507,14 @@ export class DemographicComponent extends FormDeactivateGuardService implements 
      */
     copyToSecondaryFormNonDropDown(fieldName: string, event: Event) {
         const transliterate = [...appConstants.TRANSLITERATE_FIELDS];
-        if (this.primaryLang !== this.secondaryLang) {
+        if (this.primaryLeftToRightLanguage !== this.secondaryRightToLeftLanguage) {
             if (transliterate.includes(fieldName)) {
                 // if (event.type === "focusout") {
                 //     this.onTransliteration(fieldName, fieldName);
                 // }
             } else {
-                this.transUserForm.controls[`${fieldName}`].setValue(
-                    this.userForm.controls[`${fieldName}`].value
+                this.rightToLeftUserForm.controls[`${fieldName}`].setValue(
+                    this.leftToRightUserForm.controls[`${fieldName}`].value
                 );
             }
         }
@@ -525,13 +531,13 @@ export class DemographicComponent extends FormDeactivateGuardService implements 
             const locationFields = [...this.locationHeirarchy];
             const index = locationFields.indexOf(fieldName);
             for (let i = index + 1; i < locationFields.length; i++) {
-                this.userForm.controls[locationFields[i]].setValue("");
-                if (this.primaryLang !== this.secondaryLang) {
-                    this.transUserForm.controls[locationFields[i]].setValue("");
+                this.leftToRightUserForm.controls[locationFields[i]].setValue("");
+                if (this.primaryLeftToRightLanguage !== this.secondaryRightToLeftLanguage) {
+                    this.rightToLeftUserForm.controls[locationFields[i]].setValue("");
                 }
-                this.userForm.controls[locationFields[i]].markAsUntouched();
-                if (this.primaryLang !== this.secondaryLang) {
-                    this.transUserForm.controls[locationFields[i]].markAsUntouched();
+                this.leftToRightUserForm.controls[locationFields[i]].markAsUntouched();
+                if (this.primaryLeftToRightLanguage !== this.secondaryRightToLeftLanguage) {
+                    this.rightToLeftUserForm.controls[locationFields[i]].markAsUntouched();
                 }
             }
         }
@@ -546,7 +552,7 @@ export class DemographicComponent extends FormDeactivateGuardService implements 
     loadLocationData(locationCode: string, fieldName: string) {
         if (fieldName && fieldName.length > 0) {
             this.dataStorageService
-                .getLocationImmediateHierearchy(this.primaryLang, locationCode)
+                .getLocationImmediateHierearchy(this.primaryLeftToRightLanguage, locationCode)
                 .subscribe(
                     (response) => {
                         if (response[appConstants.RESPONSE]) {
@@ -556,10 +562,10 @@ export class DemographicComponent extends FormDeactivateGuardService implements 
                                 let codeValueModal: CodeValueModal = {
                                     valueCode: element.code,
                                     valueName: element.name,
-                                    languageCode: this.primaryLang,
+                                    languageCode: this.primaryLeftToRightLanguage,
                                 };
 
-                                this.primarydropDownFields[`${fieldName}`].push(codeValueModal);
+                                this.primaryLeftToRightLanguagDropDownFields[`${fieldName}`].push(codeValueModal);
                             });
                         }
                     },
@@ -567,9 +573,9 @@ export class DemographicComponent extends FormDeactivateGuardService implements 
                         console.log(error);
                     }
                 );
-            if (this.primaryLang !== this.secondaryLang) {
+            if (this.primaryLeftToRightLanguage !== this.secondaryRightToLeftLanguage) {
                 this.dataStorageService
-                    .getLocationImmediateHierearchy(this.secondaryLang, locationCode)
+                    .getLocationImmediateHierearchy(this.secondaryRightToLeftLanguage, locationCode)
                     .subscribe(
                         (response) => {
                             if (response[appConstants.RESPONSE]) {
@@ -579,9 +585,9 @@ export class DemographicComponent extends FormDeactivateGuardService implements 
                                     let codeValueModal: CodeValueModal = {
                                         valueCode: element.code,
                                         valueName: element.name,
-                                        languageCode: this.secondaryLang,
+                                        languageCode: this.secondaryRightToLeftLanguage,
                                     };
-                                    this.secondaryDropDownLables[`${fieldName}`].push(
+                                    this.secondaryRightToLeftLanguageDropDownLabels[`${fieldName}`].push(
                                         codeValueModal
                                     );
                                 });
@@ -603,20 +609,20 @@ export class DemographicComponent extends FormDeactivateGuardService implements 
                     let dynamicField = response[appConstants.RESPONSE]["data"];
                     this.dynamicFields.forEach((field) => {
                         dynamicField.forEach((res) => {
-                            if (field.id === res.name && res.langCode === this.primaryLang) {
+                            if (field.id === res.name && res.langCode === this.primaryLeftToRightLanguage) {
                                 this.filterOnLangCode(
-                                    this.primaryLang,
+                                    this.primaryLeftToRightLanguage,
                                     res.name,
                                     res["fieldVal"]
                                 );
                             }
-                            if (this.primaryLang !== this.secondaryLang) {
+                            if (this.primaryLeftToRightLanguage !== this.secondaryRightToLeftLanguage) {
                                 if (
                                     field.id === res.name &&
-                                    res.langCode === this.secondaryLang
+                                    res.langCode === this.secondaryRightToLeftLanguage
                                 ) {
                                     this.filterOnLangCode(
-                                        this.secondaryLang,
+                                        this.secondaryRightToLeftLanguage,
                                         res.name,
                                         res["fieldVal"]
                                     );
@@ -635,15 +641,15 @@ export class DemographicComponent extends FormDeactivateGuardService implements 
      * @memberof DemographicComponent
      */
     async setFormControlValues() {
-        if (this.primaryLang === this.secondaryLang) {
+        if (this.primaryLeftToRightLanguage === this.secondaryRightToLeftLanguage) {
             this.languages.pop();
             this.isReadOnly = true;
         }
         if (!this.dataModification) {
             this.uiFields.forEach((control) => {
-                this.userForm.controls[control.id].setValue("");
-                if (this.primaryLang !== this.secondaryLang) {
-                    this.transUserForm.controls[control.id].setValue("");
+                this.leftToRightUserForm.controls[control.id].setValue("");
+                if (this.primaryLeftToRightLanguage !== this.secondaryRightToLeftLanguage) {
+                    this.rightToLeftUserForm.controls[control.id].setValue("");
                 }
             });
         } else {
@@ -660,7 +666,7 @@ export class DemographicComponent extends FormDeactivateGuardService implements 
               index = 1;
               secondaryIndex = 0;
             }*/
-            if (this.primaryLang === this.secondaryLang) {
+            if (this.primaryLeftToRightLanguage === this.secondaryRightToLeftLanguage) {
                 index = 0;
                 secondaryIndex = 0;
             }
@@ -673,29 +679,29 @@ export class DemographicComponent extends FormDeactivateGuardService implements 
                         this.setDateOfBirth();
                     } else {
                         if (typeof (this.user.request.demographicDetails.identity[`${control.id}`]) == "object") {
-                            this.userForm.controls[`${control.id}`].setValue(
+                            this.leftToRightUserForm.controls[`${control.id}`].setValue(
                                 this.user.request.demographicDetails.identity[`${control.id}`][0].value
                             );
                         } else {
-                            this.userForm.controls[`${control.id}`].setValue(
+                            this.leftToRightUserForm.controls[`${control.id}`].setValue(
                                 this.user.request.demographicDetails.identity[`${control.id}`]
                             );
                         }
-                        if (this.primaryLang !== this.secondaryLang) {
-                            this.transUserForm.controls[`${control.id}`].setValue(
+                        if (this.primaryLeftToRightLanguage !== this.secondaryRightToLeftLanguage) {
+                            this.rightToLeftUserForm.controls[`${control.id}`].setValue(
                                 this.user.request.demographicDetails.identity[`${control.id}`]
                             );
                         }
                     }
                 } else if (appConstants.TRANSLITERATE_FIELDS.includes(control.id)) {
                     if (this.user.request.demographicDetails.identity[control.id]) {
-                        this.userForm.controls[`${control.id}`].setValue(
+                        this.leftToRightUserForm.controls[`${control.id}`].setValue(
                             this.user.request.demographicDetails.identity[control.id][index]
                                 .value
                         );
                     }
-                    if (this.primaryLang !== this.secondaryLang && this.user.request.demographicDetails.identity[control.id]) {
-                        this.transUserForm.controls[`${control.id}`].setValue(
+                    if (this.primaryLeftToRightLanguage !== this.secondaryRightToLeftLanguage && this.user.request.demographicDetails.identity[control.id]) {
+                        this.rightToLeftUserForm.controls[`${control.id}`].setValue(
                             this.user.request.demographicDetails.identity[control.id][secondaryIndex].value
                         );
                     }
@@ -703,21 +709,21 @@ export class DemographicComponent extends FormDeactivateGuardService implements 
                     if (this.locationHeirarchy.includes(control.id)) {
                         this.dropdownApiCall(control);
                         if (control.type === "string") {
-                            this.userForm.controls[`${control.id}`].setValue(
+                            this.leftToRightUserForm.controls[`${control.id}`].setValue(
                                 this.user.request.demographicDetails.identity[`${control.id}`]
                             );
-                            if (this.primaryLang !== this.secondaryLang) {
-                                this.transUserForm.controls[`${control.id}`].setValue(
+                            if (this.primaryLeftToRightLanguage !== this.secondaryRightToLeftLanguage) {
+                                this.rightToLeftUserForm.controls[`${control.id}`].setValue(
                                     this.user.request.demographicDetails.identity[`${control.id}`]
                                 );
                             }
                         } else if (control.type === 'simpleType') {
-                            this.userForm.controls[`${control.id}`].setValue(
+                            this.leftToRightUserForm.controls[`${control.id}`].setValue(
                                 this.user.request.demographicDetails.identity[control.id][index]
                                     .value
                             );
-                            if (this.primaryLang !== this.secondaryLang) {
-                                this.transUserForm.controls[`${control.id}`].setValue(
+                            if (this.primaryLeftToRightLanguage !== this.secondaryRightToLeftLanguage) {
+                                this.rightToLeftUserForm.controls[`${control.id}`].setValue(
                                     this.user.request.demographicDetails.identity[control.id][
                                         secondaryIndex
                                         ].value
@@ -725,13 +731,13 @@ export class DemographicComponent extends FormDeactivateGuardService implements 
                             }
                         }
                     } else {
-                        this.userForm.controls[`${control.id}`].setValue(
+                        this.leftToRightUserForm.controls[`${control.id}`].setValue(
                             (this.user.request.demographicDetails.identity[control.id]) ?
                                 this.user.request.demographicDetails.identity[control.id][index]
                                     .value : null
                         );
-                        if (this.primaryLang !== this.secondaryLang) {
-                            this.transUserForm.controls[`${control.id}`].setValue(
+                        if (this.primaryLeftToRightLanguage !== this.secondaryRightToLeftLanguage) {
+                            this.rightToLeftUserForm.controls[`${control.id}`].setValue(
                                 (this.user.request.demographicDetails.identity[control.id]) ?
                                     this.user.request.demographicDetails.identity[control.id][secondaryIndex].value : null
                             );
@@ -748,14 +754,14 @@ export class DemographicComponent extends FormDeactivateGuardService implements 
         this.month = this.user.request.demographicDetails.identity["monthOfBirth"];
         this.date = this.user.request.demographicDetails.identity["dayOfBirth"];
         this.currentAge = this.calculateAge(this.dayOfBirth).toString();
-        this.userForm.controls[`yearOfBirth`].setValue(this.year);
-        this.userForm.controls[`monthOfBirth`].setValue(this.month);
-        this.userForm.controls[`dayOfBirth`].setValue(this.date);
-        if (this.primaryLang !== this.secondaryLang) {
-            this.dayOfBirthForsecondaryForm = `${this.month}/${this.date}/${this.year}`
-            this.transUserForm.controls[`yearOfBirth`].setValue(this.year);
-            this.transUserForm.controls[`monthOfBirth`].setValue(this.month);
-            this.transUserForm.controls[`dayOfBirth`].setValue(this.date);
+        this.leftToRightUserForm.controls[`yearOfBirth`].setValue(this.year);
+        this.leftToRightUserForm.controls[`monthOfBirth`].setValue(this.month);
+        this.leftToRightUserForm.controls[`dayOfBirth`].setValue(this.date);
+        if (this.primaryLeftToRightLanguage !== this.secondaryRightToLeftLanguage) {
+            this.dayOfBirthForSecondaryRightToLeftForm = `${this.month}/${this.date}/${this.year}`
+            this.rightToLeftUserForm.controls[`yearOfBirth`].setValue(this.year);
+            this.rightToLeftUserForm.controls[`monthOfBirth`].setValue(this.month);
+            this.rightToLeftUserForm.controls[`dayOfBirth`].setValue(this.date);
         }
     }
 
@@ -805,8 +811,8 @@ export class DemographicComponent extends FormDeactivateGuardService implements 
                 this.hasDobChanged();
             }
         } else {
-            this.userForm.controls["dateOfBirth"].markAsTouched();
-            this.userForm.controls["dateOfBirth"].setErrors({
+            this.leftToRightUserForm.controls["dateOfBirth"].markAsTouched();
+            this.leftToRightUserForm.controls["dateOfBirth"].setErrors({
                 incorrect: true,
             });
             this.currentAge = "";
@@ -829,8 +835,8 @@ export class DemographicComponent extends FormDeactivateGuardService implements 
             (now.getTime() - born.getTime()) / (365.25 * 24 * 60 * 60 * 1000)
         );
         if (years > 150) {
-            this.userForm.controls["dateOfBirth"].markAsTouched();
-            this.userForm.controls["dateOfBirth"].setErrors({
+            this.leftToRightUserForm.controls["dateOfBirth"].markAsTouched();
+            this.leftToRightUserForm.controls["dateOfBirth"].setErrors({
                 incorrect: true,
             });
             this.date = "";
@@ -893,9 +899,9 @@ export class DemographicComponent extends FormDeactivateGuardService implements 
         }
 
         const formattedDate = `${year}/${monthOfYear}/${dateOfMonth}`;
-        this.userForm.controls["dateOfBirth"].setValue(formattedDate);
-        if (this.primaryLang !== this.secondaryLang) {
-            this.transUserForm.controls["dateOfBirth"].setValue(formattedDate);
+        this.leftToRightUserForm.controls["dateOfBirth"].setValue(formattedDate);
+        if (this.primaryLeftToRightLanguage !== this.secondaryRightToLeftLanguage) {
+            this.rightToLeftUserForm.controls["dateOfBirth"].setValue(formattedDate);
         }
         if (this.dataModification) {
             this.hasDobChanged();
@@ -927,15 +933,15 @@ export class DemographicComponent extends FormDeactivateGuardService implements 
      */
 
     onTransliteration(fromControl: any, toControl: any) {
-        if (this.userForm.controls[`${fromControl}`].value) {
+        if (this.leftToRightUserForm.controls[`${fromControl}`].value) {
             const request: any = {
-                from_field_lang: this.primaryLang,
-                from_field_value: this.userForm.controls[`${fromControl}`].value,
-                to_field_lang: this.secondaryLang,
+                from_field_lang: this.primaryLeftToRightLanguage,
+                from_field_value: this.leftToRightUserForm.controls[`${fromControl}`].value,
+                to_field_lang: this.secondaryRightToLeftLanguage,
             };
-            if (this.primaryLang === this.secondaryLang) {
-                this.transUserForm.controls[toControl].patchValue(
-                    this.userForm.controls[`${fromControl}`].value
+            if (this.primaryLeftToRightLanguage === this.secondaryRightToLeftLanguage) {
+                this.rightToLeftUserForm.controls[toControl].patchValue(
+                    this.leftToRightUserForm.controls[`${fromControl}`].value
                 );
                 return;
             }
@@ -944,7 +950,7 @@ export class DemographicComponent extends FormDeactivateGuardService implements 
                 this.dataStorageService.getTransliteration(request).subscribe(
                     (response) => {
                         if (response[appConstants.RESPONSE])
-                            this.transUserForm.controls[`${toControl}`].patchValue(
+                            this.rightToLeftUserForm.controls[`${toControl}`].patchValue(
                                 response[appConstants.RESPONSE].to_field_value
                             );
                         else {
@@ -958,7 +964,7 @@ export class DemographicComponent extends FormDeactivateGuardService implements 
                 )
             );
         } else {
-            this.transUserForm.controls[`${toControl}`].patchValue("");
+            this.rightToLeftUserForm.controls[`${toControl}`].patchValue("");
         }
     }
 
@@ -969,33 +975,15 @@ export class DemographicComponent extends FormDeactivateGuardService implements 
      */
     onSubmit() {
         this.uiFields.forEach((element) => {
-            this.userForm.controls[`${element.id}`].markAsTouched();
-            if (this.primaryLang !== this.secondaryLang) {
-                this.transUserForm.controls[`${element.id}`].markAsTouched();
+            this.leftToRightUserForm.controls[`${element.id}`].markAsTouched();
+            if (this.primaryLeftToRightLanguage !== this.secondaryRightToLeftLanguage) {
+                this.rightToLeftUserForm.controls[`${element.id}`].markAsTouched();
             }
         });
-        const isVisibleGuardienIdentity = Boolean(
-            this.uiFields.filter(field => field.id === 'parentOrGuardianRID')[0].visible
-            && this.uiFields.filter(field => field.id === 'parentOrGuardianCNIE')[0].visible
-        );
-        const isInformedGuardienIdentity = Boolean(
-            this.userForm.get('parentOrGuardianRID').value || this.userForm.get('parentOrGuardianCNIE').value
-        );
-        const isCorrectGuardienIdentity = (isVisibleGuardienIdentity && isInformedGuardienIdentity) || (!isVisibleGuardienIdentity);
-        if (isVisibleGuardienIdentity && !isCorrectGuardienIdentity) {
-            this.userForm.get('parentOrGuardianRID').setErrors({'error': true});
-            this.userForm.get('parentOrGuardianCNIE').setErrors({'error': true});
-            this.transUserForm.get('parentOrGuardianRID').setErrors({'error': true});
-            this.transUserForm.get('parentOrGuardianCNIE').setErrors({'error': true});
-        } else {
-            this.userForm.get('parentOrGuardianRID').updateValueAndValidity();
-            this.userForm.get('parentOrGuardianCNIE').updateValueAndValidity();
-            this.transUserForm.get('parentOrGuardianRID').updateValueAndValidity();
-            this.transUserForm.get('parentOrGuardianCNIE').updateValueAndValidity();
-        }
-        if (this.userForm.valid && this.transUserForm.valid && isCorrectGuardienIdentity) {
-            this.userForm.get('dateOfBirth').setValue(this.dayOfBirth);
-            this.transUserForm.get('dateOfBirth').setValue(this.dayOfBirth);
+        const isCorrectGuardienIdentity = this.verifyAndSetErrornesToGuardienIdentity();
+        if (this.leftToRightUserForm.valid && this.rightToLeftUserForm.valid && isCorrectGuardienIdentity) {
+            this.leftToRightUserForm.get('dateOfBirth').setValue(this.dayOfBirth);
+            this.rightToLeftUserForm.get('dateOfBirth').setValue(this.dayOfBirth);
             const identity = this.createIdentityJSONDynamic();
             const request = this.createRequestJSON(identity);
             request.demographicDetails.identity.yearOfBirth = (this.year) ? this.year : null;
@@ -1071,8 +1059,8 @@ export class DemographicComponent extends FormDeactivateGuardService implements 
                 width: "350px",
                 data: {
                     case: "ERROR",
-                    title: this.demographicLabels['invalidFormPopupTitle'],
-                    message: this.demographicLabels['invalidFormPopupMessage']
+                    title: this.demographicPrimaryLeftToRightLanguageLabels['invalidFormPopupTitle'],
+                    message: this.demographicPrimaryLeftToRightLanguageLabels['invalidFormPopupMessage']
                 },
             });
         }
@@ -1083,7 +1071,7 @@ export class DemographicComponent extends FormDeactivateGuardService implements 
         const str = response[appConstants.NESTED_ERROR][0]["message"];
         const attr = str.substring(str.lastIndexOf("/") + 1);
         let message = this.errorlabels[attr];
-        this.userForm.controls[attr].setErrors({
+        this.leftToRightUserForm.controls[attr].setErrors({
             incorrect: true,
         });
         return message;
@@ -1113,7 +1101,7 @@ export class DemographicComponent extends FormDeactivateGuardService implements 
     hasDobChanged() {
         const currentDob = this.user.request.demographicDetails.identity
             .dateOfBirth;
-        const changedDob = this.userForm.controls["dateOfBirth"].value;
+        const changedDob = this.leftToRightUserForm.controls["dateOfBirth"].value;
         const currentDobYears = this.calculateAge(currentDob);
         const changedDobYears = this.calculateAge(changedDob);
         const ageToBeAdult = this.config[appConstants.CONFIG_KEYS.mosip_adult_age];
@@ -1140,12 +1128,12 @@ export class DemographicComponent extends FormDeactivateGuardService implements 
     onKeyboardDisplay(formControlName: string, index: number) {
         let control: AbstractControl;
         let lang: string;
-        if (this.userForm.controls[formControlName]) {
-            control = this.userForm.controls[formControlName];
-            lang = appConstants.virtual_keyboard_languages[this.primaryLang];
+        if (this.leftToRightUserForm.controls[formControlName]) {
+            control = this.leftToRightUserForm.controls[formControlName];
+            lang = appConstants.virtual_keyboard_languages[this.primaryLeftToRightLanguage];
         } else {
-            control = this.transUserForm.controls[formControlName];
-            lang = appConstants.virtual_keyboard_languages[this.secondaryLang];
+            control = this.rightToLeftUserForm.controls[formControlName];
+            lang = appConstants.virtual_keyboard_languages[this.secondaryRightToLeftLanguage];
         }
         if (this.oldKeyBoardIndex == index && this.matKeyboardService.isOpened) {
             this.matKeyboardService.dismiss();
@@ -1176,10 +1164,10 @@ export class DemographicComponent extends FormDeactivateGuardService implements 
      * @returns the `Promise`
      * @memberof DemographicComponent
      */
-    private getPrimaryLabels() {
-        let factory = new LanguageFactory(this.primaryLang);
+    private getPrimaryLeftToRightLabels() {
+        let factory = new LanguageFactory(this.primaryLeftToRightLanguage);
         let response = factory.getCurrentlanguage();
-        this.demographicLabels = response["demographic"];
+        this.demographicPrimaryLeftToRightLanguageLabels = response["demographic"];
         this.errorlabels = response["error"];
     }
 
@@ -1235,22 +1223,27 @@ export class DemographicComponent extends FormDeactivateGuardService implements 
      * @memberof DemographicComponent
      */
     private consentDeclaration() {
-        if (this.demographicLabels) {
+        let demographicLabels = this.demographicPrimaryLeftToRightLanguageLabels;
+        if (this.primaryLanguage === this.secondaryRightToLeftLanguage) {
+            demographicLabels = this.demographicSecondaryRightToLeftLanguagelabels;
+        }
+        if (demographicLabels) {
             const data = {
                 case: "CONSENTPOPUP",
-                title: this.demographicLabels.consent.title,
-                subtitle: this.demographicLabels.consent.subtitle,
+                title: demographicLabels.consent.title,
+                subtitle: demographicLabels.consent.subtitle,
                 message: this.consentMessage,
-                checkCondition: this.demographicLabels.consent.checkCondition,
-                acceptButton: this.demographicLabels.consent.acceptButton,
-                alertMessageFirst: this.demographicLabels.consent.alertMessageFirst,
-                alertMessageSecond: this.demographicLabels.consent.alertMessageSecond,
-                alertMessageThird: this.demographicLabels.consent.alertMessageThird,
+                checkCondition: demographicLabels.consent.checkCondition,
+                acceptButton: demographicLabels.consent.acceptButton,
+                alertMessageFirst: demographicLabels.consent.alertMessageFirst,
+                alertMessageSecond: demographicLabels.consent.alertMessageSecond,
+                alertMessageThird: demographicLabels.consent.alertMessageThird,
             };
             this.dialog.open(DialougComponent, {
                 width: "50%",
                 data: data,
                 disableClose: true,
+                direction: this.getOriginalPrimaryDirection()
             });
         }
     }
@@ -1279,13 +1272,13 @@ export class DemographicComponent extends FormDeactivateGuardService implements 
     private async setGender() {
         await this.getGenderDetails();
         await this.filterOnLangCode(
-            this.primaryLang,
+            this.primaryLeftToRightLanguage,
             appConstants.controlTypeGender,
             this.genders
         );
-        if (this.primaryLang !== this.secondaryLang) {
+        if (this.primaryLeftToRightLanguage !== this.secondaryRightToLeftLanguage) {
             await this.filterOnLangCode(
-                this.secondaryLang,
+                this.secondaryRightToLeftLanguage,
                 appConstants.controlTypeGender,
                 this.genders
             );
@@ -1293,9 +1286,9 @@ export class DemographicComponent extends FormDeactivateGuardService implements 
     }
 
     private async setDynamicFieldValues() {
-        await this.getDynamicFieldValues(this.primaryLang);
-        if (this.primaryLang !== this.secondaryLang) {
-            await this.getDynamicFieldValues(this.secondaryLang);
+        await this.getDynamicFieldValues(this.primaryLeftToRightLanguage);
+        if (this.primaryLeftToRightLanguage !== this.secondaryRightToLeftLanguage) {
+            await this.getDynamicFieldValues(this.secondaryRightToLeftLanguage);
         }
     }
 
@@ -1308,13 +1301,13 @@ export class DemographicComponent extends FormDeactivateGuardService implements 
     private async setResident() {
         await this.getResidentDetails();
         await this.filterOnLangCode(
-            this.primaryLang,
+            this.primaryLeftToRightLanguage,
             appConstants.controlTypeResidenceStatus,
             this.residenceStatus
         );
-        if (this.primaryLang !== this.secondaryLang) {
+        if (this.primaryLeftToRightLanguage !== this.secondaryRightToLeftLanguage) {
             await this.filterOnLangCode(
-                this.secondaryLang,
+                this.secondaryRightToLeftLanguage,
                 appConstants.controlTypeResidenceStatus,
                 this.residenceStatus
             );
@@ -1418,10 +1411,10 @@ export class DemographicComponent extends FormDeactivateGuardService implements 
                                 languageCode: element.langCode,
                             };
                         }
-                        if (langCode === this.primaryLang) {
-                            this.primarydropDownFields[field].push(codeValue);
+                        if (langCode === this.primaryLeftToRightLanguage) {
+                            this.primaryLeftToRightLanguagDropDownFields[field].push(codeValue);
                         } else {
-                            this.secondaryDropDownLables[field].push(codeValue);
+                            this.secondaryRightToLeftLanguageDropDownLabels[field].push(codeValue);
                         }
                         resolve(true);
                     }
@@ -1459,10 +1452,10 @@ export class DemographicComponent extends FormDeactivateGuardService implements 
             let formControlNames = "";
             const transliterateField = [...appConstants.TRANSLITERATE_FIELDS];
             if (transliterateField.includes(element)) {
-                forms = ["userForm", "transUserForm"];
+                forms = ["leftToRightUserForm", "rightToLeftUserForm"];
                 formControlNames = element;
             } else {
-                forms = ["userForm", "userForm"];
+                forms = ["rightToLeftUserForm", "rightToLeftUserForm"];
                 formControlNames = element;
             }
             attr = [];
@@ -1481,7 +1474,7 @@ export class DemographicComponent extends FormDeactivateGuardService implements 
             if (element === appConstants.IDSchemaVersionLabel) {
                 attr = this.config[appConstants.CONFIG_KEYS.mosip_idschema_version];
             } else {
-                attr = this.userForm.controls[`${element}`].value;
+                attr = this.leftToRightUserForm.controls[`${element}`].value;
             }
         }
         identity[element] = attr;
@@ -1547,7 +1540,7 @@ export class DemographicComponent extends FormDeactivateGuardService implements 
      * @memberof DemographicComponent
      */
     private createRequestJSON(identity) {
-        let langCode = this.primaryLang;
+        let langCode = this.primaryLeftToRightLanguage;
         if (this.user.request) {
             langCode = this.user.request.langCode;
         }
@@ -1571,7 +1564,7 @@ export class DemographicComponent extends FormDeactivateGuardService implements 
         let createdBy = this.loginId;
         let createdDateTime = Utils.getCurrentDate();
         let updatedDateTime = "";
-        let langCode = this.primaryLang;
+        let langCode = this.primaryLeftToRightLanguage;
         if (this.user.request) {
             preRegistrationId = this.preRegId;
             createdBy = this.user.request.createdBy;
@@ -1703,7 +1696,7 @@ export class DemographicComponent extends FormDeactivateGuardService implements 
      *
      */
     setIsShownCivilRegisterNumberInputInFormIfValuesInFormChange(): void {
-        const flagidcs = (this.userForm.get('flagidcs')) ? this.userForm.get('flagidcs').value : null;
+        const flagidcs = (this.leftToRightUserForm.get('flagidcs')) ? this.leftToRightUserForm.get('flagidcs').value : null;
         if ((this.oldFlagidcsInFormForShowingCivilRegisterNumberInput != flagidcs)) {
             this.oldFlagidcsInFormForShowingCivilRegisterNumberInput = flagidcs;
             this.setIsShownCivilRegisterNumberInputInFormIfFieldsFoundedAndConditionsAreMet(flagidcs);
@@ -1772,7 +1765,7 @@ export class DemographicComponent extends FormDeactivateGuardService implements 
      * TODO @Youssef : à documenter !
      */
     setIsShownAndIsRequiredReferenceCNIENumberInputInFormIfValuesInFormChange(): void {
-        const residenceStatusValueInForm = (this.userForm.get('residenceStatus')) ? this.userForm.get('residenceStatus').value : null;
+        const residenceStatusValueInForm = (this.leftToRightUserForm.get('residenceStatus')) ? this.leftToRightUserForm.get('residenceStatus').value : null;
         const ageInForm = this.currentAge;
         if ((this.oldResidenceStatusValueInFormForShowingReferenceCNIENumberInput != residenceStatusValueInForm) || (this.oldAgeValueInFormForShowingReferenceCNIENumberInput != ageInForm)) {
             this.oldResidenceStatusValueInFormForShowingReferenceCNIENumberInput = residenceStatusValueInForm;
@@ -1812,9 +1805,9 @@ export class DemographicComponent extends FormDeactivateGuardService implements 
                 this.setVisibilityToField(fieldOfReferenceCNIENumber, true);
                 fieldOfReferenceCNIENumber.required = conditionRow.required;
                 if (fieldOfReferenceCNIENumber.required) {
-                    this.userForm.get('referenceCNIENumber').setValidators(Validators.required);
+                    this.leftToRightUserForm.get('referenceCNIENumber').setValidators(Validators.required);
                 } else {
-                    this.userForm.get('referenceCNIENumber').setValidators(null);
+                    this.leftToRightUserForm.get('referenceCNIENumber').setValidators(null);
                 }
             }
         });
@@ -1837,7 +1830,7 @@ export class DemographicComponent extends FormDeactivateGuardService implements 
      * TODO @Youssef : à documenter !
      */
     setIsShownCitizenFieldsInputsInFormIfValuesInFormChange(): void {
-        const residenceStatusValueInForm = (this.userForm.get('residenceStatus')) ? this.userForm.get('residenceStatus').value : null;
+        const residenceStatusValueInForm = (this.leftToRightUserForm.get('residenceStatus')) ? this.leftToRightUserForm.get('residenceStatus').value : null;
         if (residenceStatusValueInForm && (this.oldResidenceStatusValueInFormForShowingCitizenFields != residenceStatusValueInForm)) {
             this.oldResidenceStatusValueInFormForShowingCitizenFields = residenceStatusValueInForm;
             this.setIsShownCitizenFieldsInputsInFormIfFieldsFoundedAndConditionsAreMet(residenceStatusValueInForm);
@@ -1921,8 +1914,8 @@ export class DemographicComponent extends FormDeactivateGuardService implements 
      * TODO @Youssef : à documenter !
      */
     setIsShownForiegnerIdentityCardInFormIfValuesInFormChange(): void {
-        const residenceStatusValueInForm = (this.userForm.get('residenceStatus')) ? this.userForm.get('residenceStatus').value : null;
-        const flagForiegnerIdentityCardValueInForm = (this.userForm.get('resOuPass')) ? this.userForm.get('resOuPass').value : null;
+        const residenceStatusValueInForm = (this.leftToRightUserForm.get('residenceStatus')) ? this.leftToRightUserForm.get('residenceStatus').value : null;
+        const flagForiegnerIdentityCardValueInForm = (this.leftToRightUserForm.get('resOuPass')) ? this.leftToRightUserForm.get('resOuPass').value : null;
         if (
             residenceStatusValueInForm && flagForiegnerIdentityCardValueInForm
             && (
@@ -2018,7 +2011,7 @@ export class DemographicComponent extends FormDeactivateGuardService implements 
      * TODO @Youssef : à documenter !
      */
     setIsShownPlaceOfBirthInputsInFormIfValuesInFormChange(): void {
-        const flagbValueInForm = (this.userForm.get('flagb')) ? this.userForm.get('flagb').value : null;
+        const flagbValueInForm = (this.leftToRightUserForm.get('flagb')) ? this.leftToRightUserForm.get('flagb').value : null;
         if (flagbValueInForm && (this.oldflagbValueInFormForShowingPlaceOfBirth != flagbValueInForm)) {
             this.oldflagbValueInFormForShowingPlaceOfBirth = flagbValueInForm;
             this.setIsShownPlaceOfBirthInputsInFormIfFieldsFoundedAndConditionsAreMet(flagbValueInForm);
@@ -2196,44 +2189,44 @@ export class DemographicComponent extends FormDeactivateGuardService implements 
         const RESIDANT_STATUS_VALUE_OF_RESIDENT_CITIZEN = 'NFR';
         const NOT_REQUIRED_FIELDS_IN_TRANS_USER_FORM_IF_APPLICANT_IS_NOT_RESIDANT = ['lastName', 'firstName', 'parentOrGuardianfirstName', 'parentOrGuardianlastName', 'addressLine1'];
         this.uiFields.forEach(field => {
-            if (field.visible && field.required && field.validators !== null && field.validators.length > 0 && this.userForm.get(field.id)) {
-                this.userForm.get(field.id).setValidators([
+            if (field.visible && field.required && field.validators !== null && field.validators.length > 0 && this.leftToRightUserForm.get(field.id)) {
+                this.leftToRightUserForm.get(field.id).setValidators([
                     Validators.required,
                     Validators.pattern(field.validators[0].validator),
                 ]);
-                this.transUserForm.get(field.id).setValidators([
+                this.rightToLeftUserForm.get(field.id).setValidators([
                     Validators.required,
                     Validators.pattern(field.validators[0].validator),
                 ]);
-            } else if (field.visible && field.validators !== null && field.validators.length > 0 && this.userForm.get(field.id)) {
-                this.userForm.get(field.id).setValidators([
+            } else if (field.visible && field.validators !== null && field.validators.length > 0 && this.leftToRightUserForm.get(field.id)) {
+                this.leftToRightUserForm.get(field.id).setValidators([
                     Validators.pattern(field.validators[0].validator),
                 ]);
-                this.transUserForm.get(field.id).setValidators([
+                this.rightToLeftUserForm.get(field.id).setValidators([
                     Validators.pattern(field.validators[0].validator),
                 ]);
-            } else if (field.visible && (field.required) && this.userForm.get(field.id)) {
-                this.userForm.get(field.id).setValidators([Validators.required]);
-                this.transUserForm.get(field.id).setValidators([Validators.required]);
-            } else if (this.userForm.get(field.id)) {
-                this.userForm.get(field.id).setValidators(null);
-                this.userForm.get(field.id).setErrors(null);
-                this.transUserForm.get(field.id).setValidators(null);
-                this.transUserForm.get(field.id).setErrors(null);
+            } else if (field.visible && (field.required) && this.leftToRightUserForm.get(field.id)) {
+                this.leftToRightUserForm.get(field.id).setValidators([Validators.required]);
+                this.rightToLeftUserForm.get(field.id).setValidators([Validators.required]);
+            } else if (this.leftToRightUserForm.get(field.id)) {
+                this.leftToRightUserForm.get(field.id).setValidators(null);
+                this.leftToRightUserForm.get(field.id).setErrors(null);
+                this.rightToLeftUserForm.get(field.id).setValidators(null);
+                this.rightToLeftUserForm.get(field.id).setErrors(null);
             }
             // TODO @Youssef : à rectifier la condition !!!
             if (field.visible && field.checksum) {
-                this.userForm.controls[`${field.id}`].setValidators([this.validateVerhoeffChecksumValidatorFn()]);
-                if (this.primaryLang !== this.secondaryLang) {
-                    this.transUserForm.controls[`${field.id}`].setValidators([this.validateVerhoeffChecksumValidatorFn()]);
+                this.leftToRightUserForm.controls[`${field.id}`].setValidators([this.validateVerhoeffChecksumValidatorFn()]);
+                if (this.primaryLeftToRightLanguage !== this.secondaryRightToLeftLanguage) {
+                    this.rightToLeftUserForm.controls[`${field.id}`].setValidators([this.validateVerhoeffChecksumValidatorFn()]);
                 }
             }
             if (NOT_REQUIRED_FIELDS_IN_TRANS_USER_FORM_IF_APPLICANT_IS_NOT_RESIDANT.indexOf(field.id) >= 0) {
-                if (this.userForm && this.userForm.get(RESIDANT_STATUS_FIELD_ID) && (RESIDANT_STATUS_VALUE_OF_RESIDENT_CITIZEN != this.userForm.get(RESIDANT_STATUS_FIELD_ID).value)) {
-                    this.transUserForm.get(field.id).setValidators(null);
-                    this.transUserForm.get(field.id).setErrors(null);
-                } else if (this.transUserForm && this.transUserForm.get(field.id)) {
-                    this.transUserForm.get(field.id).updateValueAndValidity();
+                if (this.leftToRightUserForm && this.leftToRightUserForm.get(RESIDANT_STATUS_FIELD_ID) && (RESIDANT_STATUS_VALUE_OF_RESIDENT_CITIZEN != this.leftToRightUserForm.get(RESIDANT_STATUS_FIELD_ID).value)) {
+                    this.rightToLeftUserForm.get(field.id).setValidators(null);
+                    this.rightToLeftUserForm.get(field.id).setErrors(null);
+                } else if (this.rightToLeftUserForm && this.rightToLeftUserForm.get(field.id)) {
+                    this.rightToLeftUserForm.get(field.id).updateValueAndValidity();
                 }
             }
         });
@@ -2248,7 +2241,16 @@ export class DemographicComponent extends FormDeactivateGuardService implements 
     private getIsErrorInUiFieldsGroup(group: string): boolean {
         const fields = this.getFieldsOfGroup(group);
         for (let i = 0; i < fields.length; i++) {
-            if ((this.userForm && this.userForm.get(fields[i].id) && this.userForm.get(fields[i].id).invalid) || (this.transUserForm && this.transUserForm.get(fields[i].id) && this.transUserForm.get(fields[i].id).invalid)) {
+            const isCorrectGuardienIdentity = Boolean(
+                ((fields[i].id === 'parentOrGuardianRID' || fields[i].id === 'parentOrGuardianUIN') && this.verifyAndSetErrornesToGuardienIdentity())
+                || (fields[i].id !== 'parentOrGuardianRID' && fields[i].id !== 'parentOrGuardianUIN')
+            );
+            const isErrorInField = Boolean(
+                (this.leftToRightUserForm && this.leftToRightUserForm.get(fields[i].id) && this.leftToRightUserForm.get(fields[i].id).invalid)
+                || (this.rightToLeftUserForm && this.rightToLeftUserForm.get(fields[i].id) && this.rightToLeftUserForm.get(fields[i].id).invalid)
+                || !isCorrectGuardienIdentity
+            );
+            if (isErrorInField) {
                 return true
             }
         }
@@ -2264,11 +2266,11 @@ export class DemographicComponent extends FormDeactivateGuardService implements 
 
     private setInvalidFieldsInGroup(group: string) {
         this.getFieldsOfGroup(group).forEach(field => {
-            if (this.userForm && this.userForm.get(field.id) && this.userForm.get(field.id).invalid) {
-                this.invalidFields.push(field.labelName[this.primaryLang]);
+            if (this.leftToRightUserForm && this.leftToRightUserForm.get(field.id) && this.leftToRightUserForm.get(field.id).invalid) {
+                this.invalidFields.push(field.labelName[this.primaryLeftToRightLanguage]);
             }
-            if (this.transUserForm && this.transUserForm.get(field.id) && this.transUserForm.get(field.id).invalid) {
-                this.invalidFields.push(field.labelName[this.secondaryLang]);
+            if (this.rightToLeftUserForm && this.rightToLeftUserForm.get(field.id) && this.rightToLeftUserForm.get(field.id).invalid) {
+                this.invalidFields.push(field.labelName[this.secondaryRightToLeftLanguage]);
             }
         });
     }
@@ -2299,20 +2301,20 @@ export class DemographicComponent extends FormDeactivateGuardService implements 
     }
 
     getValidationErrorPrimaryLanguageMessage(labelName: string): string {
-        return this.demographicLabels['errorMessages']['validationErrorMessage'].replace('{field}', labelName);
+        return this.demographicPrimaryLeftToRightLanguageLabels['errorMessages']['validationErrorMessage'].replace('{field}', labelName);
     }
 
     getRequiredErrorPrimaryLanguageMessage(labelName: string): string {
-        return this.demographicLabels['errorMessages']['requiredErrorMessage'].replace('{field}', labelName);
+        return this.demographicPrimaryLeftToRightLanguageLabels['errorMessages']['requiredErrorMessage'].replace('{field}', labelName);
     }
 
 
     getValidationErrorSecondaryLanguageMessage(labelName: string): string {
-        return this.secondaryLanguagelabels['errorMessages']['validationErrorMessage'].replace('الحقل', labelName);
+        return this.demographicSecondaryRightToLeftLanguagelabels['errorMessages']['validationErrorMessage'].replace('الحقل', labelName);
     }
 
     getRequiredErrorSecondaryLanguageMessage(labelName: string): string {
-        return this.secondaryLanguagelabels['errorMessages']['requiredErrorMessage'].replace('الحقل', labelName);
+        return this.demographicSecondaryRightToLeftLanguagelabels['errorMessages']['requiredErrorMessage'].replace('الحقل', labelName);
     }
 
     private getYesterdayDate(): string {
@@ -2326,7 +2328,7 @@ export class DemographicComponent extends FormDeactivateGuardService implements 
     }
 
     onChangeRadioValue(fieldId: string) {
-        this.transUserForm.get(fieldId).setValue(this.userForm.get(fieldId).value);
+        this.rightToLeftUserForm.get(fieldId).setValue(this.leftToRightUserForm.get(fieldId).value);
     }
 
 
@@ -2342,7 +2344,7 @@ export class DemographicComponent extends FormDeactivateGuardService implements 
 
     private validateVerhoeffChecksumValidatorFn(): ValidatorFn {
         return (control: AbstractControl): { [key: string]: any } | null => {
-            const isNotSameCivilRegistryNumberAsParentOrGuardianUIN = (this.userForm.get('civilRegistryNumber').value !== this.userForm.get('parentOrGuardianUIN').value);
+            const isNotSameCivilRegistryNumberAsParentOrGuardianUIN = (this.leftToRightUserForm.get('civilRegistryNumber').value !== this.leftToRightUserForm.get('parentOrGuardianUIN').value);
             return (control.value && this.validateVerhoeffChecksum(control.value) && isNotSameCivilRegistryNumberAsParentOrGuardianUIN) ? null : {checksum: {value: control.value}};
         };
     }
@@ -2468,28 +2470,65 @@ export class DemographicComponent extends FormDeactivateGuardService implements 
     // }
 
     setFieldsOfBirthDateFromReactiveForm() {
-        if (this.userForm && this.userForm.get('yearOfBirth') && this.userForm.get('monthOfBirth') && this.userForm.get('dayOfBirth')) {
-            this.year = this.userForm.get('yearOfBirth').value;
-            this.transUserForm.get('yearOfBirth').setValue(this.year);
-            this.month = this.userForm.get('monthOfBirth').value;
+        if (this.leftToRightUserForm && this.leftToRightUserForm.get('yearOfBirth') && this.leftToRightUserForm.get('monthOfBirth') && this.leftToRightUserForm.get('dayOfBirth')) {
+            this.year = this.leftToRightUserForm.get('yearOfBirth').value;
+            this.rightToLeftUserForm.get('yearOfBirth').setValue(this.year);
+            this.month = this.leftToRightUserForm.get('monthOfBirth').value;
             if (!this.month || (this.month.replace(' ', '') === '')) {
-                this.userForm.get('dayOfBirth').setValue(null);
+                this.leftToRightUserForm.get('dayOfBirth').setValue(null);
             }
-            this.transUserForm.get('monthOfBirth').setValue(this.month);
-            this.date = this.userForm.get('dayOfBirth').value;
-            this.transUserForm.get('dayOfBirth').setValue(this.date);
+            this.rightToLeftUserForm.get('monthOfBirth').setValue(this.month);
+            this.date = this.leftToRightUserForm.get('dayOfBirth').value;
+            this.rightToLeftUserForm.get('dayOfBirth').setValue(this.date);
             const selectedMonth = (this.month && !this.month.replace(' ', '')) ? this.month : '01';
             const selectedDay = (this.date && !this.date.replace(' ', '')) ? this.date : '01';
-            this.userForm.controls[`dateOfBirth`].setValue(
+            this.leftToRightUserForm.controls[`dateOfBirth`].setValue(
                 `${this.year}-${selectedMonth}-${selectedDay}`
             );
-            if (this.primaryLang !== this.secondaryLang) {
-                this.transUserForm.controls[`dateOfBirth`].setValue(
+            if (this.primaryLeftToRightLanguage !== this.secondaryRightToLeftLanguage) {
+                this.rightToLeftUserForm.controls[`dateOfBirth`].setValue(
                     `${this.year}-${selectedMonth}-${selectedDay}`
                 );
             }
             this.onDOBChange();
         }
+    }
+
+    private verifyAndSetErrornesToGuardienIdentity(): boolean {
+        const isVisibleGuardienIdentity = Boolean(
+            this.uiFields.filter(field => field.id === 'parentOrGuardianRID')[0].visible
+            && this.uiFields.filter(field => field.id === 'parentOrGuardianUIN')[0].visible
+        );
+        const isInformedGuardienIdentity = Boolean(
+            this.leftToRightUserForm.get('parentOrGuardianRID').value || this.leftToRightUserForm.get('parentOrGuardianUIN').value
+        );
+        const isCorrectGuardienIdentity = (isVisibleGuardienIdentity && isInformedGuardienIdentity) || (!isVisibleGuardienIdentity);
+        if (isVisibleGuardienIdentity && !isCorrectGuardienIdentity) {
+            this.leftToRightUserForm.get('parentOrGuardianRID').setErrors({'error': true});
+            this.leftToRightUserForm.get('parentOrGuardianUIN').setErrors({'error': true});
+            this.rightToLeftUserForm.get('parentOrGuardianRID').setErrors({'error': true});
+            this.rightToLeftUserForm.get('parentOrGuardianUIN').setErrors({'error': true});
+        } else {
+            this.leftToRightUserForm.get('parentOrGuardianRID').setErrors(null);
+            this.leftToRightUserForm.get('parentOrGuardianUIN').setErrors(null);
+            this.rightToLeftUserForm.get('parentOrGuardianRID').setErrors(null);
+            this.rightToLeftUserForm.get('parentOrGuardianUIN').setErrors(null);
+        }
+        return isCorrectGuardienIdentity;
+    }
+
+
+
+    getOriginalPrimaryDirection() {
+        return (this.primaryLanguage === 'ara') ? 'rtl' : 'ltr';
+    }
+
+    getPrimaryDirection() {
+        return (this.primaryLeftToRightLanguage === 'ara') ? 'rtl' : 'ltr';
+    }
+
+    getSecondaryDirection() {
+        return (this.primaryLeftToRightLanguage === 'ara') ? 'ltr' : 'rtl';
     }
 
 }

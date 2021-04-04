@@ -7,7 +7,12 @@
 }
 
 .mat-sidenav {
-    width: 180px;
+    /*width: 180px;*/
+}
+
+.mat-drawer-content {
+    overflow-x: auto;
+    overflow-y: auto;
 }
 
 .main {
@@ -35,11 +40,11 @@
     margin: auto auto;
 }
 
-.cont-mat.arabic .list-item>.mat-list-item {
+.rtl .cont-mat .list-item>.mat-list-item {
 
 }
 
-.cont-mat.arabic .header--logo {
+.rtl .cont-mat .header--logo {
     margin-right: 61px;
 }
 
