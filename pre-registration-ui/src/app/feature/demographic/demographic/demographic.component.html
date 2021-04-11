@@ -220,19 +220,18 @@
                                                             <span *ngIf="field.required"
                                                                   class="required-annotation">*</span>
                                                         </mat-label>
-                                                        <input *ngIf="secondaryRightToLeftLanguage === 'ara' && !getReadOnlyfields(field.id)"
-                                                               matInput
-                                                               [matKeyboard]="'ar'"
+                                                        <input matInput
                                                                [readonly]="getReadOnlyfields(field.id)"
-                                                               formControlName="{{ field.id }}"/>
-                                                        <input *ngIf="secondaryRightToLeftLanguage === 'ara' && getReadOnlyfields(field.id)"
-                                                               matInput
-                                                               [readonly]="getReadOnlyfields(field.id)"
-                                                               formControlName="{{ field.id }}"/>
-                                                        <input *ngIf="secondaryRightToLeftLanguage !== 'ara'"
-                                                               matInput
-                                                               [readonly]="getReadOnlyfields(field.id)"
-                                                               formControlName="{{ field.id }}"/>
+                                                               formControlName="{{ field.id }}"
+                                                               id="input-rtl-{{field.id}}"
+                                                               cdkOverlayOrigin
+                                                               #inputTrigger="cdkOverlayOrigin"/>
+                                                        <app-rnp-custom-simple-keyboard *ngIf="secondaryRightToLeftLanguage === 'ara' && !getReadOnlyfields(field.id)"
+                                                                                        [inputOriginTrigger]="inputTrigger"
+                                                                                        [inputClassIdentificator]="'input-rtl-' + field.id"
+                                                                                        [simpleKeyboardLanguage]="ARABIC_LANGUAGE_LAYOUT_SIMPLE_KEYBOARD"
+                                                                                        matSuffix>
+                                                        </app-rnp-custom-simple-keyboard>
                                                         <mat-icon *ngIf="field.tooltip" matSuffix
                                                                   matTooltip="{{demographicSecondaryRightToLeftLanguagelabels['tooltip'][field.id]}}">
                                                             help_outline

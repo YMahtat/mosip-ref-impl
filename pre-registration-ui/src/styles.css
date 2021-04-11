@@ -1,5 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
 @import '~simplebar/dist/simplebar.css';
+@import '~simple-keyboard/build/css/index.css';
+@import '~@angular/cdk/overlay-prebuilt.css';
 
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600&family=Lato:wght@400;500;700&family=Montserrat:wght@300;400;500;600;700;800&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Reem+Kufi&display=swap');

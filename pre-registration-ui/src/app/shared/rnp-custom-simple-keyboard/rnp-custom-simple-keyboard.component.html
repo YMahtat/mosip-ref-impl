@@ -1,0 +1,15 @@
+<mat-icon matSuffix
+          class="mat-icon-keyboard-btn"
+          cdkOverlayOrigin #matIconKeyboardBtnTrigger="cdkOverlayOrigin"
+          (click)="onInputSimpleKeyboardHandlerClickHandler(inputClassIdentificator, inputOriginTrigger)">
+    keyboard
+</mat-icon>
+
+<ng-template cdkConnectedOverlay
+             [cdkConnectedOverlayOrigin]="(trigger) ? trigger : matIconKeyboardBtnTrigger"
+             [cdkConnectedOverlayOpen]="isOpenOverlaySimpleKeyboard"
+             [cdkConnectedOverlayHasBackdrop]="true"
+             [cdkConnectedOverlayBackdropClass]="'cdk-overlay-transparent-backdrop'"
+             (backdropClick)="onInputFocusOutDestroyAndCloseSimpleKeyboardHandler()">
+    <div class="simple-keyboard" dir="ltr"></div>
+</ng-template>

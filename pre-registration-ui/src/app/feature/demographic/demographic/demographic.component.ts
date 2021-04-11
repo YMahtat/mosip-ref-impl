@@ -31,6 +31,7 @@ import LanguageFactory from "src/assets/i18n";
 import {FormDeactivateGuardService} from "src/app/shared/can-deactivate-guard/form-guard/form-deactivate-guard.service";
 import {Subscription} from "rxjs";
 import {DEFAULT_LTR_LANGUAGE_CODE, DEFAULT_RTL_LANGUAGE_CODE} from "../../../app.constants";
+import {SimpleKeyboardLanguageEnum} from "../../../shared/enumerators/simple-keyboard-language.enum";
 
 /**
  * @description This component takes care of the demographic page.
@@ -47,6 +48,8 @@ import {DEFAULT_LTR_LANGUAGE_CODE, DEFAULT_RTL_LANGUAGE_CODE} from "../../../app
     styleUrls: ["./demographic.component.css"],
 })
 export class DemographicComponent extends FormDeactivateGuardService implements OnInit, AfterViewChecked, OnDestroy {
+
+    readonly ARABIC_LANGUAGE_LAYOUT_SIMPLE_KEYBOARD = SimpleKeyboardLanguageEnum.Arabic;
 
     // textDir = localStorage.getItem("dir");
     // secTextDir = localStorage.getItem("secondaryDir");

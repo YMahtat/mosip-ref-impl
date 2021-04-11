@@ -104,6 +104,7 @@ export class AcknowledgementComponent implements OnInit, OnDestroy {
         this.notificationTypes = notificationTypes.map((item) =>
             item.toUpperCase()
         );
+
         this.opt = {
             margin: [0, 0, 0, 0],
             filename: this.usersInfo[0].preRegId + ".pdf",
